@@ -10,3 +10,9 @@
 ## issues
 
 * vitali implementation might use different idea of ownership when not all stock is available
+
+## example
+
+To run:
+* install conda environment from environment.yml
+* see sparse.py (notebook with jupytext!!!)
