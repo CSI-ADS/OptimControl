@@ -1,0 +1,12 @@
+name: control
+channels:
+  - defaults
+  - pytorch
+  - conda-forge
+  - anaconda
+dependencies:
+  - python=3
+  - anaconda
+  - torchvision
+  - pytorch
+  - jupytext
