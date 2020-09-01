@@ -22,6 +22,12 @@ from tqdm import tqdm
 
 # %load_ext autoreload
 # %autoreload 2
+
+device = 'cpu'
+if torch.cuda.is_available():
+    print("CUDA available")
+    device = 'cuda'
+print(device)
 # -
 
 # # Create example network with some values
@@ -29,7 +35,7 @@ from tqdm import tqdm
 # +
 from src.network import *
 
-N = 10
+N = 1000
 G = nx.fast_gnp_random_graph(N, 0.2, directed=True)
 value = torch.Tensor(list(nx.degree_centrality(G).values()))
 print(value)
@@ -43,19 +49,24 @@ assert np.min(A) >= 0 and np.max(A) <= 1, "{} | {}".format(np.min(A), np.max(A))
 
 # normalize columns
 #print("Au",A)
-#A = normalize_ownership(torch.from_numpy(A))
-#G = nx.from_numpy_array(A.numpy())
+# A = normalize_ownership(torch.from_numpy(A))
+# G = nx.from_numpy_array(A.numpy())
 
 #nx.draw(G)
 plt.matshow(A)
 plt.colorbar()
 plt.show()
 print("A = ",A)
-g = Network(A)
+g = Network(A, dtype=torch.float)
+
+print("normalizing")
+C = normalize_ownership(g)
+g = Network(C, dtype=torch.float)
+
 #D = g.D
 C = g.C
-print("C = ", C)
-nx.draw(G)
+print("C = ", C, C.dtype, C.device)
+#nx.draw(G)
 #desc = np.arange(0, D.shape[0])
 
 # +
@@ -72,9 +83,11 @@ print(g.number_of_nodes)
     it's rather a value between -+\infty that is rescaled later 
     using sigmoid to get something between 0 and 1
 """
-cl = get_cl_init(g.number_of_nodes)
+cl = get_cl_init(g.number_of_nodes, device=device, dtype=torch.float)
+print(cl.dtype, cl.device)
+g.to(device)
 print(compute_sparse_loss_cache_vars(cl, g, lambd=0.1))
-print(cl)
+print(cl, cl.dtype, cl.device)
 print("-"*10)
 print(compute_value_and_grad(compute_sparse_loss_cache_vars, cl, g, lambd=0.1))
 
@@ -83,8 +96,9 @@ print(compute_value_and_grad(compute_sparse_loss_cache_vars, cl, g, lambd=0.1))
 from collections import defaultdict
 from src.vitali import *
 
-cl = get_cl_init(g.number_of_nodes)
-_, _, hist = optimize_control(compute_sparse_loss_cache_vars, cl, g, lambd=0, return_hist=True, verbose=True, num_steps=100)
+cl = get_cl_init(g.number_of_nodes, device=device)
+_, _, hist = optimize_control(compute_sparse_loss_cache_vars, cl, g, lambd=0, return_hist=True, verbose=True, num_steps=100,
+                             device=device)
 
 # +
 import matplotlib.pyplot as plt
@@ -103,7 +117,7 @@ for i in range(num_params):
 plt.xlabel("step")
 plt.ylabel("parameter (sigmoid) = % bought of company i")
 plt.yscale('log')
-plt.legend()
+#plt.legend()
 plt.show()
 
 plt.bar(np.arange(num_params), hist["final_params_sm"])
@@ -119,22 +133,22 @@ ss = []
 param_result = []
 lambd_range = np.linspace(0, 5, num=20)#np.logspace(-2, 1, num=10)
 for lambd in lambd_range:
-    cl = get_cl_init(g.number_of_nodes)
+    cl = get_cl_init(g.number_of_nodes, device=device)
     loss_fn = compute_sparse_loss_cache_vars
-    cl, cost = optimize_control(loss_fn, cl, g, lambd=lambd, return_hist=False, lr=0.1, num_steps=1000, verbose=True)
+    cl, cost = optimize_control(loss_fn, cl, g, lambd=lambd, return_hist=False, lr=0.1, num_steps=1000, verbose=True, device=device)
     
     
     # get some stats
     with torch.no_grad():
         c, s = compute_sparse_loss_cache_vars(cl, g, lambd=lambd, as_separate=True)
-        param_result.append(cl)
-        cs.append(c)
-        ss.append(s)
+        param_result.append(cl.detach().cpu())
+        cs.append(c.detach().cpu())
+        ss.append(s.detach().cpu())
         print(lambd, c, s)
         
 with torch.no_grad():
-    cs = np.array(cs)
-    ss = np.array(ss)
+    cs = np.array([x.numpy() for x in cs])
+    ss = np.array([x.numpy() for x in ss])
     param_result = torch.sigmoid(torch.stack(param_result)).numpy()
 # -
 
@@ -161,6 +175,8 @@ plt.xlabel("parameters (% bought)")
 plt.ylabel("lambda nr")
 plt.show()
 # -
+
+
 
 
 

@@ -4,8 +4,9 @@ from .network import *
 from .vitali import *
 
 def compute_control_with_external(cl, g):
+    cl_adjusted = cl*g.total_shares_in_network
     C = adjust_for_external_ownership(cl, g)
-    dtilde = compute_control(cl, C) # get the control of my node
+    dtilde = compute_control(cl_adjusted, C) # get the control of my node
     return dtilde
 
 def compute_control_loss(cl, g): # as low as possible

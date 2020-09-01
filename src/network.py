@@ -4,13 +4,16 @@ import networkx as nx
 
 class Network:
 
-    def __init__(self, A, value=None):
+    def __init__(self, A, value=None, dtype=torch.float):
         if isinstance(A, np.ndarray):
             A = torch.from_numpy(A)
         if isinstance(value, np.ndarray):
             value = torch.from_numpy(value)
         assert isinstance(A, torch.Tensor), "use torch"
         assert value is None or isinstance(value, torch.Tensor), "use torch"
+        A = A.to(dtype)
+        if value:
+            value = value.to(dtype)
         self.N = A.shape[0]
         self.set_control_matrix(A)
         self.V = value # value of each node
@@ -22,7 +25,7 @@ class Network:
     #     self.D = D > tol
 
     def set_control_matrix(self, A):
-        self.C = A.double()
+        self.C = A
         #self.C.fill_diagonal_(1)
 
     @property
@@ -42,14 +45,16 @@ class Network:
         return self.C.sum(axis=0)
 
     def to(self, device):
-        self.V.to(device)
-        self.A.to(device)
+        self.C = self.C.to(device)
+        if self.V:
+            self.V = self.V.to(device)
+        return self
 
 def normalize_ownership(g):
     C = g.ownership
     N = C.shape[0]
     Csum = C.sum(axis=0)
-    Csum_zero = (Csum == 0).double()
+    Csum_zero = (Csum == 0).to(C.dtype)
     Csum = Csum + Csum_zero
     C = C / Csum.reshape((1, N))
     return C
