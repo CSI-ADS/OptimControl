@@ -41,6 +41,10 @@ class Network:
     def total_shares_in_network(self):
         return self.C.sum(axis=0)
 
+    def to(self, device):
+        self.V.to(device)
+        self.A.to(device)
+
 def normalize_ownership(g):
     C = g.ownership
     N = C.shape[0]

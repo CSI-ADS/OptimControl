@@ -11,8 +11,8 @@ def get_d(cl, desc):
     """ FIXME, here, cl has a clear definition"""
     return cl[desc].reshape(1, -1) # row vector
 
-def get_Isub(desc):
-    return torch.eye(len(desc))
+def get_Isub(desc, device=None):
+    return torch.eye(len(desc), device=device)
 
 def get_dtilde(cl, C, desc):
     Ndesc = len(desc)
@@ -29,12 +29,13 @@ def get_dtilde(cl, C, desc):
 #     print("Bsub = ", Bsub)
 #     print("desc=", desc)
 
-    Isub = get_Isub(desc)
+    Isub = get_Isub(desc, device=Bsub.device)
     to_invert = Isub - Bsub
 #     print("TO",to_invert)
 
     inverted = torch.inverse(to_invert)
 #     print("INV", inverted)
+    # TODO: adjust by p value
     dtilde = d.matmul(inverted)
 #     print("DTILDE", dtilde)
     return dtilde
