@@ -22,7 +22,7 @@ def compute_control_loss(cl, g): # as low as possible
 
 def compute_owned_cost(cl, g, as_array=False):
     if g.value is not None:
-        assert g.number_of_nodes == cl.shape, "cl should have size of nodes"
+        assert g.number_of_nodes == cl.shape[0], "cl should have size of nodes"
     frac_shares_in_network = g.total_shares_in_network
     owned_network_shares = cl*frac_shares_in_network
 
