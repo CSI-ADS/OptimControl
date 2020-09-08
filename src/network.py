@@ -87,6 +87,18 @@ class Network:
         dtype = self.C.dtype
         return Network(A, value=V, node_list=node_list, dtype=dtype)
 
+    def educated_value_guess(self):
+        unval = torch.isnan(self.V)
+        children_idx = self.A[unval,:].tocsr().nonzero()
+        vnew = np.zeros((sum(unval),))
+        for i, u in enumerate(np.where(unval)[0]):
+            idx = children_idx[1][children_idx[0] == u]
+            children_vals = self.V[idx].detach().cpu().numpy()
+            ownership = np.array(self.A[u, idx].todense()).flatten()
+            vnew[i] = np.sum(children_vals*ownership) # this is a guess
+        self.V[unval] = torch.tensor(vnew).to(self.V.dtype)
+
+
 
 def normalize_ownership(g):
     C = g.ownership

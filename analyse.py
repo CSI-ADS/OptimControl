@@ -32,6 +32,7 @@ print(device)
 # -
 
 A = pd.read_csv("data/edges_pharma_lc-3.csv", index_col=0)
+#A = A.loc[A["ownership"]>1e-4,:] # make things a bit easier
 display(A.head(2))
 print(A.shape, A["ownership"].unique())
 V = pd.read_csv("data/value_pharma_lc.csv", index_col=0)
@@ -41,7 +42,7 @@ print(V.shape)
 nodes = set(A["shareholder_id"].unique()).union(set(A["company_id"].unique()))
 len(nodes)
 
-values = {u:{"value":p} for u, p in V.set_index("company_id").dropna()["assets"].iteritems()}
+values = {u:{"value":p} for u, p in V.set_index("company_id")["assets"].iteritems()}
 values
 
 edges = {(u, v):{"weight":p} for u, v, p in zip(A["shareholder_id"].values, A["company_id"].values, A["ownership"].values)}
@@ -98,6 +99,7 @@ g = Network( # ordered according to G.nodes()
         node_list=list(G.nodes()),
         dtype=torch.float
 )
+g.educated_value_guess()
 g = g.remove_uncontrollable()
 
 # +
