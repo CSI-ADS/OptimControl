@@ -2,7 +2,7 @@ import torch
 import numpy as np
 import networkx as nx
 import scipy
-
+import matplotlib.pyplot as plt
 
 class Network:
 
@@ -23,6 +23,15 @@ class Network:
         self.node_list = node_list
         self.A = A
         #self.set_reachable(A)
+
+    @classmethod
+    def from_nx(cls, G, value_key="value", ownership_key="ownership", default_value=1, **kwargs):
+        A = nx.adjacency_matrix(G)
+        nodes = dict(G.nodes(data=value_key, default=default_value))
+        node_list = list(nodes.keys())
+        value = list(nodes.values())
+        return Network(A, value=value, node_list=node_list, **kwargs)
+
 
     # def set_reachable(self, A, tol=1e-8):
     #     D = torch.abs(torch.matrix_power(A, self.N))
@@ -64,28 +73,43 @@ class Network:
     def total_shares_in_network(self):
         return self.C.sum(axis=0)
 
+    @property
+    def device(self):
+        return self.C.device
+
     def to(self, device):
         self.C = self.C.to(device)
         if self.V is not None:
             self.V = self.V.to(device)
         return self
 
-    def identify_uncontrollable(self):
+    @property
+    def number_of_controllable(self):
+        return sum(self.identify_controllable())
+
+    def identify_controllable(self):
         Ctot = self.total_shares_in_network
         contr = Ctot > 1e-8
         return contr
 
-    def remove_uncontrollable(self):
-        contr = self.identify_uncontrollable()
-        tot_contr = sum(contr)
-        print("Keeping {} out of {}".format(tot_contr, self.number_of_nodes))
-        if tot_contr == self.number_of_nodes:
-            return self
-        A = self.A[contr,:][:,contr]
-        V = None if self.V is None else self.V[contr]
-        node_list = None if self.node_list is None else self.node_list[contr]
+    def identify_uncontrollable(self):
+        return ~self.identify_controllable()
+
+    def network_selection(self, sel):
+        print("Keeping {} out of {}".format(sum(sel), self.number_of_nodes))
+        A = self.A[sel,:][:,sel]
+        V = None if self.V is None else self.V[sel]
+        node_list = None if self.node_list is None else self.node_list[sel]
         dtype = self.C.dtype
         return Network(A, value=V, node_list=node_list, dtype=dtype)
+
+    def remove_uncontrollable(self):
+        assert False, "better not to do this, since we generate new root nodes by dropping, better to determine the desc"
+        contr = self.identify_controllable()
+        tot_contr = sum(contr)
+        if tot_contr == 0:
+            return self
+        return self.network_selection(contr)
 
     def educated_value_guess(self):
         unval = torch.isnan(self.V)
@@ -97,6 +121,37 @@ class Network:
             ownership = np.array(self.A[u, idx].todense()).flatten()
             vnew[i] = np.sum(children_vals*ownership) # this is a guess
         self.V[unval] = torch.tensor(vnew).to(self.V.dtype)
+
+    def dropna_vals(self):
+        assert self.V is not None, "cannot drop nans if no values are given"
+        sel = ~torch.isnan(self.V)
+        if sum(sel) == self.number_of_nodes:
+            return self
+        return self.network_selection(sel)
+
+    def draw(self, external_ownership=None):
+        G = nx.from_scipy_sparse_matrix(self.A, create_using=nx.DiGraph)
+        node_list = dict(zip(np.arange(G.number_of_nodes()), self.nodes.detach().cpu().numpy()))
+        V = self.V.detach().cpu().numpy()
+        values, eo = None, None
+        if V is not None:
+            values = dict(zip(np.arange(G.number_of_nodes()), V))
+            #nx.set_node_attributes(G, values, name="value")
+        if external_ownership is not None:
+            eo = dict(zip(np.arange(G.number_of_nodes()), external_ownership))
+            #nx.set_node_attributes(G, eo, name="external_ownership")
+        #pos=nx.spring_layout(G)
+        pos = nx.nx_pydot.pydot_layout(G, prog='sfdp', root=None)
+        nx.draw_networkx(G,
+            pos=pos, arrows=True, with_labels=True,
+            labels=node_list,
+            node_color=list(eo.values()) if eo is not None else "#1f78b4",
+            node_size=np.array(list(values.values()))*300 if values is not None else 300
+            )
+        edge_labels = nx.get_edge_attributes(G, "weight")
+        nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+        plt.show()
+
 
 
 
@@ -110,15 +165,29 @@ def normalize_ownership(g):
     return C
 
 
-def adjust_for_external_ownership(cl, g):
+def adjust_for_external_ownership(cl_desc, g, desc_mask=None):
+    assert torch.min(cl_desc) >= 0 and torch.max(cl_desc) <= 1, "cl was outside bounds"
 #     N = C.shape[0]
-    C = g.ownership
+    C = g.ownership.clone()
+    # cl_desc might be too short
+    if desc_mask is not None:
+        cl = torch.zeros((g.number_of_nodes,), device=cl_desc.device, dtype=cl_desc.dtype)
+        cl[desc_mask] = cl_desc
+    else:
+        cl = cl_desc
+
+    non_root_nodes = g.identify_controllable()
     # C
     #print(C)
     # renormalize
     # assumption: we will take shares from other proportional to the amount of shares
     # e.g. 10% of shares, is 10% from all owners
-    C = C * (1.0 - cl)
+    #print("C = ", C)
+    #print(non_root_nodes)
+    #print(cl)
+    #print("Cnr = ", C[:,non_root_nodes], (1.0 - cl[non_root_nodes]))
+    C[:,non_root_nodes] = C[:,non_root_nodes] * (1.0 - cl[non_root_nodes])
+    #print("C = ", C)
 #     C = torch.cat((cl.reshape(1, N), C), axis=0)
 #     Csum = C.sum(axis=0)
 #     #numerical issues

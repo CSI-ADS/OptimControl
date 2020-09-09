@@ -20,6 +20,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 from tqdm import tqdm
 import pandas as pd
+from src.test_networks import *
 
 # %load_ext autoreload
 # %autoreload 2
@@ -29,23 +30,44 @@ if torch.cuda.is_available():
     print("CUDA available")
     device = 'cuda'
 print(device)
+
+# +
+NETWORK_NAME = [
+    "PHARMA",
+    "VITALI",
+    "SIMPLE_CYCLE",
+    "SIMPLE_CHAIN"
+][3]
+print(NETWORK_NAME)
+
+if NETWORK_NAME in ("VITALI", "SIMPLE_CHAIN", "SIMPLE_CYCLE"):
+    G_nx = get_test_network(NETWORK_NAME)
+    nx.draw(G_nx, pos=nx.spring_layout(G_nx), arrows=True, with_labels=True)
+    nodes = list(G_nx.nodes())
+    values = {u:{"value":1} for u in G_nx.nodes()}
+    edges = {(u,v):{"weight":p} for (u,v),p, in nx.get_edge_attributes(G_nx, "weight").items()}
+else:
+    A = pd.read_csv("data/edges_pharma_lc-3.csv", index_col=0)
+    #A = A.loc[A["ownership"]>1e-4,:] # make things a bit easier
+    display(A.head(2))
+    print(A.shape, A["ownership"].unique())
+    V = pd.read_csv("data/value_pharma_lc.csv", index_col=0)
+    display(V.head(2))
+    print(V.shape)
+    
+    A = A.astype({"shareholder_id": int, "company_id": int})
+    nodes = set(A["shareholder_id"].unique()).union(set(A["company_id"].unique()))
+    print(len(nodes))
+    values = {int(u):{"value":p} for u, p in V.set_index("company_id")["assets"].iteritems()}
+    edges = {(int(u), int(v)):{"weight":p} for u, v, p in zip(A["shareholder_id"].values, A["company_id"].values, A["ownership"].values)}
 # -
 
-A = pd.read_csv("data/edges_pharma_lc-3.csv", index_col=0)
-#A = A.loc[A["ownership"]>1e-4,:] # make things a bit easier
-display(A.head(2))
-print(A.shape, A["ownership"].unique())
-V = pd.read_csv("data/value_pharma_lc.csv", index_col=0)
-display(V.head(2))
-print(V.shape)
+nx.adjacency_matrix(G_nx).todense()
 
-nodes = set(A["shareholder_id"].unique()).union(set(A["company_id"].unique()))
-len(nodes)
+nodes
 
-values = {u:{"value":p} for u, p in V.set_index("company_id")["assets"].iteritems()}
 values
 
-edges = {(u, v):{"weight":p} for u, v, p in zip(A["shareholder_id"].values, A["company_id"].values, A["ownership"].values)}
 edges
 
 G_tot = nx.DiGraph()
@@ -57,7 +79,7 @@ for (u, v), p in edges.items():
         G_tot.add_edge(u, v, **p)
 
 largest_cc = max(nx.connected_components(G_tot.to_undirected()), key=len)
-len(largest_cc)
+print(len(largest_cc))
 G = G_tot.subgraph(largest_cc).copy()
 
 # +
@@ -84,7 +106,6 @@ for col in node_nx_props.columns:
     plt.ylabel(col)
     plt.xscale('log')
 #     plt.yscale('log')
-
     plt.show()
 
 # +
@@ -99,8 +120,15 @@ g = Network( # ordered according to G.nodes()
         node_list=list(G.nodes()),
         dtype=torch.float
 )
+g.draw()
 g.educated_value_guess()
-g = g.remove_uncontrollable()
+print("dropping nans")
+g = g.dropna_vals()
+g.draw()
+#print("dropping uncontrollable")
+#g = g.remove_uncontrollable()
+#g.draw()
+
 
 # +
 from collections import defaultdict
@@ -110,12 +138,11 @@ from src.loss import *
 
 
 cl = get_cl_init(g.number_of_nodes, device=device)
-print(len(cl), g.number_of_nodes)
 lr = 0.001
 max_steps = 10000
-_, _, hist = optimize_control(compute_sparse_loss_cache_vars, cl, g, 
-                              lambd=0, return_hist=True, verbose=True, num_steps=max_steps, lr=lr,
-                              device=device)
+_,_, hist = optimize_control(compute_sparse_loss_cache_vars, cl, g, 
+                              lambd=0.5, return_hist=True, verbose=True, num_steps=max_steps, lr=lr,
+                              device=device, desc_mask=None)
 # -
 
 print(g.total_value, torch.sum(g.total_shares_in_network))
@@ -130,15 +157,48 @@ plt.ylabel("loss")
 plt.show()
 # -
 
+g.A.todense()
+
+# +
 plt.figure()
 num_params = hist["params_sm"][0].shape[0]
 for i in range(num_params):
     plt.plot([hist["params_sm"][t][i] for t in range(len(hist["params_sm"]))], label=str(i))
 plt.xlabel("step")
-plt.ylabel("parameter (sigmoid) = % bought of company i")
-plt.yscale('log')
-#plt.legend()
+plt.ylabel("parameter (sigmoid) = % bought of available company i stock")
+# plt.yscale('log')
+if num_params <= 15:
+    plt.legend()
 plt.show()
+
+plt.figure()
+tot_shares = g.total_shares_in_network.detach().cpu().numpy()
+tot_shares[g.identify_uncontrollable().detach().cpu().numpy()] = 1
+num_params = hist["params_sm"][0].shape[0]
+for i in range(num_params):
+    plt.plot([hist["params_sm"][t][i]*tot_shares[i] for t in range(len(hist["params_sm"]))], label=str(i))
+plt.xlabel("step")
+plt.ylabel("parameter (sigmoid) = % bought of company i")
+# plt.yscale('log')
+if num_params <= 15:
+    plt.legend()
+plt.show()
+# -
+
+if num_params <= 15:
+    tot_shares = g.total_shares_in_network.detach().cpu().numpy()
+    tot_shares[g.identify_uncontrollable().detach().cpu().numpy()] = 1
+    print(tot_shares*hist["final_params_sm"])
+    g.draw(external_ownership=tot_shares*hist["final_params_sm"])
+
+g.device
+device
+
+cl_test = torch.tensor([-100, 100, 100, 100, 100, 100], device=g.device, dtype=torch.float)
+cl_test = torch.sigmoid(cl_test)
+print(cl_test)
+print(compute_control_with_external(cl_test, g))
+g.draw(external_ownership=cl_test)
 
 plt.bar(np.arange(num_params), hist["final_params_sm"])
 plt.xlabel("parameter (sigmoid)")
@@ -149,11 +209,11 @@ plt.show()
 cs = []
 ss = []
 param_result = []
-lambd_range = np.linspace(0, 5, num=20)#np.logspace(-2, 1, num=10)
+lambd_range = np.logspace(-1, 0, num=10)#np.logspace(-2, 1, num=10)
 for lambd in lambd_range:
     cl = get_cl_init(g.number_of_nodes, device=device)
     loss_fn = compute_sparse_loss_cache_vars
-    cl, cost = optimize_control(loss_fn, cl, g, lambd=lambd, return_hist=False, 
+    cl, cost, hist = optimize_control(loss_fn, cl, g, lambd=lambd, return_hist=True, 
                                 lr=lr, num_steps=max_steps, verbose=True, device=device)
     
     # get some stats
@@ -163,6 +223,11 @@ for lambd in lambd_range:
         cs.append(c.detach().cpu())
         ss.append(s.detach().cpu())
         #print(lambd, c, s)
+        if num_params <= 15:
+            tot_shares = g.total_shares_in_network.detach().cpu().numpy()
+            tot_shares[g.identify_uncontrollable().detach().cpu().numpy()] = 1
+            print(tot_shares*hist["final_params_sm"])
+            g.draw(external_ownership=tot_shares*hist["final_params_sm"])
         
 with torch.no_grad():
     cs = np.array([x.numpy() for x in cs])
@@ -184,17 +249,38 @@ ax1.set_xlabel("lambda")
 plt.show()
 # -
 
-nodes = g.nodes
+node_nx_props
+
+node_nx_props.loc[11730947, :]
+
+node_nx_props.index = node_nx_props.index.astype(int)
+nodes = [(n, i) for i, n in enumerate(g.nodes.detach().cpu().numpy().astype(int)) if n in node_nx_props.index]
+nodes, node_idx = zip(*nodes)
+node_idx = np.array(node_idx).flatten()
 props = node_nx_props.loc[nodes,:]
 for col in props.columns:
     props_col = props[col].sort_values()
     plt.figure(figsize=(10,5))
     for lambd, params in zip(lambd_range, param_result):
-        plt.plot(props_col.values, params, label="{:.2f}".format(lambd))
+        plt.scatter(props[col].values, params[node_idx], label="{:.2f}".format(lambd), alpha=0.1)
     plt.xlabel(col)
     plt.ylabel("c")
     plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
-    plt.show()
+    plt.show()    
+
+plt.figure()
+for lambd, params in zip(lambd_range, param_result):
+    if lambd == 0: continue
+    p = params[node_idx]
+    #p = p[p < 0.25]
+    plt.hist(p, label="{:.2f}".format(lambd), alpha=0.1, bins=100)
+plt.ylabel("c")
+plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+plt.show()
+
+
+
+
 
 
 

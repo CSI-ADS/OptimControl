@@ -28,19 +28,19 @@ def update(loss_fn, optimizer, params, *args, **kwargs):
     optimizer.step()
     return params, cost
 
-def optimize_control(loss_fn, cl, g, lambd=0, verbose=False, return_hist=False, lr=0.1, num_steps=10000, device=None):
+def optimize_control(loss_fn, cl, g, lambd=0, verbose=False, return_hist=False, lr=0.1, num_steps=10000, device=None, save_params_every=100, **kwargs):
     params = cl
     g.to(device)
     #print("Optimize for lambd={} on device={} and dtype={}".format(lambd, device, params.dtype))
     optimizer = torch.optim.Adam([{"params" : params}], lr=lr)
     hist = defaultdict(list)
     for i in tqdm(range(num_steps), disable=not verbose):
-        params, loss = update(loss_fn, optimizer, params, g, lambd=lambd)
+        params, loss = update(loss_fn, optimizer, params, g, lambd=lambd, **kwargs)
         #print("params = ", params)
         #print("loss = ", loss)
         with torch.no_grad():
             hist["loss"].append(loss.detach().cpu().numpy())
-            if i % 10 == 0:
+            if i % save_params_every == 0:
                 hist["params"].append(params.detach().cpu().numpy())
                 hist["params_sm"].append(torch.sigmoid(params).detach().cpu().numpy())
     with torch.no_grad():
