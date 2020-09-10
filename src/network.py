@@ -59,6 +59,10 @@ class Network:
         return self.N
 
     @property
+    def number_of_edges(self):
+        return self.A.count_nonzero()
+
+    @property
     def total_value(self):
         if self.V is None:
             return None
@@ -129,27 +133,56 @@ class Network:
             return self
         return self.network_selection(sel)
 
-    def draw(self, external_ownership=None):
+    def draw(self, external_ownership=None, color_arr=None, size_arr=None, rescale=True,
+            scale_size=True, scale_color=True, **kwargs):
         G = nx.from_scipy_sparse_matrix(self.A, create_using=nx.DiGraph)
         node_list = dict(zip(np.arange(G.number_of_nodes()), self.nodes.detach().cpu().numpy()))
         V = self.V.detach().cpu().numpy()
-        values, eo = None, None
-        if V is not None:
-            values = dict(zip(np.arange(G.number_of_nodes()), V))
             #nx.set_node_attributes(G, values, name="value")
-        if external_ownership is not None:
-            eo = dict(zip(np.arange(G.number_of_nodes()), external_ownership))
             #nx.set_node_attributes(G, eo, name="external_ownership")
         #pos=nx.spring_layout(G)
-        pos = nx.nx_pydot.pydot_layout(G, prog='sfdp', root=None)
+
+        node_color = "#1f78b4" #default
+        if scale_color:
+            if external_ownership is not None:
+                eo = dict(zip(np.arange(G.number_of_nodes()), external_ownership))
+                node_color = np.array(list(eo.values()))
+            if color_arr is not None:
+                assert len(color_arr) == self.number_of_nodes
+                node_color = np.array(color_arr)
+            if rescale and not isinstance(node_color, str):
+                node_color = node_color / np.nanmax([1, np.nanmax(node_color)])
+                node_color = np.clip(node_color, 0.01, None)
+        print(node_color)
+
+        node_size = 300 # default
+        if scale_size:
+            if V is not None:
+                values = dict(zip(np.arange(G.number_of_nodes()), V))
+                node_size = np.array(list(values.values()))
+            if size_arr is not None:
+                assert len(size_arr) == self.number_of_nodes
+                node_size = np.array(size_arr)
+            if rescale and not isinstance(node_size, int):
+                node_size = node_size / np.nanmax([1, np.nanmax(node_size)])
+                node_size = np.clip(node_size, 0.01, None)
+                node_size *= 300
+        print(node_size)
+
+        with_labels = self.number_of_nodes < 50
+        node_labels = node_list if with_labels else None
+        pos = nx.nx_pydot.pydot_layout(G, prog='neato', root=None)
+
         nx.draw_networkx(G,
-            pos=pos, arrows=True, with_labels=True,
-            labels=node_list,
-            node_color=list(eo.values()) if eo is not None else "#1f78b4",
-            node_size=np.array(list(values.values()))*300 if values is not None else 300
+            pos=pos, arrows=True, with_labels=with_labels,
+            labels=node_labels,
+            node_color=node_color,
+            node_size=node_size,
+            **kwargs
             )
-        edge_labels = nx.get_edge_attributes(G, "weight")
-        nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+        if self.number_of_edges < 50:
+            edge_labels = nx.get_edge_attributes(G, "weight")
+            nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
         plt.show()
 
 
