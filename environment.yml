@@ -1,12 +1,14 @@
 name: control
 channels:
   - defaults
-  - pytorch
-  - conda-forge
   - anaconda
+  - conda-forge
+  - pytorch
 dependencies:
   - python=3
-  - anaconda
-  - torchvision
   - pytorch
   - jupytext
+  - torchvision
+  - anaconda
+  - pydot
+  - pygraphviz

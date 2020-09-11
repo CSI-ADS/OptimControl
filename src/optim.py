@@ -9,8 +9,13 @@ def get_cl_init(N, loc=-6, scale=0.1, device=None, dtype=torch.float):
     cl = torch.tensor(cl_normal.clone().detach(), requires_grad=True, device=device, dtype=dtype)
     return cl
 
+def compute_value(fn, cl, *args, **kwargs):
+    cl_soft = torch.sigmoid(cl) # !
+    return fn(cl_soft, *args, **kwargs)
+
+
 def compute_value_and_grad(fn, cl, *args, **kwargs):
-    value = fn(cl, *args, **kwargs)
+    value = compute_value(fn, cl, *args, **kwargs)
     value.backward()
     grads = cl.grad
     return value, grads
@@ -28,23 +33,32 @@ def update(loss_fn, optimizer, params, *args, **kwargs):
     optimizer.step()
     return params, cost
 
-def optimize_control(loss_fn, cl, g, lambd=0, verbose=False, return_hist=False, lr=0.1, num_steps=10000, device=None):
+def optimize_control(loss_fn, cl, g, lambd=0, verbose=False, return_hist=False, lr=0.1, num_steps=10000, device=None, save_params_every=100, save_loss_arr=False, **kwargs):
     params = cl
     g.to(device)
     #print("Optimize for lambd={} on device={} and dtype={}".format(lambd, device, params.dtype))
     optimizer = torch.optim.Adam([{"params" : params}], lr=lr)
     hist = defaultdict(list)
     for i in tqdm(range(num_steps), disable=not verbose):
-        params, loss = update(loss_fn, optimizer, params, g, lambd=lambd)
+        params, loss = update(loss_fn, optimizer, params, g, lambd=lambd, **kwargs)
         #print("params = ", params)
         #print("loss = ", loss)
         with torch.no_grad():
             hist["loss"].append(loss.detach().cpu().numpy())
-            if i % 10 == 0:
+            if i % save_params_every == 0:
                 hist["params"].append(params.detach().cpu().numpy())
                 hist["params_sm"].append(torch.sigmoid(params).detach().cpu().numpy())
+
+                if save_loss_arr:
+                    losses = compute_value(loss_fn, params, g, lambd=lambd, as_separate=True, as_array=True, **kwargs)
+                    hist["loss_control"].append(losses[0].detach().cpu().numpy())
+                    hist["loss_cost"].append(losses[1].detach().cpu().numpy())
+
     with torch.no_grad():
         hist["final_params_sm"] = torch.sigmoid(params).detach().cpu().numpy()
+        losses = compute_value(loss_fn, params, g, lambd=lambd, as_separate=True, as_array=True, **kwargs)
+        hist["final_loss_control"]= losses[0].detach().cpu().numpy()
+        hist["final_loss_cost"] = losses[1].detach().cpu().numpy()
     ret = (params, loss)
     if return_hist:
         ret += (hist, )
