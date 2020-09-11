@@ -69,7 +69,7 @@ def compute_owned_cost(cl, g, as_array=False, desc_mask=None):
 #     return torch.sum(cost)
 
 def compute_sparse_loss(cl, g, lambd=0.1, M=None, as_array=False, as_separate=False, desc_mask=None):
-    assert torch.min(cl) >= 0 and torch.max(cl) <= 1, "strange"
+    assert torch.min(cl) >= 0 and torch.max(cl) <= 1, "strange: {} -- {}".format(torch.min(cl), torch.max(cl))
     if cl.shape[0] != g.number_of_nodes:
         assert desc_mask is not None, "must specify desc_mask when the cl is not the same as the number of nodes"
     c_loss = compute_control_loss(cl, g, as_array=as_array, desc_mask=desc_mask)
@@ -79,3 +79,10 @@ def compute_sparse_loss(cl, g, lambd=0.1, M=None, as_array=False, as_separate=Fa
         return c_loss, s_loss
     else:
         return c_loss + lambd*s_loss
+
+def find_lambda_scaling(g):
+    if g.value is None:
+        return 1.
+    total_cost = g.compute_total_value(only_network_shares=True, include_root_shares=True)
+    lambd = 1./total_cost
+    return total_cost

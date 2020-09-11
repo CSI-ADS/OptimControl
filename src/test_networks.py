@@ -48,3 +48,7 @@ def simple_cycle():
     G.add_edge(3, 2, weight=0.85)
     G.add_edge(2, 1, weight=0.85)
     return G
+
+def simple_star():
+    G = nx.full_rary_tree(5, 50, create_using=nx.DiGraph)
+    return G
