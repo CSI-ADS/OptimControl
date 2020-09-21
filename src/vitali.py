@@ -40,11 +40,12 @@ def get_dtilde(cl, C, desc):
 #     print("DTILDE", dtilde)
     return dtilde
 
-
-def compute_control(cl, C, desc=None):
+def compute_control(cl, C, desc=None, control_cutoff=None):
     if desc is None:
         desc = get_descendants(cl)
     assert len(desc) > 0, "no descendents"
+    if control_cutoff:
+        C = make_control_cutoff(C, control_cutoff)
     #print(C, desc)
     dtilde = get_dtilde(cl, C, desc)
     return dtilde

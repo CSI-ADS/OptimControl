@@ -62,10 +62,10 @@ class Network:
     def number_of_edges(self):
         return self.A.count_nonzero()
 
-    def compute_total_value(self, only_network_shares=True, include_root_shares=True):
-        if self.V is None:
+    def compute_total_value(self, only_network_shares=True, include_root_shares=True, sel_mask=None):
+        if self.value is None:
             return None
-        V = self.V.clone()
+        V = self.value.clone()
         if only_network_shares:
             shares = self.total_shares_in_network
             if include_root_shares:
@@ -73,6 +73,8 @@ class Network:
                 V[contr] *= shares[contr] # keep the rest at full value
             else:
                 V *= shares # roots are put to 0
+        if sel_mask is not None:
+            V[~sel_mask] = 0
         return V
 
     @property
@@ -108,7 +110,7 @@ class Network:
     def network_selection(self, sel):
         print("Keeping {} out of {}".format(sum(sel), self.number_of_nodes))
         A = self.A[sel,:][:,sel]
-        V = None if self.V is None else self.V[sel]
+        V = None if self.value is None else self.value[sel]
         node_list = None if self.node_list is None else self.node_list[sel]
         dtype = self.C.dtype
         return Network(A, value=V, node_list=node_list, dtype=dtype)

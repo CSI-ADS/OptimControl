@@ -38,16 +38,20 @@ NETWORK_NAME = [
     "BIOTECH",
     "VITALI",
     "SIMPLE_CYCLE",
-    "SIMPLE_CHAIN"
-][1]
+    "SIMPLE_CHAIN",
+    "SIMPLE_STAR"
+][-1]
 print(NETWORK_NAME)
 
-if NETWORK_NAME in ("VITALI", "SIMPLE_CHAIN", "SIMPLE_CYCLE"):
+if NETWORK_NAME in ("VITALI", "SIMPLE_CHAIN", "SIMPLE_CYCLE", "SIMPLE_STAR"):
     G_nx = get_test_network(NETWORK_NAME)
     nx.adjacency_matrix(G_nx).todense()
     nx.draw(G_nx, pos=nx.spring_layout(G_nx), arrows=True, with_labels=True)
     nodes = list(G_nx.nodes())
-    values = {u:{"value":1} for u in G_nx.nodes()}
+    if NETWORK_NAME == "SIMPLE_STAR":
+        values = {u:{"value":p["value"]} for u, p in G_nx.nodes(data=True)}
+    else:
+        values = {u:{"value":1} for u in G_nx.nodes()}
     edges = {(u,v):{"weight":p} for (u,v),p, in nx.get_edge_attributes(G_nx, "weight").items()}
 else:
     edge_filename, value_filename = {
@@ -59,6 +63,10 @@ else:
     display(A.head(2))
     print(A.shape, A["ownership"].unique())
     V = pd.read_csv(os.path.join("data", value_filename), index_col=0)
+    plt.hist(V["assets"].values)
+    plt.ylabel("assets")
+    plt.yscale('log')
+    plt.show()
     display(V.head(2))
     print(V.shape)
     
@@ -67,6 +75,11 @@ else:
     print(len(nodes))
     values = {int(u):{"value":p} for u, p in V.set_index("company_id")["assets"].iteritems()}
     edges = {(int(u), int(v)):{"weight":p} for u, v, p in zip(A["shareholder_id"].values, A["company_id"].values, A["ownership"].values)}
+    
+    print(V.loc[V["assets"].idxmax(axis=0, skipna=True),:])
+
+assert len(values)>0, "?"
+assert len(edges)>0, "?"
 # -
 
 nodes
@@ -82,14 +95,21 @@ for u in nodes:
 for (u, v), p in edges.items():
     if G_tot.has_node(u) and G_tot.has_node(v):
         G_tot.add_edge(u, v, **p)
+print(G_tot.number_of_nodes())
 
 largest_cc = max(nx.connected_components(G_tot.to_undirected()), key=len)
 print(len(largest_cc))
 G = G_tot.subgraph(largest_cc).copy()
+# largest_cc = list(G_tot.nodes())
+# print(largest_cc)
+# G = G_tot.subgraph(largest_cc).copy()
+G.number_of_nodes()
 
 # +
 #nx.draw(G, pos=nx.spring_layout(G), node_size=10)
 # -
+
+values
 
 vals = pd.Series(pd.DataFrame(values).T["value"], name="val")
 centr = pd.Series(nx.degree_centrality(G), name="centr")
@@ -98,7 +118,7 @@ out_centr = pd.Series(nx.out_degree_centrality(G), name="out_centr")
 betw_centr = pd.Series(nx.betweenness_centrality(G), name="betw_centr")
 pr = pd.Series(nx.pagerank(G), name="pr")
 node_nx_props = pd.concat([vals, centr, in_centr, out_centr, betw_centr, pr], axis=1)
-node_nx_props = node_nx_props.dropna()
+#node_nx_props = node_nx_props.dropna()
 node_nx_props
 
 from numpy.polynomial.polynomial import polyfit
@@ -149,7 +169,13 @@ print(g.number_of_nodes, g.number_of_edges)
 if g.number_of_nodes < 10000:
     print("Value graph")
     g.draw(color_arr=g.value)
+# -
 
+
+plt.hist(g.compute_total_value(only_network_shares=True, include_root_shares=True).detach().cpu().numpy())
+plt.yscale('log')
+plt.ylabel("euro")
+plt.show()
 
 # +
 from collections import defaultdict
@@ -161,9 +187,11 @@ print(g.number_of_nodes)
 cl = get_cl_init(g.number_of_nodes, device=device)
 cl_soft = torch.sigmoid(cl)
 print(torch.min(cl_soft), torch.max(cl_soft))
-init_lr = 1
+init_lr = 0.1
 decay = 0.1
-max_steps = 10000
+max_steps = 100
+weight_control = False
+control_cutoff = None
 use_schedule = True
 lr = init_lr
 scheduler = None
@@ -174,14 +202,15 @@ _,_, hist = optimize_control(compute_sparse_loss, cl, g,
                              lambd=1, return_hist=True, verbose=True, 
                              save_loss_arr=True,
                              num_steps=max_steps, lr=lr, scheduler=scheduler,
-                             device=device, desc_mask=None
+                             device=device, desc_mask=None,
+                             weight_control=weight_control,
+                             control_cutoff=control_cutoff
                             )
 # -
 
 Vtot = g.compute_total_value(only_network_shares=True, include_root_shares=True)
 print(torch.sum(Vtot))
-
-
+#print(Vtot)
 
 # +
 # import torch.autograd.profiler as profiler
@@ -300,24 +329,26 @@ device
 plt.bar(np.arange(num_params), hist["final_params_sm"])
 plt.xlabel("parameter (sigmoid)")
 plt.ylabel("value after optimization")
+# plt.xlim(-1,10)
 plt.show()
 
 # +
 cs = []
 ss = []
 param_result = []
-lambd_range = np.logspace(-15, 15, num=20)#np.logspace(-2, 1, num=10)
-#lambd_range = np.linspace(0, 2, num=40)#np.logspace(-2, 1, num=10)
+# lambd_range = np.logspace(-15, 15, num=20)#np.logspace(-2, 1, num=10)
+lambd_range = np.linspace(0, 20, num=20)#np.logspace(-2, 1, num=10)
 print("lambdas to evaluate:", lambd_range)
 for lambd in lambd_range:
     cl = get_cl_init(g.number_of_nodes, device=device)
     loss_fn = compute_sparse_loss
     cl, cost, hist = optimize_control(loss_fn, cl, g, lambd=lambd, return_hist=True, save_params_every=1000,
-                                lr=lr, num_steps=max_steps, verbose=True, device=device)
-    
+                                lr=lr, num_steps=max_steps, verbose=True, device=device, weight_control=weight_control,
+                                     control_cutoff=control_cutoff)
     # get some stats
     with torch.no_grad():
         c, s = compute_value(loss_fn, cl, g, lambd=lambd, as_separate=True)
+        print(lambd, c, s)
         param_result.append(cl.detach().cpu())
         cs.append(c.detach().cpu())
         ss.append(s.detach().cpu())
@@ -336,15 +367,22 @@ with torch.no_grad():
 # +
 fig, ax1 = plt.subplots()
 
-ax1.plot(lambd_range, (g.number_of_nodes-cs)/g.number_of_nodes, label="control", color='blue')
-ax1.set_ylabel("control")
+if weight_control:
+    y_control = (torch.sum(g.value).detach().cpu().numpy()-cs)/torch.sum(g.value).detach().cpu().numpy()
+    #print(y_control)
+else:
+    y_control = (g.number_of_nodes-cs)/g.number_of_nodes
+ax1.plot(lambd_range, y_control, label="control", color='blue')
+ax1.scatter(lambd_range, y_control, color='blue')
+ax1.set_ylabel("control", color='blue')
 ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
 
 ax2.plot(lambd_range, ss, label="total budget", color='red')
-ax1.set_ylabel("total budget")
+ax2.scatter(lambd_range, ss, color='red')
+ax2.set_ylabel("total budget", color='red')
 
-#plt.legend()
 ax1.set_xlabel("lambda")
+plt.legend()
 plt.show()
 # -
 

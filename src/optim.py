@@ -19,16 +19,14 @@ def cutoff_values(cl, cutoff=1e-8):
 
 def compute_value(fn, cl, *args, **kwargs):
     cl_soft = torch.sigmoid(cl) # !
-    cl_soft = cutoff_values(cl_soft)
+    # cl_soft = cutoff_values(cl_soft)
     return fn(cl_soft, *args, **kwargs)
-
 
 def compute_value_and_grad(fn, cl, *args, **kwargs):
     value = compute_value(fn, cl, *args, **kwargs)
     value.backward()
     grads = cl.grad
     return value, grads
-
 
 def get_params(optimizer):
     for group_param in optimizer.param_groups:
@@ -82,3 +80,50 @@ def optimize_control(
     if return_hist:
         ret += (hist, )
     return ret
+
+
+def constraint_optimize_control(
+        loss_fns, cl, g, budget,
+        verbose=False, return_hist=False,
+        lr=0.1, scheduler=None,
+        max_iter=100, num_steps=10000,
+        device=None, save_params_every=100, save_loss_arr=False,
+        constr_tol = 1e-8,
+        loss_thr = 0.3,
+        **kwargs
+        ):
+    params = cl
+    loss
+    rho, alpha, constr, constr_new = 1.0, 0.0, torch.inf, torch.inf
+    flag_max_iter = True
+
+    for i in range(max_iter):
+        while rho < 1e+20:
+            # optimize the actual loss
+
+            def augm_loss(*args, **kwargs):
+                l, c = loss_fns(*args, **kwargs)
+                return l + 0.5 * rho * c**2 + alpha * c, c # augmented lagrangian and constraint
+
+            params_new, augm_new, hist_new = optimize_control(augm_loss, params, g,
+                    lambd=0,
+                    verbose=False, return_hist=True,
+                    lr=lr, scheduler=scheduler, num_steps=num_steps,
+                    device=device, save_params_every=save_params_every, save_loss_arr=save_loss_arr,
+                    as_separate=True, as_array=False
+                    )
+            loss_new = augm_new[0]
+            constr_new = augm_new[1]
+
+            with torch.no_grad():
+                if constr_new > 0.25 * constr:
+                    rho *= 10
+                else:
+                    break
+
+        params_est, constr = params_new, constr_new
+        alpha += rho * constr
+        if constr <= constr_tol:
+            flag_max_iter = False
+            break
+        return params_est
