@@ -1,35 +1,35 @@
 import numpy as np
 import torch
 
-def get_descendants(cl):
+def get_reachable(cl):
     return torch.where(cl)[0] # exact sparseness would help
 
-def get_Bsub(C, desc):
-    return C[desc,:][:, desc]
+def get_Bsub(C, reach):
+    return C[reach,:][:, reach]
 
-def get_d(cl, desc):
+def get_d(cl, reach):
     """ FIXME, here, cl has a clear definition"""
-    return cl[desc].reshape(1, -1) # row vector
+    return cl[reach].reshape(1, -1) # row vector
 
-def get_Isub(desc, device=None):
-    return torch.eye(len(desc), device=device)
+def get_Isub(reach, device=None):
+    return torch.eye(len(reach), device=device)
 
-def get_dtilde(cl, C, desc):
-    Ndesc = len(desc)
+def get_dtilde(cl, C, reach):
+    Nreach = len(reach)
 
-    if Ndesc == 0:
+    if Nreach == 0:
         return None
     #print("C=",C)
-    Bsub = get_Bsub(C, desc)
+    Bsub = get_Bsub(C, reach)
     #print("Bsub=", Bsub)
 
-    d = get_d(cl, desc)
+    d = get_d(cl, reach)
 
 #     print("d = ", d)
 #     print("Bsub = ", Bsub)
-#     print("desc=", desc)
+#     print("reach=", reach)
 
-    Isub = get_Isub(desc, device=Bsub.device)
+    Isub = get_Isub(reach, device=Bsub.device)
     to_invert = Isub - Bsub
 #     print("TO",to_invert)
 
@@ -40,12 +40,12 @@ def get_dtilde(cl, C, desc):
 #     print("DTILDE", dtilde)
     return dtilde
 
-def compute_control(cl, C, desc=None, control_cutoff=None):
-    if desc is None:
-        desc = get_descendants(cl)
-    assert len(desc) > 0, "no descendents"
+def compute_control(cl, C, reach=None, control_cutoff=None):
+    if reach is None:
+        reach = get_reachable(cl)
+    assert len(reach) > 0, "no reachendents"
     if control_cutoff:
         C = make_control_cutoff(C, control_cutoff)
-    #print(C, desc)
-    dtilde = get_dtilde(cl, C, desc)
+    #print(C, reach)
+    dtilde = get_dtilde(cl, C, reach)
     return dtilde
