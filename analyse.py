@@ -21,6 +21,7 @@ import networkx as nx
 from tqdm import tqdm
 import pandas as pd
 from src.test_networks import *
+import sys, os
 
 # %load_ext autoreload
 # %autoreload 2
@@ -34,25 +35,38 @@ print(device)
 # +
 NETWORK_NAME = [
     "PHARMA",
+    "BIOTECH",
     "VITALI",
     "SIMPLE_CYCLE",
-    "SIMPLE_CHAIN"
-][0]
+    "SIMPLE_CHAIN",
+    "SIMPLE_STAR"
+][-1]
 print(NETWORK_NAME)
 
-if NETWORK_NAME in ("VITALI", "SIMPLE_CHAIN", "SIMPLE_CYCLE"):
+if NETWORK_NAME in ("VITALI", "SIMPLE_CHAIN", "SIMPLE_CYCLE", "SIMPLE_STAR"):
     G_nx = get_test_network(NETWORK_NAME)
     nx.adjacency_matrix(G_nx).todense()
     nx.draw(G_nx, pos=nx.spring_layout(G_nx), arrows=True, with_labels=True)
     nodes = list(G_nx.nodes())
-    values = {u:{"value":1} for u in G_nx.nodes()}
+    if NETWORK_NAME == "SIMPLE_STAR":
+        values = {u:{"value":p["value"]} for u, p in G_nx.nodes(data=True)}
+    else:
+        values = {u:{"value":1} for u in G_nx.nodes()}
     edges = {(u,v):{"weight":p} for (u,v),p, in nx.get_edge_attributes(G_nx, "weight").items()}
 else:
-    A = pd.read_csv("data/edges_pharma_lc-3.csv", index_col=0)
+    edge_filename, value_filename = {
+        "PHARMA" : ("edges_pharma_lc-3.csv", "value_pharma_lc.csv"),
+        "BIOTECH" : ("edges_belgian_biotech_plus1mil.csv", "value_belgian_biotech_plus1mil-2.csv"),
+    }[NETWORK_NAME]
+    A = pd.read_csv(os.path.join("data", edge_filename), index_col=0)
     #A = A.loc[A["ownership"]>1e-4,:] # make things a bit easier
     display(A.head(2))
     print(A.shape, A["ownership"].unique())
-    V = pd.read_csv("data/value_pharma_lc.csv", index_col=0)
+    V = pd.read_csv(os.path.join("data", value_filename), index_col=0)
+    plt.hist(V["assets"].values)
+    plt.ylabel("assets")
+    plt.yscale('log')
+    plt.show()
     display(V.head(2))
     print(V.shape)
     
@@ -61,6 +75,11 @@ else:
     print(len(nodes))
     values = {int(u):{"value":p} for u, p in V.set_index("company_id")["assets"].iteritems()}
     edges = {(int(u), int(v)):{"weight":p} for u, v, p in zip(A["shareholder_id"].values, A["company_id"].values, A["ownership"].values)}
+    
+    print(V.loc[V["assets"].idxmax(axis=0, skipna=True),:])
+
+assert len(values)>0, "?"
+assert len(edges)>0, "?"
 # -
 
 nodes
@@ -76,14 +95,21 @@ for u in nodes:
 for (u, v), p in edges.items():
     if G_tot.has_node(u) and G_tot.has_node(v):
         G_tot.add_edge(u, v, **p)
+print(G_tot.number_of_nodes())
 
 largest_cc = max(nx.connected_components(G_tot.to_undirected()), key=len)
 print(len(largest_cc))
 G = G_tot.subgraph(largest_cc).copy()
+# largest_cc = list(G_tot.nodes())
+# print(largest_cc)
+# G = G_tot.subgraph(largest_cc).copy()
+G.number_of_nodes()
 
 # +
 #nx.draw(G, pos=nx.spring_layout(G), node_size=10)
 # -
+
+values
 
 vals = pd.Series(pd.DataFrame(values).T["value"], name="val")
 centr = pd.Series(nx.degree_centrality(G), name="centr")
@@ -92,7 +118,7 @@ out_centr = pd.Series(nx.out_degree_centrality(G), name="out_centr")
 betw_centr = pd.Series(nx.betweenness_centrality(G), name="betw_centr")
 pr = pd.Series(nx.pagerank(G), name="pr")
 node_nx_props = pd.concat([vals, centr, in_centr, out_centr, betw_centr, pr], axis=1)
-node_nx_props = node_nx_props.dropna()
+#node_nx_props = node_nx_props.dropna()
 node_nx_props
 
 from numpy.polynomial.polynomial import polyfit
@@ -111,7 +137,6 @@ for col in node_nx_props.columns:
 from src.network import *
 
 print("Edge example:", [u for u in G.edges(data=True)][0])
-print("Weight values", np.unique(np.asarray(nx.adjacency_matrix(G, weight="weight").todense()).flatten()))
 
 g = Network( # ordered according to G.nodes()
         nx.adjacency_matrix(G, weight="weight"), 
@@ -120,21 +145,37 @@ g = Network( # ordered according to G.nodes()
         dtype=torch.float
 )
 
+if g.number_of_nodes < 50:
+    print("Weight values", np.unique(np.asarray(nx.adjacency_matrix(G, weight="weight").todense()).flatten()))
+
 print(g.number_of_nodes, g.number_of_edges)
-# if g.number_of_nodes < 10000:
-#     plt.figure(figsize=(20,20))
-#     g.draw(color_arr=g.value)
+print("-"*100)
 g.educated_value_guess()
+print("ZEROS")
+g.draw_zeros()
+print("NANS")
+g.draw_nans()
+print("="*100)
+if g.number_of_nodes < 10000:
+    print("Value graph")
+    g.draw(color_arr=g.value)
 print("dropping nans")
+# TODO: better handling of remaining nans: what are these?
 g = g.dropna_vals()
-print("dropping uncontrollable")
+# print("dropping uncontrollable")
 #g = g.remove_uncontrollable()
 
 print(g.number_of_nodes, g.number_of_edges)
 if g.number_of_nodes < 10000:
-    plt.figure(figsize=(20,20))
+    print("Value graph")
     g.draw(color_arr=g.value)
+# -
 
+
+plt.hist(g.compute_total_value(only_network_shares=True, include_root_shares=True).detach().cpu().numpy())
+plt.yscale('log')
+plt.ylabel("euro")
+plt.show()
 
 # +
 from collections import defaultdict
@@ -142,21 +183,57 @@ from src.optim import *
 from src.vitali import *
 from src.loss import *
 
+print(g.number_of_nodes)
 cl = get_cl_init(g.number_of_nodes, device=device)
-lr = 0.1
-max_steps = 10000
+cl_soft = torch.sigmoid(cl)
+print(torch.min(cl_soft), torch.max(cl_soft))
+init_lr = 0.1
+decay = 0.1
+max_steps = 100
+weight_control = False
+control_cutoff = None
+use_schedule = True
+lr = init_lr
+scheduler = None
+if use_schedule: # make new copy
+    scheduler = lambda opt : torch.optim.lr_scheduler.MultiStepLR(opt, milestones=[7500, 9500], gamma=decay)
+
 _,_, hist = optimize_control(compute_sparse_loss, cl, g, 
-                              lambd=1, return_hist=True, verbose=True, 
+                             lambd=1, return_hist=True, verbose=True, 
                              save_loss_arr=True,
-                             num_steps=max_steps, lr=lr,
-                              device=device, desc_mask=None
+                             num_steps=max_steps, lr=lr, scheduler=scheduler,
+                             device=device, desc_mask=None,
+                             weight_control=weight_control,
+                             control_cutoff=control_cutoff
                             )
 # -
 
-print(g.total_value, torch.sum(g.total_shares_in_network))
+Vtot = g.compute_total_value(only_network_shares=True, include_root_shares=True)
+print(torch.sum(Vtot))
+#print(Vtot)
+
+# +
+# import torch.autograd.profiler as profiler
+# with profiler.profile(record_shapes=True) as prof:
+#     with profiler.record_function("model_inference"):
+#         _,_, hist = optimize_control(compute_sparse_loss, cl, g, 
+#                                      lambd=1, return_hist=True, verbose=True, 
+#                                      save_loss_arr=True,
+#                                      num_steps=max_steps, lr=lr, scheduler=scheduler,
+#                                      device=device, desc_mask=None
+#                                     )
+
+# prof.export_chrome_trace("trace.json")
 
 # +
 import matplotlib.pyplot as plt
+
+
+plt.plot(hist["lr"])
+plt.yscale('log')
+plt.xlabel("step")
+plt.ylabel("lr")
+plt.show()
 
 plt.plot(hist["loss"])
 plt.yscale('log')
@@ -182,7 +259,7 @@ for loss_name, loss_arr in {k:v for k,v in hist.items() if k.startswith("loss_")
         plt.ylabel("control over i")
     else:
         plt.ylabel("cost of buying i")
-    # plt.yscale('log')
+    plt.yscale('log')
     if num_params <= 15:
         plt.legend()
     plt.show()
@@ -213,29 +290,29 @@ plt.show()
 
 # -
 
-if num_params <= 15:
+if num_params <= 1000:
     print("control sigmoid")
-    print(hist["final_params_sm"])
+    #print(hist["final_params_sm"])
     g.draw(external_ownership=hist["final_params_sm"], vmin=0, vmax=1)
 
     print("direct control weighted by shares")
     tot_shares = g.total_shares_in_network.detach().cpu().numpy()
     tot_shares[g.identify_uncontrollable().detach().cpu().numpy()] = 1
-    print(tot_shares*hist["final_params_sm"])
+    #print(tot_shares*hist["final_params_sm"])
     g.draw(external_ownership=tot_shares*hist["final_params_sm"], vmin=0, vmax=1)
 
     print("cost of buying")
     final_cost = hist["final_loss_cost"]
-    print(final_cost)
+    #print(final_cost)
     g.draw(color_arr=final_cost, vmin=0, vmax=1)
     
     print("propagated control")
     final_control = g.number_of_nodes-hist["final_loss_control"]
-    print(final_control)
+    #print(final_control)
     g.draw(color_arr=final_control, vmin=0, vmax=1)
     
     print("color = control, size = cost")
-    print(hist["final_loss_cost"].shape)
+    #print(hist["final_loss_cost"].shape)
     g.draw(size_arr=final_cost, color_arr=final_control, vmin=0, vmax=1)
 
 g.device
@@ -252,28 +329,30 @@ device
 plt.bar(np.arange(num_params), hist["final_params_sm"])
 plt.xlabel("parameter (sigmoid)")
 plt.ylabel("value after optimization")
+# plt.xlim(-1,10)
 plt.show()
 
 # +
 cs = []
 ss = []
 param_result = []
-#lambd_range = np.logspace(-1, 0, num=20)#np.logspace(-2, 1, num=10)
-lambd_range = np.linspace(0, 2, num=40)#np.logspace(-2, 1, num=10)
+# lambd_range = np.logspace(-15, 15, num=20)#np.logspace(-2, 1, num=10)
+lambd_range = np.linspace(0, 20, num=20)#np.logspace(-2, 1, num=10)
 print("lambdas to evaluate:", lambd_range)
 for lambd in lambd_range:
     cl = get_cl_init(g.number_of_nodes, device=device)
     loss_fn = compute_sparse_loss
-    cl, cost, hist = optimize_control(loss_fn, cl, g, lambd=lambd, return_hist=True, 
-                                lr=lr, num_steps=max_steps, verbose=True, device=device)
-    
+    cl, cost, hist = optimize_control(loss_fn, cl, g, lambd=lambd, return_hist=True, save_params_every=1000,
+                                lr=lr, num_steps=max_steps, verbose=True, device=device, weight_control=weight_control,
+                                     control_cutoff=control_cutoff)
     # get some stats
     with torch.no_grad():
-        c, s = compute_sparse_loss(cl, g, lambd=lambd, as_separate=True)
+        c, s = compute_value(loss_fn, cl, g, lambd=lambd, as_separate=True)
+        print(lambd, c, s)
         param_result.append(cl.detach().cpu())
         cs.append(c.detach().cpu())
         ss.append(s.detach().cpu())
-        print(lambd, param_result[-1], c, s)
+        #print(lambd, param_result[-1], c, s)
         if num_params <= 15:
             tot_shares = g.total_shares_in_network.detach().cpu().numpy()
             tot_shares[g.identify_uncontrollable().detach().cpu().numpy()] = 1
@@ -288,15 +367,22 @@ with torch.no_grad():
 # +
 fig, ax1 = plt.subplots()
 
-ax1.plot(lambd_range, (g.number_of_nodes-cs)/g.number_of_nodes, label="control", color='blue')
-ax1.set_ylabel("control")
+if weight_control:
+    y_control = (torch.sum(g.value).detach().cpu().numpy()-cs)/torch.sum(g.value).detach().cpu().numpy()
+    #print(y_control)
+else:
+    y_control = (g.number_of_nodes-cs)/g.number_of_nodes
+ax1.plot(lambd_range, y_control, label="control", color='blue')
+ax1.scatter(lambd_range, y_control, color='blue')
+ax1.set_ylabel("control", color='blue')
 ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
 
 ax2.plot(lambd_range, ss, label="total budget", color='red')
-ax1.set_ylabel("total budget")
+ax2.scatter(lambd_range, ss, color='red')
+ax2.set_ylabel("total budget", color='red')
 
-#plt.legend()
 ax1.set_xlabel("lambda")
+plt.legend()
 plt.show()
 # -
 
@@ -324,8 +410,6 @@ for lambd, params in zip(lambd_range, param_result):
 plt.ylabel("c")
 plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
 plt.show()
-
-g.to('cpu')
 
 
 

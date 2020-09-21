@@ -62,12 +62,20 @@ class Network:
     def number_of_edges(self):
         return self.A.count_nonzero()
 
-    @property
-    def total_value(self):
-        if self.V is None:
+    def compute_total_value(self, only_network_shares=True, include_root_shares=True, sel_mask=None):
+        if self.value is None:
             return None
-        else:
-            return torch.sum(self.V*self.total_shares_in_network)
+        V = self.value.clone()
+        if only_network_shares:
+            shares = self.total_shares_in_network
+            if include_root_shares:
+                contr = self.identify_controllable()
+                V[contr] *= shares[contr] # keep the rest at full value
+            else:
+                V *= shares # roots are put to 0
+        if sel_mask is not None:
+            V[~sel_mask] = 0
+        return V
 
     @property
     def nodes(self):
@@ -102,7 +110,7 @@ class Network:
     def network_selection(self, sel):
         print("Keeping {} out of {}".format(sum(sel), self.number_of_nodes))
         A = self.A[sel,:][:,sel]
-        V = None if self.V is None else self.V[sel]
+        V = None if self.value is None else self.value[sel]
         node_list = None if self.node_list is None else self.node_list[sel]
         dtype = self.C.dtype
         return Network(A, value=V, node_list=node_list, dtype=dtype)
@@ -116,15 +124,15 @@ class Network:
         return self.network_selection(contr)
 
     def educated_value_guess(self):
-        unval = torch.isnan(self.V)
-        children_idx = self.A[unval,:].tocsr().nonzero()
-        vnew = np.zeros((sum(unval),))
-        for i, u in enumerate(np.where(unval)[0]):
-            idx = children_idx[1][children_idx[0] == u]
+        nan_idx = torch.isnan(self.V)
+        children_idx = self.A[nan_idx,:].tocsr().nonzero()
+        vnew = np.zeros((sum(nan_idx),)) # stores values for the nans
+        for i, u in enumerate(np.where(nan_idx)[0]):
+            idx = children_idx[1][children_idx[0] == i]
             children_vals = self.V[idx].detach().cpu().numpy()
             ownership = np.array(self.A[u, idx].todense()).flatten()
             vnew[i] = np.sum(children_vals*ownership) # this is a guess
-        self.V[unval] = torch.tensor(vnew).to(self.V.dtype)
+        self.V[nan_idx] = torch.tensor(vnew).to(self.V.dtype)
 
     def dropna_vals(self):
         assert self.V is not None, "cannot drop nans if no values are given"
@@ -132,6 +140,20 @@ class Network:
         if sum(sel) == self.number_of_nodes:
             return self
         return self.network_selection(sel)
+
+    def draw_nans(self):
+        if self.V is None:
+            print("no values to draw")
+            return
+        nans = torch.isnan(self.V).float().detach().cpu().numpy()
+        self.draw(color_arr=nans, rescale=False, scale_size=False)
+
+    def draw_zeros(self):
+        if self.V is None:
+            print("no values to draw")
+            return
+        zeros = (self.V == 0).float().detach().cpu().numpy()
+        self.draw(color_arr=zeros, rescale=False, scale_size=False)
 
     def draw(self, external_ownership=None, color_arr=None, size_arr=None, rescale=True,
             scale_size=True, scale_color=True, **kwargs):
@@ -153,7 +175,7 @@ class Network:
             if rescale and not isinstance(node_color, str):
                 node_color = node_color / np.nanmax([1, np.nanmax(node_color)])
                 node_color = np.clip(node_color, 0.01, None)
-        print(node_color)
+        #print(node_color)
 
         node_size = 300 # default
         if scale_size:
@@ -167,13 +189,14 @@ class Network:
                 node_size = node_size / np.nanmax([1, np.nanmax(node_size)])
                 node_size = np.clip(node_size, 0.01, None)
                 node_size *= 300
-        print(node_size)
+        #print(node_size)
 
         with_labels = self.number_of_nodes < 50
         node_labels = node_list if with_labels else None
         pos = nx.nx_pydot.pydot_layout(G, prog='neato', root=None)
-
-        nx.draw_networkx(G,
+        plt.figure(figsize=(20,20))
+        nx.draw_networkx(
+            G,
             pos=pos, arrows=True, with_labels=with_labels,
             labels=node_labels,
             node_color=node_color,
