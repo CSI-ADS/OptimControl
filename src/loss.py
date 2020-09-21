@@ -21,7 +21,6 @@ def compute_total_shares(cl, g, desc_mask=None):
         shares_in_network = shares_in_network[desc_mask]
     return shares_in_network*cl
 
-
 def compute_control_loss(cl, g, as_array=False, desc_mask=None): # as low as possible
     """
         D : mask of what has something in what
@@ -73,7 +72,10 @@ def compute_sparse_loss(cl, g, lambd=0.1, M=None, as_array=False, as_separate=Fa
     if cl.shape[0] != g.number_of_nodes:
         assert desc_mask is not None, "must specify desc_mask when the cl is not the same as the number of nodes"
     c_loss = compute_control_loss(cl, g, as_array=as_array, desc_mask=desc_mask)
-    s_loss = compute_owned_cost(cl, g, as_array=as_array, desc_mask=desc_mask)
+    s_loss = 0.0
+    if lambd > 0:
+        s_loss = compute_owned_cost(cl, g, as_array=as_array, desc_mask=desc_mask)
+
     # s_loss += no_shares_cost(cl, g, cutoff=1e-8, desc_mask=desc_mask)
     if as_separate:
         return c_loss, s_loss

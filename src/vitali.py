@@ -41,7 +41,7 @@ def get_dtilde(cl, C, desc):
     return dtilde
 
 
-def compute_control(cl, C, desc=None):
+def compute_control(cl, C, =None):
     if desc is None:
         desc = get_descendants(cl)
     assert len(desc) > 0, "no descendents"
