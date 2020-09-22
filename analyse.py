@@ -193,7 +193,7 @@ print(torch.min(cl_soft), torch.max(cl_soft))
 init_lr = 0.1
 decay = 0.1
 max_steps = 10000
-lambd=1
+lambd=0.8
 weight_control = False
 control_cutoff = None
 source_mask = None

@@ -235,7 +235,7 @@ def draw_nx_graph(
     # networkx
     G = nx.from_scipy_sparse_matrix(A, create_using=nx.DiGraph)
     pos = nx.nx_pydot.pydot_layout(G, prog='neato', root=None)
-    plt.figure(figsize=figsize)
+    plt.figure(figsize=figsize, frameon=False)
     nx.draw_networkx(
         G,
         pos=pos, arrows=True, with_labels=with_labels,
@@ -250,8 +250,17 @@ def draw_nx_graph(
         edge_labels = nx.get_edge_attributes(G, "weight")
         edge_labels = {k:"{:.2f}".format(v) for k,v in edge_labels.items()}
         nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+
+    cut = 1.05
+    xmax= cut*max(xx for xx,yy in pos.values())
+    ymax= cut*max(yy for xx,yy in pos.values())
+    plt.xlim(0,xmax)
+    plt.ylim(0,ymax)
+    plt.margins(0,0)
+
+
     if filename is not None:
-        plt.savefig(filename)
+        plt.savefig(filename, bbox_inches = 'tight', pad_inches = 0)
     if show:
         plt.show()
 
