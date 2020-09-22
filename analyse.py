@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.5.2
+#       jupytext_version: 1.6.0
 #   kernelspec:
 #     display_name: Python 3
 #     language: python
@@ -182,6 +182,7 @@ from collections import defaultdict
 from src.optim import *
 from src.vitali import *
 from src.loss import *
+from src.network import *
 
 print(g.number_of_nodes)
 cl = get_cl_init(g.number_of_nodes, device=device)
@@ -192,6 +193,11 @@ decay = 0.1
 max_steps = 100
 weight_control = False
 control_cutoff = None
+source_mask = None
+# source_mask = make_mask(g, idx=(1,), dtype=torch.float, device=device)
+# print("mask = ", source_mask)
+target_mask = None
+# target_mask = make_mask(g, idx=(1,), dtype=torch.float, device=device)
 use_schedule = True
 lr = init_lr
 scheduler = None
@@ -202,7 +208,7 @@ _,_, hist = optimize_control(compute_sparse_loss, cl, g,
                              lambd=1, return_hist=True, verbose=True, 
                              save_loss_arr=True,
                              num_steps=max_steps, lr=lr, scheduler=scheduler,
-                             device=device, desc_mask=None,
+                             device=device, source_mask=None, target_mask=None,
                              weight_control=weight_control,
                              control_cutoff=control_cutoff
                             )
@@ -344,7 +350,7 @@ for lambd in lambd_range:
     loss_fn = compute_sparse_loss
     cl, cost, hist = optimize_control(loss_fn, cl, g, lambd=lambd, return_hist=True, save_params_every=1000,
                                 lr=lr, num_steps=max_steps, verbose=True, device=device, weight_control=weight_control,
-                                     control_cutoff=control_cutoff)
+                                     control_cutoff=control_cutoff, source_mask=None, target_mask=None)
     # get some stats
     with torch.no_grad():
         c, s = compute_value(loss_fn, cl, g, lambd=lambd, as_separate=True)
@@ -411,8 +417,55 @@ plt.ylabel("c")
 plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
 plt.show()
 
+# # Constraint
 
+# +
+from collections import defaultdict
+from src.optim import *
+from src.vitali import *
+from src.loss import *
+from src.network import *
 
+print(g.number_of_nodes)
+budget = 2
+cl = get_cl_init(g.number_of_nodes, device=device)
+cl_soft = torch.sigmoid(cl)
+print(torch.min(cl_soft), torch.max(cl_soft))
+init_lr = 0.1
+decay = 0.1
+max_iter = 100
+num_steps = 10
+use_schedule = True
+lr = init_lr
+scheduler = None
+if use_schedule: # make new copy
+    scheduler = lambda opt : torch.optim.lr_scheduler.MultiStepLR(opt, milestones=[7500, 9500], gamma=decay)
 
+print(torch.sum(g.compute_total_value()))
+    
+# _,_, hist = optimize_control(compute_sparse_loss, cl, g, 
+#                              lambd=1, return_hist=True, verbose=True, 
+#                              save_loss_arr=True,
+#                              num_steps=max_steps, lr=lr, scheduler=scheduler,
+#                              device=device, source_mask=None, target_mask=None,
+#                              weight_control=weight_control,
+#                              control_cutoff=control_cutoff
+#                             )
+
+_, _, hist = constraint_optimize_control(
+        compute_sparse_loss, cl, g, budget,
+        verbose=True, return_hist=True,
+        lr=init_lr, scheduler=scheduler,
+        max_iter=max_iter, num_steps=num_steps,
+        device=device, save_params_every=1, save_loss_arr=False,
+        constr_tol=1e-8,
+        loss_thr = 0.3,
+    source_mask=None, target_mask=None,
+                             weight_control=weight_control,
+                             control_cutoff=control_cutoff
+        )
+# -
+
+hist
 
 

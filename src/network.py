@@ -157,8 +157,7 @@ class Network:
 
     def draw(self, external_ownership=None, color_arr=None, size_arr=None, rescale=True,
             scale_size=True, scale_color=True, **kwargs):
-        G = nx.from_scipy_sparse_matrix(self.A, create_using=nx.DiGraph)
-        node_list = dict(zip(np.arange(G.number_of_nodes()), self.nodes.detach().cpu().numpy()))
+        node_list = dict(zip(np.arange(self.number_of_nodes), self.nodes.detach().cpu().numpy()))
         V = self.V.detach().cpu().numpy()
             #nx.set_node_attributes(G, values, name="value")
             #nx.set_node_attributes(G, eo, name="external_ownership")
@@ -167,7 +166,7 @@ class Network:
         node_color = "#1f78b4" #default
         if scale_color:
             if external_ownership is not None:
-                eo = dict(zip(np.arange(G.number_of_nodes()), external_ownership))
+                eo = dict(zip(np.arange(self.number_of_nodes, external_ownership)))
                 node_color = np.array(list(eo.values()))
             if color_arr is not None:
                 assert len(color_arr) == self.number_of_nodes
@@ -180,7 +179,7 @@ class Network:
         node_size = 300 # default
         if scale_size:
             if V is not None:
-                values = dict(zip(np.arange(G.number_of_nodes()), V))
+                values = dict(zip(np.arange(self.number_of_nodes), V))
                 node_size = np.array(list(values.values()))
             if size_arr is not None:
                 assert len(size_arr) == self.number_of_nodes
@@ -190,9 +189,11 @@ class Network:
                 node_size = np.clip(node_size, 0.01, None)
                 node_size *= 300
         #print(node_size)
-
         with_labels = self.number_of_nodes < 50
         node_labels = node_list if with_labels else None
+
+        # networkx
+        G = nx.from_scipy_sparse_matrix(self.A, create_using=nx.DiGraph)
         pos = nx.nx_pydot.pydot_layout(G, prog='neato', root=None)
         plt.figure(figsize=(20,20))
         nx.draw_networkx(
@@ -209,7 +210,9 @@ class Network:
         plt.show()
 
 
-
+def make_mask(g, idx, **kwargs):
+    mask = torch.zeros((g.number_of_nodes,), **kwargs)
+    return mask.scatter_(0, torch.tensor(idx), 1)
 
 def normalize_ownership(g):
     C = g.ownership
@@ -221,14 +224,14 @@ def normalize_ownership(g):
     return C
 
 
-def adjust_for_external_ownership(cl_desc, g, desc_mask=None):
+def adjust_for_external_ownership(cl_desc, g, source_mask=None):
     assert torch.min(cl_desc) >= 0 and torch.max(cl_desc) <= 1, "cl was outside bounds"
 #     N = C.shape[0]
     C = g.ownership.clone()
     # cl_desc might be too short
-    if desc_mask is not None:
+    if source_mask is not None:
         cl = torch.zeros((g.number_of_nodes,), device=cl_desc.device, dtype=cl_desc.dtype)
-        cl[desc_mask] = cl_desc
+        cl[source_mask] = cl_desc
     else:
         cl = cl_desc
 

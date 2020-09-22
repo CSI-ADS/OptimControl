@@ -93,27 +93,31 @@ def constraint_optimize_control(
         **kwargs
         ):
     params = cl
-    loss
-    rho, alpha, constr, constr_new = 1.0, 0.0, torch.inf, torch.inf
+    rho, alpha, constr, constr_new = 1.0, 0.0, float("Inf"), float("Inf")
     flag_max_iter = True
+
+    hist = []
 
     for i in range(max_iter):
         while rho < 1e+20:
             # optimize the actual loss
 
             def augm_loss(*args, **kwargs):
-                l, c = loss_fns(*args, **kwargs)
-                return l + 0.5 * rho * c**2 + alpha * c, c # augmented lagrangian and constraint
+                if "as_separate" in kwargs:
+                    kwargs.pop("as_separate")
+                l, c = loss_fns(*args, as_separate=True, **kwargs)
+                return l + 0.5 * rho * c**2 + alpha * c # augmented lagrangian
 
             params_new, augm_new, hist_new = optimize_control(augm_loss, params, g,
                     lambd=0,
                     verbose=False, return_hist=True,
                     lr=lr, scheduler=scheduler, num_steps=num_steps,
-                    device=device, save_params_every=save_params_every, save_loss_arr=save_loss_arr,
-                    as_separate=True, as_array=False
+                    device=device, save_params_every=save_params_every, save_loss_arr=save_loss_arr
                     )
-            loss_new = augm_new[0]
-            constr_new = augm_new[1]
+            loss_new = hist_new["final_loss_control"]
+            constr_new = hist_new["final_loss_cost"]
+
+            hist.append(hist_new)
 
             with torch.no_grad():
                 if constr_new > 0.25 * constr:
@@ -126,4 +130,4 @@ def constraint_optimize_control(
         if constr <= constr_tol:
             flag_max_iter = False
             break
-        return params_est
+        return params_est, constr, hist_new
