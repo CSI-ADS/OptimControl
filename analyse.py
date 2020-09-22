@@ -427,14 +427,14 @@ from src.loss import *
 from src.network import *
 
 print(g.number_of_nodes)
-budget = 2
-cl = get_cl_init(g.number_of_nodes, device=device)
+budget = 20
+cl = get_cl_init(g.number_of_nodes, loc=1, device=device)
 cl_soft = torch.sigmoid(cl)
 print(torch.min(cl_soft), torch.max(cl_soft))
 init_lr = 0.1
 decay = 0.1
 max_iter = 100
-num_steps = 10
+num_steps = 100000
 use_schedule = True
 lr = init_lr
 scheduler = None
@@ -452,20 +452,46 @@ print(torch.sum(g.compute_total_value()))
 #                              control_cutoff=control_cutoff
 #                             )
 
-_, _, hist = constraint_optimize_control(
+_, _, hist_all = constraint_optimize_control(
         compute_sparse_loss, cl, g, budget,
         verbose=True, return_hist=True,
         lr=init_lr, scheduler=scheduler,
         max_iter=max_iter, num_steps=num_steps,
-        device=device, save_params_every=1, save_loss_arr=False,
+        device=device, save_params_every=10000, save_loss_arr=False,
         constr_tol=1e-8,
-        loss_thr = 0.3,
-    source_mask=None, target_mask=None,
-                             weight_control=weight_control,
-                             control_cutoff=control_cutoff
+        loss_tol = 1e-8,
+        source_mask=None, target_mask=None,
+        weight_control=weight_control,
+        control_cutoff=control_cutoff
         )
-# -
 
-hist
+# +
+print(hist_all["i_contr_iter"])
+
+plt.scatter(hist_all["step_nr"], hist_all["loss_control"])
+plt.xlabel("i")
+plt.ylabel("loss_contr")
+plt.show()
+
+plt.scatter(hist_all["step_nr"], hist_all["loss_cost"])
+plt.xlabel("i")
+plt.ylabel("loss_cost")
+plt.show()
+
+plt.scatter(hist_all["step_nr"], hist_all["loss_augm"])
+plt.xlabel("i")
+plt.ylabel("augm")
+plt.show()
+
+plt.scatter(hist_all["step_nr"], hist_all["constr"])
+plt.xlabel("i")
+plt.ylabel("constr")
+plt.show()
+
+plt.scatter(hist_all["step_nr"], hist_all["rho"])
+plt.xlabel("i")
+plt.ylabel("rho")
+plt.show()
+# -
 
 

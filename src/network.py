@@ -193,7 +193,8 @@ class Network:
         node_labels = node_list if with_labels else None
 
         draw_nx_graph(
-            self,
+            self.A,
+            number_of_edges=self.number_of_edges,
             with_labels=with_labels,
             node_labels=node_labels,
             node_color=node_color,
@@ -202,7 +203,7 @@ class Network:
             )
 
 def draw_nx_graph(
-        g,
+        A, number_of_edges=0,
         with_labels=True, node_labels=None,
         node_color=None,
         node_size=None,
@@ -215,7 +216,7 @@ def draw_nx_graph(
         node_size = 300
 
     # networkx
-    G = nx.from_scipy_sparse_matrix(g.A, create_using=nx.DiGraph)
+    G = nx.from_scipy_sparse_matrix(A, create_using=nx.DiGraph)
     pos = nx.nx_pydot.pydot_layout(G, prog='neato', root=None)
     plt.figure(figsize=(20,20))
     nx.draw_networkx(
@@ -226,7 +227,7 @@ def draw_nx_graph(
         node_size=node_size,
         **kwargs
         )
-    if g.number_of_edges < 50:
+    if number_of_edges < 50:
         edge_labels = nx.get_edge_attributes(G, "weight")
         nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
     if show:

@@ -103,7 +103,7 @@ def compute_owned_cost(cl, g, as_array=False, source_mask=None, scale_by_total=T
 #     return torch.sum(cost)
 
 def compute_sparse_loss(
-        cl, g, lambd=0.1,
+        cl, g, lambd=1,
         as_array=False, as_separate=False,
         source_mask=None, target_mask=None,
         weight_control=False, control_cutoff=None):
@@ -111,10 +111,9 @@ def compute_sparse_loss(
     if cl.shape[0] != g.number_of_nodes:
         assert source_mask is not None, "must specify source_mask when the cl is not the same as the number of nodes"
     c_loss = compute_control_loss(cl, g, as_array=as_array, source_mask=source_mask, weight_control=weight_control, control_cutoff=control_cutoff)
-    if lambd > 0:
-        s_loss = compute_owned_cost(cl, g, as_array=as_array, source_mask=source_mask)
-    else:
-        s_loss = torch.zeros_like(c_loss)
+    s_loss = compute_owned_cost(cl, g, as_array=as_array, source_mask=source_mask)
+
+    # print("losses:", c_loss, s_loss)
 
     # s_loss += no_shares_cost(cl, g, cutoff=1e-8, source_mask=source_mask)
     if as_separate:

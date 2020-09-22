@@ -45,7 +45,10 @@ def optimize_control(
         lambd=0,
         verbose=False, return_hist=False,
         lr=0.1, scheduler=None, num_steps=10000,
-        device=None, save_params_every=100, save_loss_arr=False, **kwargs):
+        device=None, save_params_every=100, save_loss_arr=False,
+        loss_1_name="loss_control", loss_2_name="loss_cost",
+        loss_tol=1e-8,
+        **kwargs):
     params = cl
     g.to(device)
     #print("Optimize for lambd={} on device={} and dtype={}".format(lambd, device, params.dtype))
@@ -53,32 +56,50 @@ def optimize_control(
     if scheduler is not None:
         scheduler = scheduler(optimizer)
     hist = defaultdict(list)
+    i_last = 0
+    loss_prev = None
     for i in tqdm(range(num_steps), disable=not verbose):
+        i_last = i
         params, loss = update(loss_fn, optimizer, params, g, lambd=lambd, **kwargs)
         #print("params = ", params)
         #print("loss = ", loss)
         with torch.no_grad():
             hist["loss"].append(loss.detach().cpu().numpy())
-            if i % save_params_every == 0:
+            hist["i_iter"].append(i)
+            if (i % save_params_every == 0) or (i == num_steps - 1):
+                hist["saved_at"].append(i)
                 hist["params"].append(params.detach().cpu().numpy())
                 hist["params_sm"].append(torch.sigmoid(params).detach().cpu().numpy())
 
                 if save_loss_arr:
                     losses = compute_value(loss_fn, params, g, lambd=lambd, as_separate=True, as_array=True, **kwargs)
-                    hist["loss_control"].append(losses[0].detach().cpu().numpy())
-                    hist["loss_cost"].append(losses[1].detach().cpu().numpy())
+                    hist[loss_1_name].append(losses[0].detach().cpu().numpy())
+                    hist[loss_2_name].append(losses[1].detach().cpu().numpy())
         if scheduler is not None:
-            hist["lr"].append(scheduler.get_lr())
             scheduler.step()
+            hist["lr"].append(scheduler.get_last_lr()[0])
+
+        with torch.no_grad():
+            if (loss_prev is not None) and (torch.abs(loss - loss_prev) < loss_tol):
+                if verbose:
+                    print("breaking optimization at step {} with loss: {}".format(i, loss))
+                break
+            else:
+                loss_prev = loss
+
 
     with torch.no_grad():
+        hist["final_iter"] = i_last
         hist["final_params_sm"] = torch.sigmoid(params).detach().cpu().numpy()
         losses = compute_value(loss_fn, params, g, lambd=lambd, as_separate=True, as_array=True, **kwargs)
-        hist["final_loss_control"]= losses[0].detach().cpu().numpy()
-        hist["final_loss_cost"] = losses[1].detach().cpu().numpy()
+        hist["final_{}_arr".format(loss_1_name)]= losses[0].detach().cpu().numpy()
+        hist["final_{}_arr".format(loss_2_name)] = losses[1].detach().cpu().numpy()
+        losses = compute_value(loss_fn, params, g, lambd=lambd, as_separate=True, as_array=False, **kwargs)
+        hist["final_{}".format(loss_1_name)]= losses[0].detach().cpu().numpy()
+        hist["final_{}".format(loss_2_name)] = losses[1].detach().cpu().numpy()
     ret = (params, loss)
     if return_hist:
-        ret += (hist, )
+        ret += (dict(hist), )
     return ret
 
 
@@ -89,45 +110,74 @@ def constraint_optimize_control(
         max_iter=100, num_steps=10000,
         device=None, save_params_every=100, save_loss_arr=False,
         constr_tol = 1e-8,
-        loss_thr = 0.3,
+        loss_tol = 1e-8,
         **kwargs
         ):
     params = cl
     rho, alpha, constr, constr_new = 1.0, 0.0, float("Inf"), float("Inf")
     flag_max_iter = True
 
-    hist = []
+    hist = defaultdict(list)
+
+    step_nr = -1
 
     for i in range(max_iter):
         while rho < 1e+20:
             # optimize the actual loss
+            step_nr += 1
+            def augm_loss(*loss_args, as_separate=False, **loss_kwargs):
+                l, c = loss_fns(*loss_args, as_separate=True, **loss_kwargs)
+                c_l = c - budget
+                augm_l = l + 0.5 * rho * c_l**2 + alpha * c_l # augmented lagrangian
+                # print("terms:", l.detach().cpu().numpy(), (0.5*rho*c**2).detach().cpu().numpy(), (alpha*c).detach().cpu().numpy())
+                # print("c = ", c)
+                if as_separate:
+                    return augm_l, c_l
+                else:
+                    return augm_l
 
-            def augm_loss(*args, **kwargs):
-                if "as_separate" in kwargs:
-                    kwargs.pop("as_separate")
-                l, c = loss_fns(*args, as_separate=True, **kwargs)
-                return l + 0.5 * rho * c**2 + alpha * c # augmented lagrangian
-
-            params_new, augm_new, hist_new = optimize_control(augm_loss, params, g,
-                    lambd=0,
+            params, augm_new, hist_new = optimize_control(augm_loss, params, g,
+                    lambd=1,
                     verbose=False, return_hist=True,
                     lr=lr, scheduler=scheduler, num_steps=num_steps,
-                    device=device, save_params_every=save_params_every, save_loss_arr=save_loss_arr
+                    device=device, save_params_every=save_params_every, save_loss_arr=save_loss_arr,
+                    loss_1_name="loss_augm", loss_2_name="loss_costr",
+                    loss_tol=loss_tol
                     )
-            loss_new = hist_new["final_loss_control"]
-            constr_new = hist_new["final_loss_cost"]
 
-            hist.append(hist_new)
+            loss_new = hist_new["final_loss_augm"]
+            constr_new = hist_new["final_loss_costr"]
 
             with torch.no_grad():
-                if constr_new > 0.25 * constr:
-                    rho *= 10
-                else:
-                    break
+                # print(kwargs)
+                losses_orig_new = compute_value(loss_fns, params, g, lambd=1, as_separate=True, as_array=False, **kwargs)
 
-        params_est, constr = params_new, constr_new
+            hist["loss_control"].append(losses_orig_new[0])
+            hist["loss_cost"].append(losses_orig_new[1])
+            hist["loss_augm"].append(loss_new)
+            hist["i_contr_iter"].append(i)
+            hist["step_nr"].append(step_nr)
+            hist["rho"].append(rho)
+            hist["alpha"].append(alpha)
+            hist["constr"].append(constr_new)
+            hist["tot_cost"].append(constr_new+budget)
+            hist["final_iter"].append(hist_new["final_iter"])
+
+            hist["hist_optim"].append(hist_new)
+            # print("iter:",hist["final_iter"][-1], " augm:", loss_new, "constr_new:", constr_new, "constr:", constr, "tot_cost:", hist["tot_cost"][-1])
+            # print("loss_control:", hist["loss_control"][-1], "loss_cost:", hist["loss_cost"][-1])
+            if np.abs(constr_new) > 0.25 * np.abs(constr):
+                rho *= 10
+                print("Increasing rho to: 10**", np.log10(rho))
+            else:
+                print("Break: ", constr_new, constr)
+                break
+
+        params_est, constr = params, constr_new
         alpha += rho * constr
-        if constr <= constr_tol:
+        if np.abs(constr) <= constr_tol:
+            print("Overall break:", constr, constr_tol)
             flag_max_iter = False
             break
-        return params_est, constr, hist_new
+
+    return params_est, constr, hist
