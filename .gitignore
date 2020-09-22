@@ -1,4 +1,9 @@
 #
+figs/
+*.pdf
+*.png
+
+#
 *.DS_Store*
 
 #

@@ -60,7 +60,7 @@ def simple_star():
     G = nx.full_rary_tree(5, 50, create_using=nx.DiGraph)
     values = {u:nx.shortest_path_length(G, source=0, target=u) for u in G.nodes()}
     max_val = np.max(list(values.values()))
-    values = {u:(max_val - v + 1) for u, v in values.items()}
+    values = {u:2**(max_val - v + 1) for u, v in values.items()}
     nx.set_node_attributes(G, values, name="value")
     weights = dict(zip(G.edges(), np.random.uniform(0, 1, G.number_of_edges())))
     nx.set_edge_attributes(G, weights, name="weight")

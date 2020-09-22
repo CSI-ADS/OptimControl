@@ -46,6 +46,7 @@ def optimize_control(
         verbose=False, return_hist=False,
         lr=0.1, scheduler=None, num_steps=10000,
         device=None, save_params_every=100, save_loss_arr=False,
+        save_separate_losses=False,
         loss_1_name="loss_control", loss_2_name="loss_cost",
         loss_tol=1e-8,
         **kwargs):
@@ -73,11 +74,18 @@ def optimize_control(
 
                 if save_loss_arr:
                     losses = compute_value(loss_fn, params, g, lambd=lambd, as_separate=True, as_array=True, **kwargs)
+                    hist["{}_arr".format(loss_1_name)].append(losses[0].detach().cpu().numpy())
+                    hist["{}_arr".format(loss_2_name)].append(losses[1].detach().cpu().numpy())
+                if save_separate_losses:
+                    losses = compute_value(loss_fn, params, g, lambd=lambd, as_separate=True, as_array=False, **kwargs)
                     hist[loss_1_name].append(losses[0].detach().cpu().numpy())
                     hist[loss_2_name].append(losses[1].detach().cpu().numpy())
+
         if scheduler is not None:
             scheduler.step()
             hist["lr"].append(scheduler.get_last_lr()[0])
+        else:
+            hist["lr"] = lr
 
         with torch.no_grad():
             if (loss_prev is not None) and (torch.abs(loss - loss_prev) < loss_tol):

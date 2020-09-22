@@ -166,9 +166,10 @@ class Network:
         node_color = None #default
         if scale_color:
             if external_ownership is not None:
-                eo = dict(zip(np.arange(self.number_of_nodes, external_ownership)))
+                eo = dict(zip(np.arange(self.number_of_nodes), external_ownership))
                 node_color = np.array(list(eo.values()))
             if color_arr is not None:
+                print(color_arr)
                 assert len(color_arr) == self.number_of_nodes
                 node_color = np.array(color_arr)
             if rescale:

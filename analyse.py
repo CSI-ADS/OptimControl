@@ -170,7 +170,7 @@ g = g.dropna_vals()
 print(g.number_of_nodes, g.number_of_edges)
 if g.number_of_nodes < 10000:
     print("Value graph")
-    g.draw(color_arr=g.value, figsize=figsize, filename="{}.pdf".format(NETWORK_NAME), show_edge_values=True)
+    g.draw(color_arr=g.value, figsize=figsize, filename="figs/{}.pdf".format(NETWORK_NAME), show_edge_values=True)
 # -
 
 
@@ -192,7 +192,8 @@ cl_soft = torch.sigmoid(cl)
 print(torch.min(cl_soft), torch.max(cl_soft))
 init_lr = 0.1
 decay = 0.1
-max_steps = 100
+max_steps = 10000
+lambd=1
 weight_control = False
 control_cutoff = None
 source_mask = None
@@ -200,19 +201,21 @@ source_mask = None
 # print("mask = ", source_mask)
 target_mask = None
 # target_mask = make_mask(g, idx=(1,), dtype=torch.float, device=device)
-use_schedule = True
+use_schedule = False
 lr = init_lr
 scheduler = None
 if use_schedule: # make new copy
     scheduler = lambda opt : torch.optim.lr_scheduler.MultiStepLR(opt, milestones=[7500, 9500], gamma=decay)
 
 _,_, hist = optimize_control(compute_sparse_loss, cl, g, 
-                             lambd=1, return_hist=True, verbose=True, 
+                             lambd=lambd, return_hist=True, verbose=True, 
                              save_loss_arr=True,
+                             save_params_every=1,
                              num_steps=max_steps, lr=lr, scheduler=scheduler,
                              device=device, source_mask=None, target_mask=None,
                              weight_control=weight_control,
-                             control_cutoff=control_cutoff
+                             control_cutoff=control_cutoff,
+                             save_separate_losses=True
                             )
 # -
 
@@ -248,28 +251,43 @@ plt.yscale('log')
 plt.xlabel("step")
 plt.ylabel("loss")
 plt.show()
-# -
 
-g.A.todense()
+
+plt.plot(hist["loss_control"])
+# plt.plot(hist["loss_control_arr"], color='black')
+plt.yscale('log')
+plt.xlabel("step")
+plt.ylabel("loss_control")
+plt.show()
+
+plt.plot(hist["loss_cost"])
+plt.yscale('log')
+plt.xlabel("step")
+plt.ylabel("loss_cost")
+plt.show()
+
+
 
 # +
 num_params = hist["params_sm"][0].shape[0]
 
 plt.figure()
-for loss_name, loss_arr in {k:v for k,v in hist.items() if k.startswith("loss_")}.items():
+for loss_name, loss_arr in {k:v for k,v in hist.items() if (k.startswith("loss_") and k.endswith("arr"))}.items():
+    print(loss_name)
     for i in range(loss_arr[0].shape[0]):
         loss_tr = lambda x : x
         if loss_name == "loss_control":
-            loss_tr = lambda x : -x+g.number_of_nodes
+            loss_tr = lambda x : -x+1
         plt.plot([loss_tr(loss_arr[t][i]) for t in range(len(loss_arr))], label=str(i))
     plt.xlabel("step")
     if loss_name == "loss_control":
         plt.ylabel("control over i")
     else:
         plt.ylabel("cost of buying i")
-    plt.yscale('log')
+#     plt.yscale('log')
     if num_params <= 15:
         plt.legend()
+    plt.savefig("figs/{}_{}_{}_ifo_step.pdf".format(NETWORK_NAME, lambd, loss_name))
     plt.show()
 
 
@@ -281,6 +299,7 @@ plt.ylabel("parameter (sigmoid) = % bought of available company i stock")
 plt.yscale('log')
 if num_params <= 15:
     plt.legend()
+plt.savefig("figs/{}_{}_sigmoid_ifo_step.pdf".format(NETWORK_NAME, lambd))
 plt.show()
 
 plt.figure()
@@ -294,34 +313,57 @@ plt.ylabel("parameter (sigmoid) = % bought of company i")
 plt.yscale('log')
 if num_params <= 15:
     plt.legend()
+plt.savefig("figs/{}_{}_totshares_ifo_step.pdf".format(NETWORK_NAME, lambd))
 plt.show()
 
+
+# +
+tot_shares = g.total_shares_in_network.detach().cpu().numpy()
+tot_shares[g.identify_uncontrollable().detach().cpu().numpy()] = 1
+
+tot_shares = hist["final_params_sm"]*tot_shares
+idx = np.argsort(tot_shares)[::-1]
+node_names = ["{}".format(x) for x in g.node_list.detach().cpu().numpy()[idx]]
+
+plt.figure(figsize=(20, 5))
+plt.bar(node_names, tot_shares[idx])
+plt.xlabel("company name")
+plt.ylabel("total shares bought")
+
+plt.show()
+
+
+plt.figure(figsize=(20, 5))
+plt.bar(node_names, 1-hist["final_loss_control_arr"][idx])
+plt.xlabel("company name")
+plt.ylabel("total control")
+
+plt.show()
 # -
 
 if num_params <= 1000:
-    print("control sigmoid")
+    print("direct control sigmoid")
     #print(hist["final_params_sm"])
     g.draw(external_ownership=hist["final_params_sm"], vmin=0, vmax=1)
 
-    print("direct control weighted by shares")
+    print("direct direct control weighted by shares")
     tot_shares = g.total_shares_in_network.detach().cpu().numpy()
     tot_shares[g.identify_uncontrollable().detach().cpu().numpy()] = 1
     #print(tot_shares*hist["final_params_sm"])
     g.draw(external_ownership=tot_shares*hist["final_params_sm"], vmin=0, vmax=1)
 
     print("cost of buying")
-    final_cost = hist["final_loss_cost"]
-    #print(final_cost)
+    final_cost = hist["final_loss_cost_arr"]
     g.draw(color_arr=final_cost, vmin=0, vmax=1)
     
-    print("propagated control")
-    final_control = g.number_of_nodes-hist["final_loss_control"]
+    print("total/propagated control")
+    final_control = 1-hist["final_loss_control_arr"]
     #print(final_control)
     g.draw(color_arr=final_control, vmin=0, vmax=1)
     
-    print("color = control, size = cost")
+    print("size = total control, color = cost")
     #print(hist["final_loss_cost"].shape)
-    g.draw(size_arr=final_cost, color_arr=final_control, vmin=0, vmax=1)
+    g.draw(color_arr=final_cost, size_arr=final_control, vmin=0, vmax=1, figsize=(10, 10), filename="figs/{}_{}_size_control_color_cost.pdf".format(NETWORK_NAME, lambd))
 
 g.device
 device
@@ -345,7 +387,7 @@ cs = []
 ss = []
 param_result = []
 # lambd_range = np.logspace(-15, 15, num=20)#np.logspace(-2, 1, num=10)
-lambd_range = np.linspace(0, 20, num=20)#np.logspace(-2, 1, num=10)
+lambd_range = np.linspace(0, 1, num=20)#np.logspace(-2, 1, num=10)
 print("lambdas to evaluate:", lambd_range)
 for lambd in lambd_range:
     cl = get_cl_init(g.number_of_nodes, device=device)
@@ -379,7 +421,7 @@ if weight_control:
     y_control = (torch.sum(g.value).detach().cpu().numpy()-cs)/torch.sum(g.value).detach().cpu().numpy()
     #print(y_control)
 else:
-    y_control = (g.number_of_nodes-cs)/g.number_of_nodes
+    y_control = (g.number_of_nodes-cs)#/g.number_of_nodes
 ax1.plot(lambd_range, y_control, label="control", color='blue')
 ax1.scatter(lambd_range, y_control, color='blue')
 ax1.set_ylabel("control", color='blue')
@@ -391,33 +433,45 @@ ax2.set_ylabel("total budget", color='red')
 
 ax1.set_xlabel("lambda")
 plt.legend()
+
+plt.savefig("figs/{}_lambda_curve.pdf".format(NETWORK_NAME))
 plt.show()
+
+
+plt.plot(ss, y_control)
+plt.xlabel("total budget")
+plt.ylabel("total control")
+plt.savefig("figs/{}_control_vs_cost_curve.pdf".format(NETWORK_NAME))
+
+plt.show()
+
+# +
+# node_nx_props.index = node_nx_props.index.astype(int)
+# nodes = [(n, i) for i, n in enumerate(g.nodes.detach().cpu().numpy().astype(int)) if n in node_nx_props.index]
+# nodes, node_idx = zip(*nodes)
+# node_idx = np.array(node_idx).flatten()
+# props = node_nx_props.loc[nodes,:]
+# for col in props.columns:
+#     props_col = props[col].sort_values()
+#     plt.figure(figsize=(10,5))
+#     for lambd, params in zip(lambd_range, param_result):
+#         plt.scatter(props[col].values, params[node_idx], label="{:.2f}".format(lambd), alpha=0.1)
+#     plt.xlabel(col)
+#     plt.ylabel("c")
+#     plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+#     plt.show()    
+
+# +
+# plt.figure()
+# for lambd, params in zip(lambd_range, param_result):
+#     if lambd == 0: continue
+#     p = params[node_idx]
+#     #p = p[p < 0.25]
+#     plt.hist(p, label="{:.2f}".format(lambd), alpha=0.1, bins=100)
+# plt.ylabel("c")
+# plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+# plt.show()
 # -
-
-node_nx_props.index = node_nx_props.index.astype(int)
-nodes = [(n, i) for i, n in enumerate(g.nodes.detach().cpu().numpy().astype(int)) if n in node_nx_props.index]
-nodes, node_idx = zip(*nodes)
-node_idx = np.array(node_idx).flatten()
-props = node_nx_props.loc[nodes,:]
-for col in props.columns:
-    props_col = props[col].sort_values()
-    plt.figure(figsize=(10,5))
-    for lambd, params in zip(lambd_range, param_result):
-        plt.scatter(props[col].values, params[node_idx], label="{:.2f}".format(lambd), alpha=0.1)
-    plt.xlabel(col)
-    plt.ylabel("c")
-    plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
-    plt.show()    
-
-plt.figure()
-for lambd, params in zip(lambd_range, param_result):
-    if lambd == 0: continue
-    p = params[node_idx]
-    #p = p[p < 0.25]
-    plt.hist(p, label="{:.2f}".format(lambd), alpha=0.1, bins=100)
-plt.ylabel("c")
-plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
-plt.show()
 
 # # Constraint
 
