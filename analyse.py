@@ -145,6 +145,8 @@ g = Network( # ordered according to G.nodes()
         dtype=torch.float
 )
 
+figsize=(10,10)
+
 if g.number_of_nodes < 50:
     print("Weight values", np.unique(np.asarray(nx.adjacency_matrix(G, weight="weight").todense()).flatten()))
 
@@ -152,13 +154,13 @@ print(g.number_of_nodes, g.number_of_edges)
 print("-"*100)
 g.educated_value_guess()
 print("ZEROS")
-g.draw_zeros()
+g.draw_zeros(figsize=figsize)
 print("NANS")
-g.draw_nans()
+g.draw_nans(figsize=figsize)
 print("="*100)
 if g.number_of_nodes < 10000:
     print("Value graph")
-    g.draw(color_arr=g.value)
+    g.draw(color_arr=g.value, figsize=figsize)
 print("dropping nans")
 # TODO: better handling of remaining nans: what are these?
 g = g.dropna_vals()
@@ -168,7 +170,7 @@ g = g.dropna_vals()
 print(g.number_of_nodes, g.number_of_edges)
 if g.number_of_nodes < 10000:
     print("Value graph")
-    g.draw(color_arr=g.value)
+    g.draw(color_arr=g.value, figsize=figsize, filename="{}.pdf".format(NETWORK_NAME), show_edge_values=True)
 # -
 
 

@@ -141,22 +141,22 @@ class Network:
             return self
         return self.network_selection(sel)
 
-    def draw_nans(self):
+    def draw_nans(self, **kwargs):
         if self.V is None:
             print("no values to draw")
             return
         nans = torch.isnan(self.V).float().detach().cpu().numpy()
-        self.draw(color_arr=nans, rescale=False, scale_size=False)
+        self.draw(color_arr=nans, rescale=False, scale_size=False, **kwargs)
 
-    def draw_zeros(self):
+    def draw_zeros(self, **kwargs):
         if self.V is None:
             print("no values to draw")
             return
         zeros = (self.V == 0).float().detach().cpu().numpy()
-        self.draw(color_arr=zeros, rescale=False, scale_size=False)
+        self.draw(color_arr=zeros, rescale=False, scale_size=False, **kwargs)
 
-    def draw(self, external_ownership=None, color_arr=None, size_arr=None, rescale=True,
-            scale_size=True, scale_color=True, **kwargs):
+    def draw(self, external_ownership=None, color_arr=None, size_arr=None, edge_arr=None, rescale=True,
+            scale_size=True, scale_color=True, scale_edge=True, show_edge_values=True, **kwargs):
         node_list = dict(zip(np.arange(self.number_of_nodes), self.nodes.detach().cpu().numpy()))
         V = self.V.detach().cpu().numpy()
             #nx.set_node_attributes(G, values, name="value")
@@ -171,7 +171,7 @@ class Network:
             if color_arr is not None:
                 assert len(color_arr) == self.number_of_nodes
                 node_color = np.array(color_arr)
-            if rescale and not isinstance(node_color, str):
+            if rescale:
                 node_color = node_color / np.nanmax([1, np.nanmax(node_color)])
                 node_color = np.clip(node_color, 0.01, None)
         #print(node_color)
@@ -184,52 +184,73 @@ class Network:
             if size_arr is not None:
                 assert len(size_arr) == self.number_of_nodes
                 node_size = np.array(size_arr)
-            if rescale and not isinstance(node_size, int):
+            if rescale:
                 node_size = node_size / np.nanmax([1, np.nanmax(node_size)])
                 node_size = np.clip(node_size, 0.01, None)
                 node_size *= 300
+
+        edge_width = None
+        if scale_edge:
+            weights = dict(self.A.copy().todok().items())
+            edge_width = np.array(list(weights.values()))
+            if edge_arr is not None:
+                edge_width = np.array(edge_arr)
+
+
         #print(node_size)
         with_labels = self.number_of_nodes < 50
         node_labels = node_list if with_labels else None
 
         draw_nx_graph(
             self.A,
-            number_of_edges=self.number_of_edges,
             with_labels=with_labels,
             node_labels=node_labels,
             node_color=node_color,
             node_size=node_size,
+            edge_width=edge_width,
+            show_edge_values=show_edge_values,
             **kwargs
             )
 
 def draw_nx_graph(
-        A, number_of_edges=0,
+        A,
         with_labels=True, node_labels=None,
         node_color=None,
         node_size=None,
+        edge_width=None,
+        show_edge_values=True,
         show=True,
+        figsize=(20,20),
+        filename=None,
         **kwargs):
     # nx defaults
     if node_color is None:
         node_color = "#1f78b4"
     if node_size is None:
         node_size = 300
+    if edge_width is None:
+        edge_width = 1.0
 
     # networkx
     G = nx.from_scipy_sparse_matrix(A, create_using=nx.DiGraph)
     pos = nx.nx_pydot.pydot_layout(G, prog='neato', root=None)
-    plt.figure(figsize=(20,20))
+    plt.figure(figsize=figsize)
     nx.draw_networkx(
         G,
         pos=pos, arrows=True, with_labels=with_labels,
         labels=node_labels,
         node_color=node_color,
         node_size=node_size,
+        width=edge_width,
         **kwargs
         )
-    if number_of_edges < 50:
+    number_of_edges = A.count_nonzero()
+    if show_edge_values and number_of_edges < 50:
         edge_labels = nx.get_edge_attributes(G, "weight")
+        edge_labels = {k:"{:.2f}".format(v) for k,v in edge_labels.items()}
         nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+    if filename is not None:
+        plt.savefig(filename)
     if show:
         plt.show()
 
