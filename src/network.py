@@ -163,7 +163,7 @@ class Network:
             #nx.set_node_attributes(G, eo, name="external_ownership")
         #pos=nx.spring_layout(G)
 
-        node_color = "#1f78b4" #default
+        node_color = None #default
         if scale_color:
             if external_ownership is not None:
                 eo = dict(zip(np.arange(self.number_of_nodes, external_ownership)))
@@ -176,7 +176,7 @@ class Network:
                 node_color = np.clip(node_color, 0.01, None)
         #print(node_color)
 
-        node_size = 300 # default
+        node_size = None # default
         if scale_size:
             if V is not None:
                 values = dict(zip(np.arange(self.number_of_nodes), V))
@@ -192,21 +192,44 @@ class Network:
         with_labels = self.number_of_nodes < 50
         node_labels = node_list if with_labels else None
 
-        # networkx
-        G = nx.from_scipy_sparse_matrix(self.A, create_using=nx.DiGraph)
-        pos = nx.nx_pydot.pydot_layout(G, prog='neato', root=None)
-        plt.figure(figsize=(20,20))
-        nx.draw_networkx(
-            G,
-            pos=pos, arrows=True, with_labels=with_labels,
-            labels=node_labels,
+        draw_nx_graph(
+            self,
+            with_labels=with_labels,
+            node_labels=node_labels,
             node_color=node_color,
             node_size=node_size,
             **kwargs
             )
-        if self.number_of_edges < 50:
-            edge_labels = nx.get_edge_attributes(G, "weight")
-            nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+
+def draw_nx_graph(
+        g,
+        with_labels=True, node_labels=None,
+        node_color=None,
+        node_size=None,
+        show=True,
+        **kwargs):
+    # nx defaults
+    if node_color is None:
+        node_color = "#1f78b4"
+    if node_size is None:
+        node_size = 300
+
+    # networkx
+    G = nx.from_scipy_sparse_matrix(g.A, create_using=nx.DiGraph)
+    pos = nx.nx_pydot.pydot_layout(G, prog='neato', root=None)
+    plt.figure(figsize=(20,20))
+    nx.draw_networkx(
+        G,
+        pos=pos, arrows=True, with_labels=with_labels,
+        labels=node_labels,
+        node_color=node_color,
+        node_size=node_size,
+        **kwargs
+        )
+    if g.number_of_edges < 50:
+        edge_labels = nx.get_edge_attributes(G, "weight")
+        nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+    if show:
         plt.show()
 
 
