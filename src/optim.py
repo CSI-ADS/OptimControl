@@ -111,6 +111,7 @@ def constraint_optimize_control(
         device=None, save_params_every=100, save_loss_arr=False,
         constr_tol = 1e-8,
         loss_tol = 1e-8,
+        loss_1_name="loss_control", loss_2_name="loss_cost",
         **kwargs
         ):
     params = cl
@@ -152,8 +153,8 @@ def constraint_optimize_control(
                 # print(kwargs)
                 losses_orig_new = compute_value(loss_fns, params, g, lambd=1, as_separate=True, as_array=False, **kwargs)
 
-            hist["loss_control"].append(losses_orig_new[0])
-            hist["loss_cost"].append(losses_orig_new[1])
+            hist[loss_1_name].append(losses_orig_new[0])
+            hist[loss_2_name].append(losses_orig_new[1])
             hist["loss_augm"].append(loss_new)
             hist["i_contr_iter"].append(i)
             hist["step_nr"].append(step_nr)
@@ -173,11 +174,27 @@ def constraint_optimize_control(
                 print("Break: ", constr_new, constr)
                 break
 
-        params_est, constr = params, constr_new
+        constr = constr_new
         alpha += rho * constr
         if np.abs(constr) <= constr_tol:
-            print("Overall break:", constr, constr_tol)
             flag_max_iter = False
             break
+
+
+    with torch.no_grad():
+        hist["final_iter"] = step_nr
+        hist["final_params_sm"] = torch.sigmoid(params).detach().cpu().numpy()
+        losses = compute_value(loss_fns, params, g, lambd=1, as_separate=True, as_array=True, **kwargs)
+        hist["final_{}_arr".format(loss_1_name)]= losses[0].detach().cpu().numpy()
+        hist["final_{}_arr".format(loss_2_name)] = losses[1].detach().cpu().numpy()
+        losses = compute_value(loss_fns, params, g, lambd=1, as_separate=True, as_array=False, **kwargs)
+        hist["final_{}".format(loss_1_name)]= losses[0].detach().cpu().numpy()
+        hist["final_{}".format(loss_2_name)] = losses[1].detach().cpu().numpy()
+        ret = (params, losses, constr)
+        if return_hist:
+            ret += (dict(hist), )
+        return ret
+
+
 
     return params_est, constr, hist

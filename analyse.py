@@ -452,7 +452,7 @@ print(torch.sum(g.compute_total_value()))
 #                              control_cutoff=control_cutoff
 #                             )
 
-_, _, hist_all = constraint_optimize_control(
+param_est, loss_vals, constr_vals, hist_all = constraint_optimize_control(
         compute_sparse_loss, cl, g, budget,
         verbose=True, return_hist=True,
         lr=init_lr, scheduler=scheduler,
