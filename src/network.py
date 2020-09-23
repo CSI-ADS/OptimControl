@@ -303,7 +303,7 @@ def make_color_arr(
         target_color='#ff7f0e',
         source_color='#17becf',
         both_color='#808080',
-        no_color="None"
+        no_color="none"
         ):
     if source_mask is None and target_mask is None:
         return None
