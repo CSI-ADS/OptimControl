@@ -17,3 +17,8 @@ def pad_from_mask(arr, mask, ttype='np'):
         t = torch.zeros(len(mask), device=arr.device, dtype=arr.dtype)
     t[mask] = arr
     return t
+
+def idx_to_mask(N, idx):
+    mask = torch.zeros((N,), dtype=bool)
+    mask[idx] = True
+    return mask

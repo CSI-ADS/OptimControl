@@ -3,6 +3,7 @@ import numpy as np
 import networkx as nx
 import scipy
 import matplotlib.pyplot as plt
+from .utils import *
 
 class Network:
 
@@ -124,6 +125,27 @@ class Network:
         if tot_contr == 0:
             return self
         return self.network_selection(contr)
+
+    def identify_relevant(self, target_mask):
+        G = nx.DiGraph(self.A)
+        targets = np.where(target_mask)[0]
+        anc = set(targets)
+        for n in targets:
+            anc = anc.union(nx.ancestors(G, n))
+        anc = list(anc)
+        print("anc = ", anc)
+        mask = idx_to_mask(self.N, anc)
+        print("mask = ", mask)
+        return mask
+
+    def remove_irrelevant(self, target_mask):
+        if target_mask is None:
+            return self
+        anc = self.identify_relevant(target_mask)
+        if sum(anc) == self.N:
+            return self
+        return self.network_selection(anc)
+
 
     def educated_value_guess(self):
         nan_idx = torch.isnan(self.V)
@@ -254,8 +276,11 @@ def draw_nx_graph(
         y = list(unzipped_pos[1])
         ax.scatter(x, y, s=600, c=node_edgecolor)
 
-    vmin = None if isinstance(node_color, str) else min(node_color)
-    vmax = None if isinstance(node_color, str) else max(node_color)
+    vmin, vmax = kwargs.pop("vmin", None), kwargs.pop("vmax", None)
+    if vmin is None:
+        vmin = None if isinstance(node_color, str) else min(node_color)
+    if vmax is None:
+        vmax = None if isinstance(node_color, str) else max(node_color)
     nx.draw_networkx(
         G,
         pos=pos, arrows=True, with_labels=with_labels,

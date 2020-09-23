@@ -223,14 +223,12 @@ target_mask=None
 
 if LIMIT_CONTROL:
     print("limiting control")
-    source_mask = make_mask_from_node_list(g, V_source.astype(int))
     target_mask = make_mask_from_node_list(g, V_target.astype(int))
+    g = g.remove_irrelevant(target_mask)
+    target_mask = make_mask_from_node_list(g, V_target.astype(int)) # redo!
+    source_mask = make_mask_from_node_list(g, V_source.astype(int))
     print("({}) sources {}, target {}".format(g.number_of_nodes, sum(source_mask), sum(target_mask)))
     print(g.number_of_nodes, source_mask.shape, target_mask.shape)
-#     print("sources")
-#     g.draw(color_arr=source_mask, scale_size=False, show_edge_values=False, figsize=(4,4))
-#     print("targets")
-#     g.draw(color_arr=target_mask, scale_size=False, show_edge_values=False, figsize=(4,4))
     
     g.draw(color_arr=g.value, figsize=figsize, filename="figs/{}.pdf".format(NETWORK_NAME), show_edge_values=True, 
           source_mask=source_mask, target_mask=target_mask)
@@ -256,7 +254,7 @@ cl_soft = torch.sigmoid(cl)
 print(torch.min(cl_soft), torch.max(cl_soft))
 init_lr = 0.1
 decay = 0.1
-max_steps = 10000
+max_steps = 10
 lambd=0.1
 weight_control = False
 control_cutoff = None
@@ -274,7 +272,7 @@ _,_, hist = optimize_control(compute_sparse_loss, cl, g,
                              device=device, 
                              weight_control=weight_control,
                              control_cutoff=control_cutoff,
-                             loss_tol=1e-8,
+                             loss_tol=1e-5,
                              save_separate_losses=True,
                              source_mask=source_mask,
                              target_mask=target_mask
@@ -414,10 +412,11 @@ plt.show()
 # -
 
 if num_params <= 1000:
+    figsize=(10,10)
     print("direct control sigmoid")
     #print(hist["final_params_sm"])
     eo = pad_from_mask(hist["final_params_sm"], source_mask)
-    g.draw(external_ownership=eo, vmin=0, vmax=1)
+    g.draw(external_ownership=eo, vmin=0, vmax=1, figsize=figsize)
 
     print("direct direct control weighted by shares")
     tot_shares = g.total_shares_in_network.detach().cpu().numpy()
@@ -425,22 +424,23 @@ if num_params <= 1000:
     if source_mask is not None:
         tot_shares[~source_mask] = 0
     #print(tot_shares*hist["final_params_sm"])
-    g.draw(external_ownership=tot_shares*eo, vmin=0, vmax=1)
+    g.draw(external_ownership=tot_shares*eo, vmin=0, vmax=1, figsize=figsize)
 
     print("cost of buying")
     final_cost = hist["final_loss_cost_arr"]
     final_cost = pad_from_mask(final_cost, source_mask)
     print(final_cost.shape)
-    g.draw(color_arr=final_cost, vmin=0, vmax=1)
+    g.draw(color_arr=final_cost, vmin=0, vmax=1, figsize=figsize)
     
     print("total/propagated control")
     final_control = pad_from_mask(1-hist["final_loss_control_arr"], target_mask)
     #print(final_control)
-    g.draw(color_arr=final_control, vmin=0, vmax=1)
+    g.draw(color_arr=final_control, vmin=0, vmax=1, figsize=figsize)
     
     print("size = total control, color = cost")
     #print(hist["final_loss_cost"].shape)
-    g.draw(color_arr=final_cost, size_arr=final_control, vmin=0, vmax=1, figsize=(10, 10), filename="figs/{}_{}_size_control_color_cost.pdf".format(NETWORK_NAME, lambd))
+    g.draw(color_arr=final_cost, size_arr=final_control, vmin=0, vmax=1, figsize=figsize, filename="figs/{}_{}_size_control_color_cost.pdf".format(NETWORK_NAME, lambd),
+          target_mask=target_mask)
 
 g.device
 device
