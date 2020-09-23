@@ -158,7 +158,8 @@ class Network:
         self.draw(color_arr=zeros, rescale=False, scale_size=False, **kwargs)
 
     def draw(self, external_ownership=None, color_arr=None, size_arr=None, edge_arr=None, rescale=True,
-            scale_size=True, scale_color=True, scale_edge=True, show_edge_values=True, **kwargs):
+            scale_size=True, scale_color=True, scale_edge=True, show_edge_values=True, source_mask=None,
+             target_mask=None, **kwargs):
         node_list = dict(zip(np.arange(self.number_of_nodes), self.nodes.detach().cpu().numpy()))
         V = self.V.detach().cpu().numpy()
             #nx.set_node_attributes(G, values, name="value")
@@ -177,7 +178,7 @@ class Network:
             if rescale:
                 node_color = node_color / np.nanmax([1, np.nanmax(node_color)])
                 node_color = np.clip(node_color, 0.01, None)
-        #print(node_color)
+        print('color:' ,node_color)
 
         node_size = None # default
         if scale_size:
@@ -199,7 +200,6 @@ class Network:
             if edge_arr is not None:
                 edge_width = np.array(edge_arr)
 
-
         #print(node_size)
         with_labels = self.number_of_nodes < 50
         node_labels = node_list if with_labels else None
@@ -212,6 +212,8 @@ class Network:
             node_size=node_size,
             edge_width=edge_width,
             show_edge_values=show_edge_values,
+            source_mask=source_mask,
+            target_mask=target_mask,
             **kwargs
             )
 
@@ -222,6 +224,8 @@ def draw_nx_graph(
         node_size=None,
         edge_width=None,
         show_edge_values=True,
+        source_mask=None,
+        target_mask=None,
         show=True,
         figsize=(20,20),
         filename=None,
@@ -233,18 +237,57 @@ def draw_nx_graph(
         node_size = 300
     if edge_width is None:
         edge_width = 1.0
+    
+    number_of_nodes = A.shape[0]
+    node_edgecolor_target='#FFFFFF'
+    node_edgecolor_source='#000000'
+    node_edgecolor_both='#808080'
+    linewidths=30
+    print(linewidths)
+    if (source_mask is None) & (target_mask is None):
+        node_edgecolor = None
+        linewidths=None
+    elif ~(source_mask is None) & ~(target_mask is None):
+        assert len(source_mask) == number_of_nodes
+        assert len(target_mask) == number_of_nodes
+        source_mask = np.array(source_mask)
+        target_mask = np.array(target_mask)
+        node_edgecolor = np.full(number_of_nodes, 'None')
+        node_edgecolor[(source_mask==True)&(target_mask==False)] = node_edgecolor_source
+        node_edgecolor[(source_mask==False)&(target_mask==True)] = node_edgecolor_target
+        node_edgecolor[(source_mask==True)&(target_mask==True)] = node_edgecolor_both
+    elif ~(source_mask is None):
+        assert len(source_mask) == number_of_nodes
+        node_edgecolor = source_mask
+        node_edgecolor[node_edgecolor==False] = 'None'
+        node_edgecolor[node_edgecolor==True] = node_edgecolor_source
+    elif ~(target_mask is None):
+        assert len(target_mask) == number_of_nodes
+        node_edgecolor = target_mask
+        node_edgecolor[node_edgecolor==False] = 'None'
+        node_edgecolor[node_edgecolor==True] = node_edgecolor_target
+        
 
     # networkx
     G = nx.from_scipy_sparse_matrix(A, create_using=nx.DiGraph)
-    pos = nx.nx_pydot.pydot_layout(G, prog='neato', root=None)
-    plt.figure(figsize=figsize, frameon=False)
+    pos = nx.nx_pydot.pydot_layout(G, prog='twopi', root=None)
+    
+    fig, ax = plt.subplots(figsize=figsize, frameon=False)
+    cmap=plt.cm.jet
+    vmin = min(node_color)
+    vmax = max(node_color)
     nx.draw_networkx(
         G,
         pos=pos, arrows=True, with_labels=with_labels,
         labels=node_labels,
         node_color=node_color,
+        cmap=cmap,
         node_size=node_size,
         width=edge_width,
+        vmin=vmin,
+        vmax=vmax,
+        edgecolors=node_edgecolor,
+        linewidths=linewidths,
         **kwargs
         )
     number_of_edges = A.count_nonzero()
@@ -252,13 +295,18 @@ def draw_nx_graph(
         edge_labels = nx.get_edge_attributes(G, "weight")
         edge_labels = {k:"{:.2f}".format(v) for k,v in edge_labels.items()}
         nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
-
-    cut = 1.05
-    xmax= cut*max(xx for xx,yy in pos.values())
-    ymax= cut*max(yy for xx,yy in pos.values())
-    plt.xlim(0,xmax)
-    plt.ylim(0,ymax)
-    plt.margins(0,0)
+        
+    sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(vmin = vmin, vmax=vmax))
+    sm._A = []
+    plt.colorbar(sm)
+    fig.patch.set_visible(False)
+    ax.axis('off')
+#     cut = 1.05
+#     xmax= cut*max(xx for xx,yy in pos.values())
+#     ymax= cut*max(yy for xx,yy in pos.values())
+#     plt.xlim(0,xmax)
+#     plt.ylim(0,ymax)
+#     plt.margins(0,0)
 
 
     if filename is not None:
