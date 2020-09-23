@@ -27,7 +27,8 @@ import sys, os
 # %autoreload 2
 
 device = 'cpu'
-if torch.cuda.is_available():
+use_gpu = False
+if use_gpu and torch.cuda.is_available():
     print("CUDA available")
     device = 'cuda'
 print(device)
@@ -36,12 +37,16 @@ print(device)
 NETWORK_NAME = [
     "PHARMA",
     "BIOTECH",
+    "BIOTECH_PM",
     "VITALI",
     "SIMPLE_CYCLE",
     "SIMPLE_CHAIN",
     "SIMPLE_STAR"
-][-1]
+][1]
 print(NETWORK_NAME)
+
+SOURCE_CONTR = False
+TARGET_CONTR = False
 
 if NETWORK_NAME in ("VITALI", "SIMPLE_CHAIN", "SIMPLE_CYCLE", "SIMPLE_STAR"):
     G_nx = get_test_network(NETWORK_NAME)
@@ -56,16 +61,22 @@ if NETWORK_NAME in ("VITALI", "SIMPLE_CHAIN", "SIMPLE_CYCLE", "SIMPLE_STAR"):
 else:
     edge_filename, value_filename = {
         "PHARMA" : ("edges_pharma_lc-3.csv", "value_pharma_lc.csv"),
-        "BIOTECH" : ("edges_belgian_biotech_plus1mil.csv", "value_belgian_biotech_plus1mil-2.csv"),
+        "BIOTECH" : ("edges_belgian_biotech_reach_nace.csv", "value_belgian_biotech_reach_nace.csv"),
+        "BIOTECH_PM" : ("edges_belgian_biotech_plus1mil.csv", "value_belgian_biotech_plus1mil-2.csv"),
     }[NETWORK_NAME]
+    
+    
+    
     A = pd.read_csv(os.path.join("data", edge_filename), index_col=0)
     #A = A.loc[A["ownership"]>1e-4,:] # make things a bit easier
     display(A.head(2))
     print(A.shape, A["ownership"].unique())
     V = pd.read_csv(os.path.join("data", value_filename), index_col=0)
+    V.loc[:, "assets"] = V.loc[:, "assets"] / 10**6 # per 1M
     plt.hist(V["assets"].values)
     plt.ylabel("assets")
     plt.yscale('log')
+#     plt.xscale('log')
     plt.show()
     display(V.head(2))
     print(V.shape)
@@ -77,10 +88,16 @@ else:
     edges = {(int(u), int(v)):{"weight":p} for u, v, p in zip(A["shareholder_id"].values, A["company_id"].values, A["ownership"].values)}
     
     print(V.loc[V["assets"].idxmax(axis=0, skipna=True),:])
+    
+    if NETWORK_NAME == "BIOTECH_PM":
+        SOURCE_CONTR = True
+        TARGET_CONTR = True
 
 assert len(values)>0, "?"
 assert len(edges)>0, "?"
 # -
+
+V
 
 nodes
 
@@ -174,6 +191,8 @@ if g.number_of_nodes < 10000:
 # -
 
 
+
+
 plt.hist(g.compute_total_value(only_network_shares=True, include_root_shares=True).detach().cpu().numpy())
 plt.yscale('log')
 plt.ylabel("euro")
@@ -193,7 +212,7 @@ print(torch.min(cl_soft), torch.max(cl_soft))
 init_lr = 0.1
 decay = 0.1
 max_steps = 10000
-lambd=0.8
+lambd=0.1
 weight_control = False
 control_cutoff = None
 source_mask = None
@@ -210,11 +229,12 @@ if use_schedule: # make new copy
 _,_, hist = optimize_control(compute_sparse_loss, cl, g, 
                              lambd=lambd, return_hist=True, verbose=True, 
                              save_loss_arr=True,
-                             save_params_every=1,
+                             save_params_every=100,
                              num_steps=max_steps, lr=lr, scheduler=scheduler,
                              device=device, source_mask=None, target_mask=None,
                              weight_control=weight_control,
                              control_cutoff=control_cutoff,
+                             loss_tol=1e-6,
                              save_separate_losses=True
                             )
 # -
@@ -323,20 +343,26 @@ tot_shares[g.identify_uncontrollable().detach().cpu().numpy()] = 1
 
 tot_shares = hist["final_params_sm"]*tot_shares
 idx = np.argsort(tot_shares)[::-1]
+idx = [i for i in idx if tot_shares[i] >= 0.01]
 node_names = ["{}".format(x) for x in g.node_list.detach().cpu().numpy()[idx]]
 
 plt.figure(figsize=(20, 5))
 plt.bar(node_names, tot_shares[idx])
 plt.xlabel("company name")
 plt.ylabel("total shares bought")
+plt.xticks(np.arange(len(node_names)), node_names, rotation='vertical')
 
 plt.show()
 
 
 plt.figure(figsize=(20, 5))
+idx = np.argsort(1-hist["final_loss_control_arr"])[::-1]
+idx = [i for i in idx if 1-hist["final_loss_control_arr"][i] >= 0.01]
+node_names = ["{}".format(x) for x in g.node_list.detach().cpu().numpy()[idx]]
 plt.bar(node_names, 1-hist["final_loss_control_arr"][idx])
 plt.xlabel("company name")
 plt.ylabel("total control")
+plt.xticks(np.arange(len(node_names)), node_names, rotation='vertical')
 
 plt.show()
 # -
@@ -386,19 +412,20 @@ plt.show()
 cs = []
 ss = []
 param_result = []
-# lambd_range = np.logspace(-15, 15, num=20)#np.logspace(-2, 1, num=10)
-lambd_range = np.linspace(0, 1, num=20)#np.logspace(-2, 1, num=10)
+lambd_range = np.logspace(-10, 2, num=20)#np.logspace(-2, 1, num=10)
+# lambd_range = np.linspace(0, 1, num=20)#np.logspace(-2, 1, num=10)
 print("lambdas to evaluate:", lambd_range)
 for lambd in lambd_range:
     cl = get_cl_init(g.number_of_nodes, device=device)
     loss_fn = compute_sparse_loss
     cl, cost, hist = optimize_control(loss_fn, cl, g, lambd=lambd, return_hist=True, save_params_every=1000,
                                 lr=lr, num_steps=max_steps, verbose=True, device=device, weight_control=weight_control,
-                                     control_cutoff=control_cutoff, source_mask=None, target_mask=None)
+                                     control_cutoff=control_cutoff, source_mask=None, target_mask=None, 
+                                      loss_tol=1e-6)
     # get some stats
     with torch.no_grad():
         c, s = compute_value(loss_fn, cl, g, lambd=lambd, as_separate=True)
-        print(lambd, c, s)
+        print("lambd={}, c={}, s={}".format(lambd, c.detach().cpu().numpy(), s.detach().cpu().numpy()))
         param_result.append(cl.detach().cpu())
         cs.append(c.detach().cpu())
         ss.append(s.detach().cpu())
@@ -425,12 +452,15 @@ else:
 ax1.plot(lambd_range, y_control, label="control", color='blue')
 ax1.scatter(lambd_range, y_control, color='blue')
 ax1.set_ylabel("control", color='blue')
+ax1.set_xscale('log')
+ax1.set_yscale('log')
+
 ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
 
 ax2.plot(lambd_range, ss, label="total budget", color='red')
 ax2.scatter(lambd_range, ss, color='red')
 ax2.set_ylabel("total budget", color='red')
-
+ax2.set_yscale('log')
 ax1.set_xlabel("lambda")
 plt.legend()
 
@@ -441,6 +471,8 @@ plt.show()
 plt.plot(ss, y_control)
 plt.xlabel("total budget")
 plt.ylabel("total control")
+plt.xscale('log')
+plt.yscale('log')
 plt.savefig("figs/{}_control_vs_cost_curve.pdf".format(NETWORK_NAME))
 
 plt.show()
@@ -549,5 +581,7 @@ plt.xlabel("i")
 plt.ylabel("rho")
 plt.show()
 # -
+
+
 
 

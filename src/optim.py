@@ -1,7 +1,8 @@
 from collections import defaultdict
 import torch
 import numpy as np
-from tqdm import tqdm
+from tqdm import tqdm, trange
+
 
 def get_cl_init(N, loc=-7, scale=1e-4, device=None, dtype=torch.float):
     cl_normal = torch.normal(mean=loc, std=0.1, size=(N,))
@@ -59,7 +60,8 @@ def optimize_control(
     hist = defaultdict(list)
     i_last = 0
     loss_prev = None
-    for i in tqdm(range(num_steps), disable=not verbose):
+    pbar = tqdm(range(num_steps), disable=not verbose)
+    for i in pbar:
         i_last = i
         params, loss = update(loss_fn, optimizer, params, g, lambd=lambd, **kwargs)
         #print("params = ", params)
@@ -94,6 +96,8 @@ def optimize_control(
                 break
             else:
                 loss_prev = loss
+
+            pbar.set_postfix({'loss': loss.detach().cpu().numpy()})
 
 
     with torch.no_grad():
