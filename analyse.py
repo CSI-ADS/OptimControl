@@ -96,6 +96,8 @@ else:
         print("in edges:", len(nodes))
         print("in nodes:", len(V["company_id"].unique()))
         print("intersection:", len(nodes.intersection(set(V["company_id"].unique()))))
+        difference_sets = nodes.symmetric_difference(set(V["company_id"].unique()))
+        display(V.loc[V["company_id"].isin(difference_sets),:].head(5))
     
     if LIMIT_CONTROL:
         NETWORK_NAME += "_sc"
@@ -130,6 +132,13 @@ print(G_tot.number_of_nodes())
 print([len(x) for x in nx.connected_components(G_tot.to_undirected())])
 largest_cc = max(nx.connected_components(G_tot.to_undirected()), key=len)
 print(len(largest_cc))
+# nodes_to_remove = []
+# for component in nx.connected_components(G_tot.to_undirected()):
+#     if component == largest_cc:
+#         continue
+#     display(V.loc[V["company_id"].isin(component),:])
+
+
 G = G_tot.subgraph(largest_cc).copy()
 # largest_cc = list(G_tot.nodes())
 # print(largest_cc)
