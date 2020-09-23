@@ -104,6 +104,7 @@ class Network:
         contr = Ctot > 1e-8
         return contr
 
+    # func 1
     def identify_uncontrollable(self):
         return ~self.identify_controllable()
 
@@ -115,6 +116,7 @@ class Network:
         dtype = self.C.dtype
         return Network(A, value=V, node_list=node_list, dtype=dtype)
 
+    # func 2
     def remove_uncontrollable(self):
         assert False, "better not to do this, since we generate new root nodes by dropping, better to determine the desc"
         contr = self.identify_controllable()
