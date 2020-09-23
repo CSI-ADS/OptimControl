@@ -239,15 +239,19 @@ def draw_nx_graph(
         edge_width = 1.0
     
     number_of_nodes = A.shape[0]
-    node_edgecolor_target='#FFFFFF'
-    node_edgecolor_source='#000000'
+    node_edgecolor_target='#ff7f0e'
+    node_edgecolor_source='#17becf'
     node_edgecolor_both='#808080'
     linewidths=30
-    print(linewidths)
-    if (source_mask is None) & (target_mask is None):
+    
+    
+    
+    
+    print((not(source_mask is None)) and (not(target_mask is None)))
+    if (source_mask is None) and (target_mask is None):
         node_edgecolor = None
         linewidths=None
-    elif ~(source_mask is None) & ~(target_mask is None):
+    elif (source_mask is not None) and (target_mask is not None)::
         assert len(source_mask) == number_of_nodes
         assert len(target_mask) == number_of_nodes
         source_mask = np.array(source_mask)
@@ -256,23 +260,28 @@ def draw_nx_graph(
         node_edgecolor[(source_mask==True)&(target_mask==False)] = node_edgecolor_source
         node_edgecolor[(source_mask==False)&(target_mask==True)] = node_edgecolor_target
         node_edgecolor[(source_mask==True)&(target_mask==True)] = node_edgecolor_both
-    elif ~(source_mask is None):
+    elif not(source_mask is None):
         assert len(source_mask) == number_of_nodes
         node_edgecolor = source_mask
         node_edgecolor[node_edgecolor==False] = 'None'
         node_edgecolor[node_edgecolor==True] = node_edgecolor_source
-    elif ~(target_mask is None):
+    elif not(target_mask is None):
         assert len(target_mask) == number_of_nodes
         node_edgecolor = target_mask
         node_edgecolor[node_edgecolor==False] = 'None'
         node_edgecolor[node_edgecolor==True] = node_edgecolor_target
         
-
     # networkx
     G = nx.from_scipy_sparse_matrix(A, create_using=nx.DiGraph)
     pos = nx.nx_pydot.pydot_layout(G, prog='twopi', root=None)
-    
+    unzipped_pos = zip(*pos.values())
+    unzipped_pos=list(unzipped_pos)
+    x = list(unzipped_pos[0])
+    y = list(unzipped_pos[1])
     fig, ax = plt.subplots(figsize=figsize, frameon=False)
+    
+    ax.scatter(x,y,s=1000, c=node_edgecolor)
+    
     cmap=plt.cm.jet
     vmin = min(node_color)
     vmax = max(node_color)
