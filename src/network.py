@@ -175,7 +175,7 @@ class Network:
                 # print(color_arr)
                 assert len(color_arr) == self.number_of_nodes
                 node_color = np.array(color_arr)
-            if rescale:
+            if rescale and node_color is not None:
                 node_color = node_color / np.nanmax([1, np.nanmax(node_color)])
                 node_color = np.clip(node_color, 0.01, None)
         # print('color:' ,node_color)
@@ -188,7 +188,7 @@ class Network:
             if size_arr is not None:
                 assert len(size_arr) == self.number_of_nodes
                 node_size = np.array(size_arr)
-            if rescale:
+            if rescale and node_size is not None:
                 node_size = node_size / np.nanmax([1, np.nanmax(node_size)])
                 node_size = np.clip(node_size, 0.01, None)
                 node_size *= 300
@@ -233,7 +233,7 @@ def draw_nx_graph(
         **kwargs):
     # nx defaults
     if node_color is None:
-        node_color = "#1f78b4"
+        node_color = "#613613"#"#1f78b4"
     if node_size is None:
         node_size = 300
     if edge_width is None:
@@ -252,10 +252,10 @@ def draw_nx_graph(
         unzipped_pos = list(zip(*pos.values()))
         x = list(unzipped_pos[0])
         y = list(unzipped_pos[1])
-        ax.scatter(x, y, s=1000, c=node_edgecolor)
+        ax.scatter(x, y, s=600, c=node_edgecolor)
 
-    vmin = min(node_color)
-    vmax = max(node_color)
+    vmin = None if isinstance(node_color, str) else min(node_color)
+    vmax = None if isinstance(node_color, str) else max(node_color)
     nx.draw_networkx(
         G,
         pos=pos, arrows=True, with_labels=with_labels,

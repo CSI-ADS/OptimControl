@@ -227,10 +227,13 @@ if LIMIT_CONTROL:
     target_mask = make_mask_from_node_list(g, V_target.astype(int))
     print("({}) sources {}, target {}".format(g.number_of_nodes, sum(source_mask), sum(target_mask)))
     print(g.number_of_nodes, source_mask.shape, target_mask.shape)
-    print("sources")
-    g.draw(color_arr=source_mask, scale_size=False, show_edge_values=False, figsize=(10,10))
-    print("targets")
-    g.draw(color_arr=target_mask, scale_size=False, show_edge_values=False, figsize=(10,10))
+#     print("sources")
+#     g.draw(color_arr=source_mask, scale_size=False, show_edge_values=False, figsize=(4,4))
+#     print("targets")
+#     g.draw(color_arr=target_mask, scale_size=False, show_edge_values=False, figsize=(4,4))
+    
+    g.draw(color_arr=g.value, figsize=figsize, filename="figs/{}.pdf".format(NETWORK_NAME), show_edge_values=True, 
+          source_mask=source_mask, target_mask=target_mask)
 # -
 
 plt.hist(g.compute_total_value(only_network_shares=True, include_root_shares=True).detach().cpu().numpy())
@@ -636,6 +639,7 @@ plt.xlabel("i")
 plt.ylabel("rho")
 plt.show()
 # -
+
 
 
 
