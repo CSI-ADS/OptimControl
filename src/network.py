@@ -266,6 +266,9 @@ def draw_nx_graph(
     if show:
         plt.show()
 
+def make_mask_from_node_list(g, node_list, **kwargs):
+    l = set(node_list)
+    return torch.tensor([(x in l) for x in g.node_list.detach().cpu().numpy()], **kwargs)
 
 def make_mask(g, idx, **kwargs):
     mask = torch.zeros((g.number_of_nodes,), **kwargs)

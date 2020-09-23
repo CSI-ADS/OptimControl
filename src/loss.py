@@ -2,10 +2,11 @@ import torch
 import numpy as np
 from .network import adjust_for_external_ownership
 from .vitali import *
-
+from .utils import *
 #
 # def shapley(C, control_cutoff):
 #
+
 
 def make_control_cutoff(C, control_cutoff):
     if control_cutoff is None:
@@ -29,9 +30,9 @@ def compute_control_with_external(cl, g, source_mask=None, target_mask=None, wei
     dtilde = compute_control(cl_adjusted, C, reach=torch.arange(g.number_of_nodes)) # get the control of my node
     if control_cutoff:
         dtilde[dtilde >= control_cutoff] = 1.0
-    if target_mask:
-        dtilde *= target_mask
     control = dtilde*g.value if weight_control else dtilde # more control over expensive firms
+    if target_mask is not None:
+        control = reduce_from_mask(control, target_mask)
     return control
 
 def compute_total_shares(cl, g, source_mask=None):
@@ -57,9 +58,14 @@ def compute_control_loss(cl, g, as_array=False, source_mask=None, target_mask=No
     tot_control = torch.clamp(tot_control, min=0, max=1).flatten() # numerical issues otherwise
     # if not as_array:
     #     tot_control = torch.sum(tot_control)
-    assert tot_control.shape[0] == g.number_of_nodes, "below doesn't work"
+    if target_mask is not None:
+        assert tot_control.shape[0] == sum(target_mask)
+    else:
+        assert tot_control.shape[0] == g.number_of_nodes
+
     if weight_control:
-        cost = g.value*(1.0 - tot_control)
+        value = reduce_from_mask(g.value, source_mask)
+        cost = value*(1.0 - tot_control)
     else:
         cost = 1.0 - tot_control
 
@@ -82,7 +88,7 @@ def compute_owned_cost(cl, g, as_array=False, source_mask=None, scale_by_total=T
     if value is None:
         s_cost_per_comp = owned_network_shares
     else: # weighting !!!
-        if source_mask is not None:
+        if value is not None:
             value = value[source_mask]
         s_cost_per_comp = owned_network_shares*value
 
@@ -110,7 +116,12 @@ def compute_sparse_loss(
     assert torch.min(cl) >= 0 and torch.max(cl) <= 1, "strange: {} -- {}".format(torch.min(cl), torch.max(cl))
     if cl.shape[0] != g.number_of_nodes:
         assert source_mask is not None, "must specify source_mask when the cl is not the same as the number of nodes"
-    c_loss = compute_control_loss(cl, g, as_array=as_array, source_mask=source_mask, weight_control=weight_control, control_cutoff=control_cutoff)
+    c_loss = compute_control_loss(
+        cl, g,
+        as_array=as_array,
+        source_mask=source_mask, target_mask=target_mask,
+        weight_control=weight_control, control_cutoff=control_cutoff
+        )
     s_loss = compute_owned_cost(cl, g, as_array=as_array, source_mask=source_mask)
 
     # print("losses:", c_loss, s_loss)

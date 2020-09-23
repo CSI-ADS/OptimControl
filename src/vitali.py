@@ -38,7 +38,7 @@ def get_dtilde(cl, C, reach):
     # TODO: adjust by p value
     dtilde = d.matmul(inverted)
 #     print("DTILDE", dtilde)
-    return dtilde
+    return dtilde.flatten()
 
 def compute_control(cl, C, reach=None, control_cutoff=None):
     if reach is None:

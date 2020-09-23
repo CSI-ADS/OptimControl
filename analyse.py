@@ -21,6 +21,7 @@ import networkx as nx
 from tqdm import tqdm
 import pandas as pd
 from src.test_networks import *
+from src.utils import reduce_from_mask, pad_from_mask
 import sys, os
 
 # %load_ext autoreload
@@ -45,8 +46,7 @@ NETWORK_NAME = [
 ][1]
 print(NETWORK_NAME)
 
-SOURCE_CONTR = False
-TARGET_CONTR = False
+LIMIT_CONTROL=True
 
 if NETWORK_NAME in ("VITALI", "SIMPLE_CHAIN", "SIMPLE_CYCLE", "SIMPLE_STAR"):
     G_nx = get_test_network(NETWORK_NAME)
@@ -70,7 +70,8 @@ else:
     A = pd.read_csv(os.path.join("data", edge_filename), index_col=0)
     #A = A.loc[A["ownership"]>1e-4,:] # make things a bit easier
     display(A.head(2))
-    print(A.shape, A["ownership"].unique())
+    print(A.shape)
+#     print(A.shape, A["ownership"].unique())
     V = pd.read_csv(os.path.join("data", value_filename), index_col=0)
     V.loc[:, "assets"] = V.loc[:, "assets"] / 10**6 # per 1M
     plt.hist(V["assets"].values)
@@ -89,10 +90,21 @@ else:
     
     print(V.loc[V["assets"].idxmax(axis=0, skipna=True),:])
     
-    if NETWORK_NAME == "BIOTECH_PM":
-        SOURCE_CONTR = True
-        TARGET_CONTR = True
+    if len(nodes) != len(V["company_id"].unique()):
+        print("!"*10)
+        print("WARNING: not the same amount of nodes in edges and nodes list:")
+        print("in edges:", len(nodes))
+        print("in nodes:", len(V["company_id"].unique()))
+        print("intersection:", len(nodes.intersection(set(V["company_id"].unique()))))
+    
+    if LIMIT_CONTROL:
+        NETWORK_NAME += "_sc"
+        V_source = V.loc[~V["is_financial"],"company_id"].astype(int).unique()
+        print("source:", V_source.shape)
+        V_target = V.loc[V["is_biotech"],"company_id"].astype(int).unique()
+        print("target:", V_target.shape)
 
+print(NETWORK_NAME)
 assert len(values)>0, "?"
 assert len(edges)>0, "?"
 # -
@@ -114,12 +126,17 @@ for (u, v), p in edges.items():
         G_tot.add_edge(u, v, **p)
 print(G_tot.number_of_nodes())
 
+# +
+print([len(x) for x in nx.connected_components(G_tot.to_undirected())])
 largest_cc = max(nx.connected_components(G_tot.to_undirected()), key=len)
 print(len(largest_cc))
 G = G_tot.subgraph(largest_cc).copy()
 # largest_cc = list(G_tot.nodes())
 # print(largest_cc)
 # G = G_tot.subgraph(largest_cc).copy()
+if G_tot.number_of_nodes() != G.number_of_nodes():
+    print("WARNING: keeping {} out of {} nodes".format(G.number_of_nodes(), G_tot.number_of_nodes()))
+
 G.number_of_nodes()
 
 # +
@@ -188,12 +205,27 @@ print(g.number_of_nodes, g.number_of_edges)
 if g.number_of_nodes < 10000:
     print("Value graph")
     g.draw(color_arr=g.value, figsize=figsize, filename="figs/{}.pdf".format(NETWORK_NAME), show_edge_values=True)
+
+
+# +
+source_mask=None
+target_mask=None
+
+
+if LIMIT_CONTROL:
+    print("limiting control")
+    source_mask = make_mask_from_node_list(g, V_source.astype(int))
+    target_mask = make_mask_from_node_list(g, V_target.astype(int))
+    print("({}) sources {}, target {}".format(g.number_of_nodes, sum(source_mask), sum(target_mask)))
+    print(g.number_of_nodes, source_mask.shape, target_mask.shape)
+    print("sources")
+    g.draw(color_arr=source_mask, scale_size=False, show_edge_values=False, figsize=(10,10))
+    print("targets")
+    g.draw(color_arr=target_mask, scale_size=False, show_edge_values=False, figsize=(10,10))
 # -
 
-
-
-
 plt.hist(g.compute_total_value(only_network_shares=True, include_root_shares=True).detach().cpu().numpy())
+plt.hist(g.compute_total_value(only_network_shares=True, include_root_shares=True, sel_mask=source_mask).detach().cpu().numpy())
 plt.yscale('log')
 plt.ylabel("euro")
 plt.show()
@@ -205,21 +237,17 @@ from src.vitali import *
 from src.loss import *
 from src.network import *
 
-print(g.number_of_nodes)
-cl = get_cl_init(g.number_of_nodes, device=device)
+number_of_sources = g.number_of_nodes if source_mask is None else sum(source_mask)
+print(g.number_of_nodes, number_of_sources)
+cl = get_cl_init(number_of_sources, device=device)
 cl_soft = torch.sigmoid(cl)
 print(torch.min(cl_soft), torch.max(cl_soft))
 init_lr = 0.1
 decay = 0.1
-max_steps = 10000
+max_steps = 1000
 lambd=0.1
 weight_control = False
 control_cutoff = None
-source_mask = None
-# source_mask = make_mask(g, idx=(1,), dtype=torch.float, device=device)
-# print("mask = ", source_mask)
-target_mask = None
-# target_mask = make_mask(g, idx=(1,), dtype=torch.float, device=device)
 use_schedule = False
 lr = init_lr
 scheduler = None
@@ -231,15 +259,19 @@ _,_, hist = optimize_control(compute_sparse_loss, cl, g,
                              save_loss_arr=True,
                              save_params_every=100,
                              num_steps=max_steps, lr=lr, scheduler=scheduler,
-                             device=device, source_mask=None, target_mask=None,
+                             device=device, 
                              weight_control=weight_control,
                              control_cutoff=control_cutoff,
                              loss_tol=1e-6,
-                             save_separate_losses=True
+                             save_separate_losses=True,
+                             source_mask=source_mask,
+                             target_mask=target_mask
                             )
 # -
 
-Vtot = g.compute_total_value(only_network_shares=True, include_root_shares=True)
+if source_mask is not None:
+    print(torch.sum(g.compute_total_value(only_network_shares=True, include_root_shares=True)))
+Vtot = g.compute_total_value(only_network_shares=True, include_root_shares=True, sel_mask=source_mask)
 print(torch.sum(Vtot))
 #print(Vtot)
 
@@ -290,6 +322,7 @@ plt.show()
 
 # +
 num_params = hist["params_sm"][0].shape[0]
+print(num_params)
 
 plt.figure()
 for loss_name, loss_arr in {k:v for k,v in hist.items() if (k.startswith("loss_") and k.endswith("arr"))}.items():
@@ -340,10 +373,11 @@ plt.show()
 # +
 tot_shares = g.total_shares_in_network.detach().cpu().numpy()
 tot_shares[g.identify_uncontrollable().detach().cpu().numpy()] = 1
+tot_shares = reduce_from_mask(tot_shares, source_mask)
 
 tot_shares = hist["final_params_sm"]*tot_shares
 idx = np.argsort(tot_shares)[::-1]
-idx = [i for i in idx if tot_shares[i] >= 0.01]
+# idx = [i for i in idx if tot_shares[i] >= 0.01]
 node_names = ["{}".format(x) for x in g.node_list.detach().cpu().numpy()[idx]]
 
 plt.figure(figsize=(20, 5))
@@ -370,20 +404,25 @@ plt.show()
 if num_params <= 1000:
     print("direct control sigmoid")
     #print(hist["final_params_sm"])
-    g.draw(external_ownership=hist["final_params_sm"], vmin=0, vmax=1)
+    eo = pad_from_mask(hist["final_params_sm"], source_mask)
+    g.draw(external_ownership=eo, vmin=0, vmax=1)
 
     print("direct direct control weighted by shares")
     tot_shares = g.total_shares_in_network.detach().cpu().numpy()
     tot_shares[g.identify_uncontrollable().detach().cpu().numpy()] = 1
+    if source_mask is not None:
+        tot_shares[~source_mask] = 0
     #print(tot_shares*hist["final_params_sm"])
-    g.draw(external_ownership=tot_shares*hist["final_params_sm"], vmin=0, vmax=1)
+    g.draw(external_ownership=tot_shares*eo, vmin=0, vmax=1)
 
     print("cost of buying")
     final_cost = hist["final_loss_cost_arr"]
+    final_cost = pad_from_mask(final_cost, source_mask)
+    print(final_cost.shape)
     g.draw(color_arr=final_cost, vmin=0, vmax=1)
     
     print("total/propagated control")
-    final_control = 1-hist["final_loss_control_arr"]
+    final_control = pad_from_mask(1-hist["final_loss_control_arr"], target_mask)
     #print(final_control)
     g.draw(color_arr=final_control, vmin=0, vmax=1)
     
@@ -412,19 +451,22 @@ plt.show()
 cs = []
 ss = []
 param_result = []
-lambd_range = np.logspace(-10, 2, num=20)#np.logspace(-2, 1, num=10)
+lambd_range = np.logspace(-10, 2, num=2)#np.logspace(-2, 1, num=10)
 # lambd_range = np.linspace(0, 1, num=20)#np.logspace(-2, 1, num=10)
 print("lambdas to evaluate:", lambd_range)
+number_of_sources = g.number_of_nodes if source_mask is None else sum(source_mask)
+    
 for lambd in lambd_range:
-    cl = get_cl_init(g.number_of_nodes, device=device)
+    cl = get_cl_init(number_of_sources, device=device)
+
     loss_fn = compute_sparse_loss
     cl, cost, hist = optimize_control(loss_fn, cl, g, lambd=lambd, return_hist=True, save_params_every=1000,
                                 lr=lr, num_steps=max_steps, verbose=True, device=device, weight_control=weight_control,
-                                     control_cutoff=control_cutoff, source_mask=None, target_mask=None, 
+                                     control_cutoff=control_cutoff, source_mask=source_mask, target_mask=target_mask, 
                                       loss_tol=1e-6)
     # get some stats
     with torch.no_grad():
-        c, s = compute_value(loss_fn, cl, g, lambd=lambd, as_separate=True)
+        c, s = compute_value(loss_fn, cl, g, lambd=lambd, as_separate=True, source_mask=source_mask, target_mask=target_mask)
         print("lambd={}, c={}, s={}".format(lambd, c.detach().cpu().numpy(), s.detach().cpu().numpy()))
         param_result.append(cl.detach().cpu())
         cs.append(c.detach().cpu())
@@ -445,10 +487,14 @@ with torch.no_grad():
 fig, ax1 = plt.subplots()
 
 if weight_control:
-    y_control = (torch.sum(g.value).detach().cpu().numpy()-cs)/torch.sum(g.value).detach().cpu().numpy()
+    raise NotImplemented("todo")
+#     y_control = (torch.sum(g.value).detach().cpu().numpy()-cs)/torch.sum(g.value).detach().cpu().numpy()
     #print(y_control)
 else:
-    y_control = (g.number_of_nodes-cs)#/g.number_of_nodes
+    number_of_target_nodes = int(sum(target_mask) if target_mask is not None else g.number_of_nodes) 
+    print("targets:", number_of_target_nodes)
+    y_control = (number_of_target_nodes-cs)#/g.number_of_nodes
+    
 ax1.plot(lambd_range, y_control, label="control", color='blue')
 ax1.scatter(lambd_range, y_control, color='blue')
 ax1.set_ylabel("control", color='blue')
@@ -516,13 +562,15 @@ from src.network import *
 
 print(g.number_of_nodes)
 budget = 20
-cl = get_cl_init(g.number_of_nodes, loc=1, device=device)
+number_of_sources = g.number_of_nodes if source_mask is None else sum(source_mask)    
+cl = get_cl_init(number_of_sources, device=device)
+print(number_of_sources)
 cl_soft = torch.sigmoid(cl)
 print(torch.min(cl_soft), torch.max(cl_soft))
 init_lr = 0.1
 decay = 0.1
-max_iter = 100
-num_steps = 100000
+max_iter = 100000
+num_steps = 100
 use_schedule = True
 lr = init_lr
 scheduler = None
@@ -548,14 +596,12 @@ param_est, loss_vals, constr_vals, hist_all = constraint_optimize_control(
         device=device, save_params_every=10000, save_loss_arr=False,
         constr_tol=1e-8,
         loss_tol = 1e-8,
-        source_mask=None, target_mask=None,
+        source_mask=source_mask, target_mask=target_mask,
         weight_control=weight_control,
         control_cutoff=control_cutoff
         )
 
 # +
-print(hist_all["i_contr_iter"])
-
 plt.scatter(hist_all["step_nr"], hist_all["loss_control"])
 plt.xlabel("i")
 plt.ylabel("loss_contr")
@@ -581,6 +627,7 @@ plt.xlabel("i")
 plt.ylabel("rho")
 plt.show()
 # -
+
 
 
 

@@ -2,7 +2,7 @@ from collections import defaultdict
 import torch
 import numpy as np
 from tqdm import tqdm, trange
-
+from .utils import *
 
 def get_cl_init(N, loc=-7, scale=1e-4, device=None, dtype=torch.float):
     cl_normal = torch.normal(mean=loc, std=0.1, size=(N,))
@@ -85,7 +85,7 @@ def optimize_control(
 
         if scheduler is not None:
             scheduler.step()
-            hist["lr"].append(scheduler.get_last_lr()[0])
+            hist["lr"].append(scheduler.get_lr()[0])
         else:
             hist["lr"] = lr
 
@@ -104,7 +104,7 @@ def optimize_control(
         hist["final_iter"] = i_last
         hist["final_params_sm"] = torch.sigmoid(params).detach().cpu().numpy()
         losses = compute_value(loss_fn, params, g, lambd=lambd, as_separate=True, as_array=True, **kwargs)
-        hist["final_{}_arr".format(loss_1_name)]= losses[0].detach().cpu().numpy()
+        hist["final_{}_arr".format(loss_1_name)] = losses[0].detach().cpu().numpy()
         hist["final_{}_arr".format(loss_2_name)] = losses[1].detach().cpu().numpy()
         losses = compute_value(loss_fn, params, g, lambd=lambd, as_separate=True, as_array=False, **kwargs)
         hist["final_{}".format(loss_1_name)]= losses[0].detach().cpu().numpy()
@@ -140,6 +140,12 @@ def constraint_optimize_control(
             step_nr += 1
             def augm_loss(*loss_args, as_separate=False, **loss_kwargs):
                 l, c = loss_fns(*loss_args, as_separate=True, **loss_kwargs)
+                if loss_kwargs.get("as_array", False):
+                    sm, tm = loss_kwargs.get("source_mask", None), loss_kwargs.get("target_mask", None)
+                    if sm is not None:
+                        l = pad_from_mask(l, tm, ttype='torch')
+                    if tm is not None:
+                        c = pad_from_mask(c, sm, ttype='torch')
                 c_l = c - budget
                 augm_l = l + 0.5 * rho * c_l**2 + alpha * c_l # augmented lagrangian
                 # print("terms:", l.detach().cpu().numpy(), (0.5*rho*c**2).detach().cpu().numpy(), (alpha*c).detach().cpu().numpy())
@@ -151,11 +157,12 @@ def constraint_optimize_control(
 
             params, augm_new, hist_new = optimize_control(augm_loss, params, g,
                     lambd=1,
-                    verbose=False, return_hist=True,
+                    verbose=verbose, return_hist=True,
                     lr=lr, scheduler=scheduler, num_steps=num_steps,
                     device=device, save_params_every=save_params_every, save_loss_arr=save_loss_arr,
                     loss_1_name="loss_augm", loss_2_name="loss_costr",
-                    loss_tol=loss_tol
+                    loss_tol=loss_tol,
+                    **kwargs
                     )
 
             loss_new = hist_new["final_loss_augm"]
@@ -165,8 +172,9 @@ def constraint_optimize_control(
                 # print(kwargs)
                 losses_orig_new = compute_value(loss_fns, params, g, lambd=1, as_separate=True, as_array=False, **kwargs)
 
-            hist[loss_1_name].append(losses_orig_new[0])
-            hist[loss_2_name].append(losses_orig_new[1])
+
+            hist[loss_1_name].append(losses_orig_new[0].detach().cpu().numpy())
+            hist[loss_2_name].append(losses_orig_new[1].detach().cpu().numpy())
             hist["loss_augm"].append(loss_new)
             hist["i_contr_iter"].append(i)
             hist["step_nr"].append(step_nr)
