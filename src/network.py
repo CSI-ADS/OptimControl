@@ -178,7 +178,7 @@ class Network:
             if rescale:
                 node_color = node_color / np.nanmax([1, np.nanmax(node_color)])
                 node_color = np.clip(node_color, 0.01, None)
-        print('color:' ,node_color)
+        # print('color:' ,node_color)
 
         node_size = None # default
         if scale_size:
@@ -229,6 +229,7 @@ def draw_nx_graph(
         show=True,
         figsize=(20,20),
         filename=None,
+        cmap=plt.cm.jet,
         **kwargs):
     # nx defaults
     if node_color is None:
@@ -237,52 +238,22 @@ def draw_nx_graph(
         node_size = 300
     if edge_width is None:
         edge_width = 1.0
-    
+
     number_of_nodes = A.shape[0]
-    node_edgecolor_target='#ff7f0e'
-    node_edgecolor_source='#17becf'
-    node_edgecolor_both='#808080'
-    linewidths=30
-    
-    
-    
-    
-    print((not(source_mask is None)) and (not(target_mask is None)))
-    if (source_mask is None) and (target_mask is None):
-        node_edgecolor = None
-        linewidths=None
-    elif (source_mask is not None) and (target_mask is not None)::
-        assert len(source_mask) == number_of_nodes
-        assert len(target_mask) == number_of_nodes
-        source_mask = np.array(source_mask)
-        target_mask = np.array(target_mask)
-        node_edgecolor = np.full(number_of_nodes, 'None')
-        node_edgecolor[(source_mask==True)&(target_mask==False)] = node_edgecolor_source
-        node_edgecolor[(source_mask==False)&(target_mask==True)] = node_edgecolor_target
-        node_edgecolor[(source_mask==True)&(target_mask==True)] = node_edgecolor_both
-    elif not(source_mask is None):
-        assert len(source_mask) == number_of_nodes
-        node_edgecolor = source_mask
-        node_edgecolor[node_edgecolor==False] = 'None'
-        node_edgecolor[node_edgecolor==True] = node_edgecolor_source
-    elif not(target_mask is None):
-        assert len(target_mask) == number_of_nodes
-        node_edgecolor = target_mask
-        node_edgecolor[node_edgecolor==False] = 'None'
-        node_edgecolor[node_edgecolor==True] = node_edgecolor_target
-        
+
     # networkx
+    fig, ax = plt.subplots(figsize=figsize, frameon=False)
+
     G = nx.from_scipy_sparse_matrix(A, create_using=nx.DiGraph)
     pos = nx.nx_pydot.pydot_layout(G, prog='twopi', root=None)
-    unzipped_pos = zip(*pos.values())
-    unzipped_pos=list(unzipped_pos)
-    x = list(unzipped_pos[0])
-    y = list(unzipped_pos[1])
-    fig, ax = plt.subplots(figsize=figsize, frameon=False)
-    
-    ax.scatter(x,y,s=1000, c=node_edgecolor)
-    
-    cmap=plt.cm.jet
+
+    node_edgecolor = make_color_arr(number_of_nodes, target_mask=target_mask, source_mask=source_mask)
+    if node_edgecolor is not None:
+        unzipped_pos = list(zip(*pos.values()))
+        x = list(unzipped_pos[0])
+        y = list(unzipped_pos[1])
+        ax.scatter(x, y, s=1000, c=node_edgecolor)
+
     vmin = min(node_color)
     vmax = max(node_color)
     nx.draw_networkx(
@@ -295,8 +266,6 @@ def draw_nx_graph(
         width=edge_width,
         vmin=vmin,
         vmax=vmax,
-        edgecolors=node_edgecolor,
-        linewidths=linewidths,
         **kwargs
         )
     number_of_edges = A.count_nonzero()
@@ -304,25 +273,45 @@ def draw_nx_graph(
         edge_labels = nx.get_edge_attributes(G, "weight")
         edge_labels = {k:"{:.2f}".format(v) for k,v in edge_labels.items()}
         nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
-        
-    sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(vmin = vmin, vmax=vmax))
+
+    sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(vmin=vmin, vmax=vmax))
     sm._A = []
     plt.colorbar(sm)
     fig.patch.set_visible(False)
     ax.axis('off')
-#     cut = 1.05
-#     xmax= cut*max(xx for xx,yy in pos.values())
-#     ymax= cut*max(yy for xx,yy in pos.values())
-#     plt.xlim(0,xmax)
-#     plt.ylim(0,ymax)
-#     plt.margins(0,0)
-
+    #
+    cut = 1.05
+    xmax= cut*max(xx for xx,yy in pos.values())
+    ymax= cut*max(yy for xx,yy in pos.values())
+    plt.xlim(0,xmax)
+    plt.ylim(0,ymax)
+    plt.margins(0,0)
 
     if filename is not None:
         plt.savefig(filename, bbox_inches = 'tight', pad_inches = 0)
     if show:
         plt.show()
 
+
+def make_color_arr(
+        number_of_nodes,
+        source_mask=None,
+        target_mask=None,
+        target_color='#ff7f0e',
+        source_color='#17becf',
+        both_color='#808080',
+        no_color="None"
+        ):
+    if source_mask is None and target_mask is None:
+        return None
+    edge_colors = np.full((number_of_nodes,), no_color)
+    if source_mask is not None:
+        edge_colors[source_mask] = source_color
+    if target_mask is not None:
+        edge_colors[target_mask] = target_color
+    if (source_mask is not None) and (target_mask is not None):
+        edge_colors[source_mask & target_mask] = both_color
+    return edge_colors
 
 def make_mask(g, idx, **kwargs):
     mask = torch.zeros((g.number_of_nodes,), **kwargs)
