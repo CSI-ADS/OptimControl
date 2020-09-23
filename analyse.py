@@ -129,7 +129,7 @@ for (u, v), p in edges.items():
 print(G_tot.number_of_nodes())
 
 # +
-print([len(x) for x in nx.connected_components(G_tot.to_undirected())])
+print("components:", [len(x) for x in nx.connected_components(G_tot.to_undirected())])
 largest_cc = max(nx.connected_components(G_tot.to_undirected()), key=len)
 print(len(largest_cc))
 # nodes_to_remove = []
@@ -253,7 +253,7 @@ cl_soft = torch.sigmoid(cl)
 print(torch.min(cl_soft), torch.max(cl_soft))
 init_lr = 0.1
 decay = 0.1
-max_steps = 1000
+max_steps = 10000
 lambd=0.1
 weight_control = False
 control_cutoff = None
@@ -271,7 +271,7 @@ _,_, hist = optimize_control(compute_sparse_loss, cl, g,
                              device=device, 
                              weight_control=weight_control,
                              control_cutoff=control_cutoff,
-                             loss_tol=1e-6,
+                             loss_tol=1e-8,
                              save_separate_losses=True,
                              source_mask=source_mask,
                              target_mask=target_mask

@@ -244,7 +244,7 @@ def draw_nx_graph(
         labels=node_labels,
         node_color=node_color,
         node_size=node_size,
-        width=edge_width,
+        width=edge_width*2,
         **kwargs
         )
     number_of_edges = A.count_nonzero()
