@@ -171,7 +171,7 @@ class Network:
                 eo = dict(zip(np.arange(self.number_of_nodes), external_ownership))
                 node_color = np.array(list(eo.values()))
             if color_arr is not None:
-                print(color_arr)
+                # print(color_arr)
                 assert len(color_arr) == self.number_of_nodes
                 node_color = np.array(color_arr)
             if rescale:
