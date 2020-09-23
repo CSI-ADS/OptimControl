@@ -158,7 +158,8 @@ class Network:
         self.draw(color_arr=zeros, rescale=False, scale_size=False, **kwargs)
 
     def draw(self, external_ownership=None, color_arr=None, size_arr=None, edge_arr=None, rescale=True,
-            scale_size=True, scale_color=True, scale_edge=True, show_edge_values=True, **kwargs):
+            scale_size=True, scale_color=True, scale_edge=True, show_edge_values=True, source_mask=None,
+             target_mask=None, **kwargs):
         node_list = dict(zip(np.arange(self.number_of_nodes), self.nodes.detach().cpu().numpy()))
         V = self.V.detach().cpu().numpy()
             #nx.set_node_attributes(G, values, name="value")
@@ -177,7 +178,7 @@ class Network:
             if rescale:
                 node_color = node_color / np.nanmax([1, np.nanmax(node_color)])
                 node_color = np.clip(node_color, 0.01, None)
-        #print(node_color)
+        # print('color:' ,node_color)
 
         node_size = None # default
         if scale_size:
@@ -199,7 +200,6 @@ class Network:
             if edge_arr is not None:
                 edge_width = np.array(edge_arr)
 
-
         #print(node_size)
         with_labels = self.number_of_nodes < 50
         node_labels = node_list if with_labels else None
@@ -212,6 +212,8 @@ class Network:
             node_size=node_size,
             edge_width=edge_width,
             show_edge_values=show_edge_values,
+            source_mask=source_mask,
+            target_mask=target_mask,
             **kwargs
             )
 
@@ -222,9 +224,12 @@ def draw_nx_graph(
         node_size=None,
         edge_width=None,
         show_edge_values=True,
+        source_mask=None,
+        target_mask=None,
         show=True,
         figsize=(20,20),
         filename=None,
+        cmap=plt.cm.jet,
         **kwargs):
     # nx defaults
     if node_color is None:
@@ -234,17 +239,33 @@ def draw_nx_graph(
     if edge_width is None:
         edge_width = 1.0
 
+    number_of_nodes = A.shape[0]
+
     # networkx
+    fig, ax = plt.subplots(figsize=figsize, frameon=False)
+
     G = nx.from_scipy_sparse_matrix(A, create_using=nx.DiGraph)
-    pos = nx.nx_pydot.pydot_layout(G, prog='neato', root=None)
-    plt.figure(figsize=figsize, frameon=False)
+    pos = nx.nx_pydot.pydot_layout(G, prog='twopi', root=None)
+
+    node_edgecolor = make_color_arr(number_of_nodes, target_mask=target_mask, source_mask=source_mask)
+    if node_edgecolor is not None:
+        unzipped_pos = list(zip(*pos.values()))
+        x = list(unzipped_pos[0])
+        y = list(unzipped_pos[1])
+        ax.scatter(x, y, s=1000, c=node_edgecolor)
+
+    vmin = min(node_color)
+    vmax = max(node_color)
     nx.draw_networkx(
         G,
         pos=pos, arrows=True, with_labels=with_labels,
         labels=node_labels,
         node_color=node_color,
+        cmap=cmap,
         node_size=node_size,
-        width=edge_width*2,
+        width=edge_width,
+        vmin=vmin,
+        vmax=vmax,
         **kwargs
         )
     number_of_edges = A.count_nonzero()
@@ -253,13 +274,18 @@ def draw_nx_graph(
         edge_labels = {k:"{:.2f}".format(v) for k,v in edge_labels.items()}
         nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
 
+    sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(vmin=vmin, vmax=vmax))
+    sm._A = []
+    plt.colorbar(sm)
+    fig.patch.set_visible(False)
+    ax.axis('off')
+    #
     cut = 1.05
     xmax= cut*max(xx for xx,yy in pos.values())
     ymax= cut*max(yy for xx,yy in pos.values())
     plt.xlim(0,xmax)
     plt.ylim(0,ymax)
     plt.margins(0,0)
-
 
     if filename is not None:
         plt.savefig(filename, bbox_inches = 'tight', pad_inches = 0)
@@ -269,6 +295,26 @@ def draw_nx_graph(
 def make_mask_from_node_list(g, node_list, **kwargs):
     l = set(node_list)
     return torch.tensor([(x in l) for x in g.node_list.detach().cpu().numpy()], **kwargs)
+
+def make_color_arr(
+        number_of_nodes,
+        source_mask=None,
+        target_mask=None,
+        target_color='#ff7f0e',
+        source_color='#17becf',
+        both_color='#808080',
+        no_color="None"
+        ):
+    if source_mask is None and target_mask is None:
+        return None
+    edge_colors = np.full((number_of_nodes,), no_color)
+    if source_mask is not None:
+        edge_colors[source_mask] = source_color
+    if target_mask is not None:
+        edge_colors[target_mask] = target_color
+    if (source_mask is not None) and (target_mask is not None):
+        edge_colors[source_mask & target_mask] = both_color
+    return edge_colors
 
 def make_mask(g, idx, **kwargs):
     mask = torch.zeros((g.number_of_nodes,), **kwargs)
