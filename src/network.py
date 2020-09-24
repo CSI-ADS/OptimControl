@@ -3,6 +3,7 @@ import numpy as np
 import networkx as nx
 import scipy
 import matplotlib.pyplot as plt
+import math
 from .utils import *
 
 class Network:
@@ -239,6 +240,7 @@ class Network:
             **kwargs
             )
 
+# +
 def draw_nx_graph(
         A,
         with_labels=True, node_labels=None,
@@ -258,8 +260,12 @@ def draw_nx_graph(
         node_color = "#613613"#"#1f78b4"
     if node_size is None:
         node_size = 300
+    else:
+        node_size = np.interp(node_size, (node_size.min(), node_size.max()), (100, 600))
     if edge_width is None:
         edge_width = 1.0
+    else:
+        edge_width = np.interp(edge_width, (edge_width.min(), edge_width.max()), (0.5, 3))
 
     number_of_nodes = A.shape[0]
 
@@ -268,31 +274,62 @@ def draw_nx_graph(
 
     G = nx.from_scipy_sparse_matrix(A, create_using=nx.DiGraph)
     pos = nx.nx_pydot.pydot_layout(G, prog='twopi', root=None)
-
-    node_edgecolor = make_color_arr(number_of_nodes, target_mask=target_mask, source_mask=source_mask)
-    if node_edgecolor is not None:
-        unzipped_pos = list(zip(*pos.values()))
-        x = list(unzipped_pos[0])
-        y = list(unzipped_pos[1])
-        ax.scatter(x, y, s=600, c=node_edgecolor)
-
+    
     vmin, vmax = kwargs.pop("vmin", None), kwargs.pop("vmax", None)
     if vmin is None:
         vmin = None if isinstance(node_color, str) else min(node_color)
     if vmax is None:
         vmax = None if isinstance(node_color, str) else max(node_color)
-    nx.draw_networkx(
-        G,
-        pos=pos, arrows=True, with_labels=with_labels,
-        labels=node_labels,
-        node_color=node_color,
-        cmap=cmap,
-        node_size=node_size,
-        width=edge_width,
-        vmin=vmin,
-        vmax=vmax,
-        **kwargs
-        )
+
+    node_types = combine_masks(number_of_nodes, target_mask=target_mask, source_mask=source_mask)
+    if node_types is not None:
+        edge_origins, edge_targets = zip(*G.edges)
+        for node_type in np.unique(node_types):
+            ix= node_types == node_type
+            nodelist = np.where(node_types == node_type)[0]
+            #print('nodelist',nodelist)
+            edge_index = find_edges_incident_on_nodelist(edge_origins, edge_targets, nodelist)
+            #print('edgelist',edge_index)
+            #print('checking',edge_width[edge_index])
+            if node_type == 'source':
+                nx.draw_networkx_nodes(G, pos, nodelist=nodelist, label=node_type,node_size=node_size[ix]#,node_shape='*'
+                                       ,node_color=node_color[ix],cmap=cmap,vmin=vmin,vmax=vmax,edgecolors='r',linewidths=2, **kwargs)
+                edgelist = G.edges(nbunch=nodelist)
+                #print(edgelist)
+                nx.draw_networkx_edges(G,pos,edgelist=edgelist,edge_width=edge_width[edge_index])
+            elif node_type == 'target':
+                nx.draw_networkx_nodes(G, pos, nodelist=nodelist, label=node_type,node_size=node_size[ix]#,node_shape='8'
+                                       ,node_color=node_color[ix],cmap=cmap,vmin=vmin,vmax=vmax,edgecolors='b',linewidths=2, **kwargs)
+                edgelist = G.edges(nbunch=nodelist)
+                nx.draw_networkx_edges(G,pos,edgelist=edgelist,edge_width=edge_width[edge_index])
+            elif node_type == 'both':
+                nx.draw_networkx_nodes(G, pos, nodelist=nodelist, label=node_type,node_size=node_size[ix]#,node_shape='o'
+                                       ,node_color=node_color[ix],cmap=cmap,vmin=vmin,vmax=vmax,edgecolors='g',linewidths=2, **kwargs)
+                edgelist = G.edges(nbunch=nodelist)
+                print(edgelist)
+                nx.draw_networkx_edges(G,pos,edgelist=edgelist,edge_width=edge_width[edge_index])
+            else:
+                nx.draw_networkx_nodes(G, pos, nodelist=nodelist,node_size=node_size[ix],
+                                       node_color='#C0C0C0',alpha=0.2,cmap=cmap,vmin=vmin,vmax=vmax, **kwargs)
+                edgelist = G.edges(nbunch=nodelist)
+                nx.draw_networkx_edges(G,pos,edgelist=edgelist,edge_width=edge_width[edge_index], alpha=0.2)
+        #nx.draw_networkx_edges(G, pos, arrows=True, width=edge_width,**kwargs)
+        #legend = ax.legend(prop={'size': 25})
+        
+        
+    else:
+        nx.draw_networkx(
+            G,
+            pos=pos, arrows=True, with_labels=with_labels,
+            labels=node_labels,
+            node_color=node_color,
+            cmap=cmap,
+            node_size=node_size,
+            width=edge_width,
+            vmin=vmin,
+            vmax=vmax,
+            **kwargs
+            )
     number_of_edges = A.count_nonzero()
     if show_edge_values and number_of_edges < 50:
         edge_labels = nx.get_edge_attributes(G, "weight")
@@ -301,45 +338,86 @@ def draw_nx_graph(
 
     sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(vmin=vmin, vmax=vmax))
     sm._A = []
-    plt.colorbar(sm)
+    cbar = plt.colorbar(sm,orientation="vertical", pad=-0.05, shrink=0.5)
+    cbar.ax.get_yaxis().labelpad = 15
+    cbar.ax.set_ylabel('Total Assets', rotation=270, fontsize=16)
     fig.patch.set_visible(False)
     ax.axis('off')
-    #
-    cut = 1.05
-    xmax= cut*max(xx for xx,yy in pos.values())
-    ymax= cut*max(yy for xx,yy in pos.values())
-    plt.xlim(0,xmax)
-    plt.ylim(0,ymax)
-    plt.margins(0,0)
+    
+#     cut_min = 0.9
+#     cut_max = 1.1
+#     xmin= cut_min*min(xx for xx,yy in pos.values())
+#     ymin= cut_min*min(yy for xx,yy in pos.values())
+#     xmax= cut_max*max(xx for xx,yy in pos.values())
+#     ymax= cut_max*max(yy for xx,yy in pos.values())
+#     plt.xlim(xmin,xmax)
+#     plt.ylim(ymin,ymax)
+#     plt.margins(0,0)
 
     if filename is not None:
         plt.savefig(filename, bbox_inches = 'tight', pad_inches = 0)
     if show:
         plt.show()
 
+
+# -
+
+def find_edges_incident_on_nodelist(edge_origins, edge_targets, nodelist):
+    edge_index = []
+    for i,node in enumerate(nodelist):
+        if (node in edge_targets) or (node in edge_origins):
+            edge_index.append(i)
+    return edge_index
+
+
 def make_mask_from_node_list(g, node_list, **kwargs):
     l = set(node_list)
     return torch.tensor([(x in l) for x in g.node_list.detach().cpu().numpy()], **kwargs)
+
+def combine_masks(
+        number_of_nodes,
+        source_mask=None,
+        target_mask=None,
+        target=r'target',
+        source=r'source',
+        both=r'both',
+        no=r'none'
+        ):
+    if source_mask is None and target_mask is None:
+        return None, None
+    node_type = np.full((number_of_nodes,), no, dtype=object)
+    if source_mask is not None:
+        node_type[source_mask] = source
+    if target_mask is not None:
+        node_type[target_mask] = target
+    if (source_mask is not None) and (target_mask is not None):
+        node_type[source_mask & target_mask] = both
+    return node_type
+
 
 def make_color_arr(
         number_of_nodes,
         source_mask=None,
         target_mask=None,
-        target_color='#ff7f0e',
-        source_color='#17becf',
-        both_color='#808080',
-        no_color="none"
+        target_color=r'#ff7f0e',
+        source_color=r'#17becf',
+        both_color=r'#808080',
+        no_color=r'none'
         ):
     if source_mask is None and target_mask is None:
-        return None
+        return None, None
     edge_colors = np.full((number_of_nodes,), no_color)
+    cdict={}
     if source_mask is not None:
         edge_colors[source_mask] = source_color
+        cdict[source_color[:4]] = 'source'
     if target_mask is not None:
         edge_colors[target_mask] = target_color
+        cdict[target_color[:4]] = 'target'
     if (source_mask is not None) and (target_mask is not None):
         edge_colors[source_mask & target_mask] = both_color
-    return edge_colors
+        cdict[both_color[:4]] = 'source & target'
+    return edge_colors, cdict
 
 def make_mask(g, idx, **kwargs):
     mask = torch.zeros((g.number_of_nodes,), **kwargs)
