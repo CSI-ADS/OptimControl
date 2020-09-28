@@ -274,7 +274,7 @@ def draw_nx_graph(
 
     G = nx.from_scipy_sparse_matrix(A, create_using=nx.DiGraph)
     pos = nx.nx_pydot.pydot_layout(G, prog='twopi', root=None)
-    
+
     vmin, vmax = kwargs.pop("vmin", None), kwargs.pop("vmax", None)
     if vmin is None:
         vmin = None if isinstance(node_color, str) else min(node_color)
@@ -284,6 +284,7 @@ def draw_nx_graph(
     node_types = combine_masks(number_of_nodes, target_mask=target_mask, source_mask=source_mask)
     if node_types is not None:
         edge_origins, edge_targets = zip(*G.edges)
+        print(np.unique(node_types))
         for node_type in np.unique(node_types):
             ix= node_types == node_type
             nodelist = np.where(node_types == node_type)[0]
@@ -315,8 +316,8 @@ def draw_nx_graph(
                 nx.draw_networkx_edges(G,pos,edgelist=edgelist,edge_width=edge_width[edge_index], alpha=0.2)
         #nx.draw_networkx_edges(G, pos, arrows=True, width=edge_width,**kwargs)
         #legend = ax.legend(prop={'size': 25})
-        
-        
+
+
     else:
         nx.draw_networkx(
             G,
@@ -343,7 +344,7 @@ def draw_nx_graph(
     cbar.ax.set_ylabel('Total Assets', rotation=270, fontsize=16)
     fig.patch.set_visible(False)
     ax.axis('off')
-    
+
 #     cut_min = 0.9
 #     cut_max = 1.1
 #     xmin= cut_min*min(xx for xx,yy in pos.values())
@@ -384,7 +385,7 @@ def combine_masks(
         no=r'none'
         ):
     if source_mask is None and target_mask is None:
-        return None, None
+        return None
     node_type = np.full((number_of_nodes,), no, dtype=object)
     if source_mask is not None:
         node_type[source_mask] = source

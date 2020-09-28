@@ -267,12 +267,12 @@ if use_schedule: # make new copy
 _,_, hist = optimize_control(compute_sparse_loss, cl, g, 
                              lambd=lambd, return_hist=True, verbose=True, 
                              save_loss_arr=True,
-                             save_params_every=100,
+                             save_params_every=2500,
                              num_steps=max_steps, lr=lr, scheduler=scheduler,
                              device=device, 
                              weight_control=weight_control,
                              control_cutoff=control_cutoff,
-                             loss_tol=1e-5,
+                             loss_tol=1e-8,
                              save_separate_losses=True,
                              source_mask=source_mask,
                              target_mask=target_mask
@@ -463,7 +463,7 @@ plt.show()
 cs = []
 ss = []
 param_result = []
-lambd_range = np.logspace(-10, 2, num=2)#np.logspace(-2, 1, num=10)
+lambd_range = np.logspace(-10, 2, num=15)#np.logspace(-2, 1, num=10)
 # lambd_range = np.linspace(0, 1, num=20)#np.logspace(-2, 1, num=10)
 print("lambdas to evaluate:", lambd_range)
 number_of_sources = g.number_of_nodes if source_mask is None else sum(source_mask)
@@ -472,10 +472,10 @@ for lambd in lambd_range:
     cl = get_cl_init(number_of_sources, device=device)
 
     loss_fn = compute_sparse_loss
-    cl, cost, hist = optimize_control(loss_fn, cl, g, lambd=lambd, return_hist=True, save_params_every=1000,
+    cl, cost, hist = optimize_control(loss_fn, cl, g, lambd=lambd, return_hist=True, save_params_every=10000,
                                 lr=lr, num_steps=max_steps, verbose=True, device=device, weight_control=weight_control,
                                      control_cutoff=control_cutoff, source_mask=source_mask, target_mask=target_mask, 
-                                      loss_tol=1e-6)
+                                      loss_tol=1e-8)
     # get some stats
     with torch.no_grad():
         c, s = compute_value(loss_fn, cl, g, lambd=lambd, as_separate=True, source_mask=source_mask, target_mask=target_mask)
@@ -573,7 +573,7 @@ from src.loss import *
 from src.network import *
 
 print(g.number_of_nodes)
-budget = 20
+budget = 10
 number_of_sources = g.number_of_nodes if source_mask is None else sum(source_mask)    
 cl = get_cl_init(number_of_sources, device=device)
 print(number_of_sources)
@@ -582,8 +582,8 @@ print(torch.min(cl_soft), torch.max(cl_soft))
 init_lr = 0.1
 decay = 0.1
 max_iter = 100000
-num_steps = 100
-use_schedule = True
+num_steps = 1000
+use_schedule = False
 lr = init_lr
 scheduler = None
 if use_schedule: # make new copy
@@ -602,7 +602,7 @@ print(torch.sum(g.compute_total_value()))
 
 param_est, loss_vals, constr_vals, hist_all = constraint_optimize_control(
         compute_sparse_loss, cl, g, budget,
-        verbose=True, return_hist=True,
+        verbose=False, return_hist=True,
         lr=init_lr, scheduler=scheduler,
         max_iter=max_iter, num_steps=num_steps,
         device=device, save_params_every=10000, save_loss_arr=False,
@@ -612,6 +612,9 @@ param_est, loss_vals, constr_vals, hist_all = constraint_optimize_control(
         weight_control=weight_control,
         control_cutoff=control_cutoff
         )
+# -
+
+hist_all["loss_cost"]
 
 # +
 plt.scatter(hist_all["step_nr"], hist_all["loss_control"])
@@ -638,10 +641,24 @@ plt.scatter(hist_all["step_nr"], hist_all["rho"])
 plt.xlabel("i")
 plt.ylabel("rho")
 plt.show()
+# +
+print("size = total control, color = cost")
+#print(hist["final_loss_cost"].shape)
+final_cost = pad_from_mask(hist_all["final_loss_cost_arr"], source_mask)
+final_control = pad_from_mask(1-hist_all["final_loss_control_arr"], target_mask)
+     
+g.draw(color_arr=final_cost, vmin=0, vmax=1, figsize=figsize, 
+       filename="figs/{}_size_control_color_cost_budget_{}.pdf".format(NETWORK_NAME, budget),
+      target_mask=target_mask, source_mask=source_mask)
 # -
 
 
+final_cost.shape
 
+g.number_of_nodes
 
+import pickle
+with open('dump.pickle', 'wb') as handle:
+    pickle.dump((param_est, loss_vals, constr_vals, hist_all, target_mask, source_mask), handle)
 
 
