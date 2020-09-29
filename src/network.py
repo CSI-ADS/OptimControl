@@ -325,7 +325,7 @@ def draw_nx_graph(
         #legend = ax.legend(prop={'size': 25})
 
 
-    if exclusion_mask is not None:
+    if (node_types is None) and (exclusion_mask is not None):
         nodelist = np.where(exclusion_mask==True)[0]
         nx.draw_networkx_nodes(G, pos, nodelist=nodelist,node_size=node_size[exclusion_mask]
                                        ,node_color='#C0C0C0',cmap=cmap,vmin=vmin,vmax=vmax,linewidths=1, **kwargs)
@@ -335,7 +335,7 @@ def draw_nx_graph(
 
         nx.draw_networkx_edges(G,pos,width=edge_width)
 
-    else: 
+    if (node_types is None) and (exclusion_mask is None):
         nx.draw_networkx(
                 G,
                 pos=pos, arrows=True, 
