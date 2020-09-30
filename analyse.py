@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.5.2
+#       jupytext_version: 1.6.0
 #   kernelspec:
 #     display_name: Python 3
 #     language: python
@@ -228,10 +228,28 @@ if LIMIT_CONTROL:
     target_mask = make_mask_from_node_list(g, V_target.astype(int)) # redo!
     source_mask = make_mask_from_node_list(g, V_source.astype(int))
     print("({}) sources {}, target {}".format(g.number_of_nodes, sum(source_mask), sum(target_mask)))
-    print(g.number_of_nodes, source_mask.shape, target_mask.shape)
+    print(g.number_of_nodes, g.number_of_edges, source_mask.shape, target_mask.shape)
     
     g.draw(color_arr=g.value, figsize=figsize, filename="figs/{}.pdf".format(NETWORK_NAME), show_edge_values=True, 
           source_mask=source_mask, target_mask=target_mask)
+
+# +
+##TESTING exclusion mask
+source_mask=None
+target_mask=None
+
+
+if LIMIT_CONTROL:
+    print("limiting control")
+    target_mask = make_mask_from_node_list(g, V_target.astype(int))
+    g = g.remove_irrelevant(target_mask)
+    #target_mask = make_mask_from_node_list(g, V_target.astype(int)) # redo!
+    #source_mask = make_mask_from_node_list(g, V_source.astype(int))
+    exclusion_mask = make_mask_from_node_list(g, V_target.astype(int))
+    #print("({}) sources {}, target {}".format(g.number_of_nodes, sum(source_mask), sum(target_mask)))
+    #print(g.number_of_nodes, g.number_of_edges, source_mask.shape, target_mask.shape)
+    
+    g.draw(color_arr=g.value,colorbar=True,colorbar_text='uw mama', figsize=figsize, filename="figs/{}.pdf".format(NETWORK_NAME), show_edge_values=True, exclusion_mask=exclusion_mask)
 # -
 
 plt.hist(g.compute_total_value(only_network_shares=True, include_root_shares=True).detach().cpu().numpy())
