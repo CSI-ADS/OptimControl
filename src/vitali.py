@@ -40,12 +40,11 @@ def get_dtilde(cl, C, reach):
 #     print("DTILDE", dtilde)
     return dtilde.flatten()
 
-def compute_control(cl, C, reach=None, control_cutoff=None):
+def compute_control(ol, C, reach=None, control_cutoff=None):
     if reach is None:
-        reach = get_reachable(cl)
+        reach = get_reachable(ol)
     assert len(reach) > 0, "no reachendents"
     if control_cutoff:
         C = make_control_cutoff(C, control_cutoff)
-    #print(C, reach)
-    dtilde = get_dtilde(cl, C, reach)
+    dtilde = get_dtilde(ol, C, reach)
     return dtilde

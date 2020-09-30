@@ -3,6 +3,7 @@ import numpy as np
 import networkx as nx
 import scipy
 import matplotlib.pyplot as plt
+from matplotlib.colors import LogNorm
 import math
 from .utils import *
 
@@ -180,9 +181,11 @@ class Network:
         zeros = (self.V == 0).float().detach().cpu().numpy()
         self.draw(color_arr=zeros, rescale=False, scale_size=False, **kwargs)
 
-    def draw(self, external_ownership=None, color_arr=None, size_arr=None, edge_arr=None, rescale=True,
-            scale_size=True, scale_color=True, scale_edge=True, show_edge_values=True, source_mask=None,
-             target_mask=None, exclusion_mask=None, colorbar=True, colorbar_text='Cost', **kwargs):
+    def draw(self, external_ownership=None, color_arr=None, size_arr=None, edge_arr=None,
+            rescale_size=True, rescale_color=False,
+            scale_size=True, scale_color=True,
+            scale_edge=True, show_edge_values=True, source_mask=None,
+             target_mask=None, exclusion_mask=None, colorbar=True, colorbar_text='Cost', colorbar_scale=None, **kwargs):
         node_list = dict(zip(np.arange(self.number_of_nodes), self.nodes.detach().cpu().numpy()))
         V = self.V.detach().cpu().numpy()
             #nx.set_node_attributes(G, values, name="value")
@@ -198,7 +201,7 @@ class Network:
                 # print(color_arr)
                 assert len(color_arr) == self.number_of_nodes
                 node_color = np.array(color_arr)
-            if rescale and node_color is not None:
+            if rescale_color and node_color is not None:
                 node_color = node_color / np.nanmax([1, np.nanmax(node_color)])
                 node_color = np.clip(node_color, 0.01, None)
         # print('color:' ,node_color)
@@ -211,7 +214,7 @@ class Network:
             if size_arr is not None:
                 assert len(size_arr) == self.number_of_nodes
                 node_size = np.array(size_arr)
-            if rescale and node_size is not None:
+            if rescale_size and node_size is not None:
                 node_size = node_size / np.nanmax([1, np.nanmax(node_size)])
                 node_size = np.clip(node_size, 0.01, None)
                 node_size *= 300
@@ -226,12 +229,12 @@ class Network:
         #print(node_size)
         with_labels = self.number_of_nodes < 50
         node_labels = node_list if with_labels else None
-        
+
         if node_color is None:
             colorbar=False
             colorbar_text=None
 
-        draw_nx_graph(
+        ax = draw_nx_graph(
             self.A,
             with_labels=with_labels,
             node_labels=node_labels,
@@ -244,8 +247,11 @@ class Network:
             exclusion_mask=exclusion_mask,
             colorbar=colorbar,
             colorbar_text=colorbar_text,
+            colorbar_scale=colorbar_scale,
             **kwargs
             )
+
+        return ax
 
 # +
 def draw_nx_graph(
@@ -264,6 +270,7 @@ def draw_nx_graph(
         colorbar=False,
         colorbar_text='Cost',
         cmap=plt.cm.jet,
+        colorbar_scale=None,
         **kwargs):
     # nx defaults
     if node_color is None:
@@ -338,7 +345,7 @@ def draw_nx_graph(
     if (node_types is None) and (exclusion_mask is None):
         nx.draw_networkx(
                 G,
-                pos=pos, arrows=True, 
+                pos=pos, arrows=True,
                 with_labels=with_labels,
                 labels=node_labels,
                 node_color=node_color,
@@ -349,21 +356,27 @@ def draw_nx_graph(
                 vmax=vmax,
                 **kwargs
                 )
-        
+
     number_of_edges = A.count_nonzero()
     if show_edge_values and number_of_edges < 50:
         edge_labels = nx.get_edge_attributes(G, "weight")
         edge_labels = {k:"{:.2f}".format(v) for k,v in edge_labels.items()}
         nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
 
-        
+
     #if exclusion_mask is not None:
-        
-        
-    sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(vmin=vmin, vmax=vmax))
+    print(vmin, vmax)
+    if colorbar_scale is None:
+        colorbar_scale = plt.Normalize(vmin=vmin, vmax=vmax)
+    elif colorbar_scale == 'log':
+        colorbar_scale = LogNorm(vmin=vmin, vmax=vmax)
+    else:
+        raise ValueError("scale not implemented")
+
+    sm = plt.cm.ScalarMappable(cmap=cmap, norm=colorbar_scale)
     sm._A = []
     if colorbar:
-        cbar = plt.colorbar(sm,orientation="vertical", pad=-0.05, shrink=0.5)
+        cbar = plt.colorbar(sm, orientation="vertical", pad=-0.05, shrink=0.5)
         cbar.ax.get_yaxis().labelpad = 15
         cbar.ax.set_ylabel(colorbar_text, rotation=270, fontsize=16)
     fig.patch.set_visible(False)
@@ -383,6 +396,8 @@ def draw_nx_graph(
         plt.savefig(filename, bbox_inches = 'tight', pad_inches = 0)
     if show:
         plt.show()
+
+    return ax
 
 
 # -
@@ -459,38 +474,4 @@ def normalize_ownership(g):
     Csum_zero = (Csum == 0).to(C.dtype)
     Csum = Csum + Csum_zero
     C = C / Csum.reshape((1, N))
-    return C
-
-
-def adjust_for_external_ownership(cl_desc, g, source_mask=None):
-    assert torch.min(cl_desc) >= 0 and torch.max(cl_desc) <= 1, "cl was outside bounds"
-#     N = C.shape[0]
-    C = g.ownership.clone()
-    # cl_desc might be too short
-    if source_mask is not None:
-        cl = torch.zeros((g.number_of_nodes,), device=cl_desc.device, dtype=cl_desc.dtype)
-        cl[source_mask] = cl_desc
-    else:
-        cl = cl_desc
-
-    non_root_nodes = g.identify_controllable()
-    # C
-    #print(C)
-    # renormalize
-    # assumption: we will take shares from other proportional to the amount of shares
-    # e.g. 10% of shares, is 10% from all owners
-    #print("C = ", C)
-    #print(non_root_nodes)
-    #print(cl)
-    #print("Cnr = ", C[:,non_root_nodes], (1.0 - cl[non_root_nodes]))
-    C[:,non_root_nodes] = C[:,non_root_nodes] * (1.0 - cl[non_root_nodes])
-    #print("C = ", C)
-#     C = torch.cat((cl.reshape(1, N), C), axis=0)
-#     Csum = C.sum(axis=0)
-#     #numerical issues
-#     Csum_zero = (Csum == 0).double()
-#     Csum = Csum + Csum_zero
-#     #print(Csum)
-#     C = C / Csum.reshape((1, N))
-#     C = C[1:,:]
     return C

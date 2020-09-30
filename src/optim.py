@@ -10,21 +10,34 @@ def get_cl_init(N, loc=-7, scale=1e-4, device=None, dtype=torch.float):
     cl = torch.tensor(cl_normal.clone().detach(), requires_grad=True, device=device, dtype=dtype)
     return cl
 
-def cutoff_values(cl, cutoff=1e-8):
-    #cl[cl < cutoff] = 0.0
-    #cl[cl > 1-cutoff] = 1.0
-    cl_cut = torch.zeros_like(cl)
-    cl_cut[cl > cutoff] = cl[cl > cutoff]
-    cl_cut[cl > 1-cutoff] = cl[cl > 1-cutoff]
-    return cl_cut
+def compute_total_shares(cl, g, source_mask=None): # cl is |S|, while ol is N
 
-def compute_value(fn, cl, *args, **kwargs):
     cl_soft = torch.sigmoid(cl) # !
-    # cl_soft = cutoff_values(cl_soft)
-    return fn(cl_soft, *args, **kwargs)
 
-def compute_value_and_grad(fn, cl, *args, **kwargs):
-    value = compute_value(fn, cl, *args, **kwargs)
+    shares_in_network = g.total_shares_in_network
+    # root nodes are taken to be fully controllable
+    shares_in_network[g.identify_uncontrollable()] = 1.0
+    if source_mask is not None:
+        assert sum(source_mask) == cl.shape[0], "mask not matching parameters"
+        shares_in_network = shares_in_network[source_mask] # mask size S
+
+
+    # core
+    ol = shares_in_network*cl_soft # ol is 0 for no external ownership!
+    assert torch.min(ol) >= 0 and torch.max(ol) <= 1, "strange: {} -- {}".format(torch.min(ol), torch.max(ol))
+
+    # size S to N
+    ol = pad_from_mask(ol, source_mask, ttype='torch')
+    assert ol.shape[0] == g.number_of_nodes, "should be N size"
+
+    return ol
+
+def compute_value(fn, cl, g, *args, **kwargs):
+    ol = compute_total_shares(cl, g, source_mask=kwargs.get("source_mask", "None"))
+    return fn(ol, g, *args, **kwargs)
+
+def compute_value_and_grad(fn, cl, g, *args, **kwargs):
+    value = compute_value(fn, cl, g, *args, **kwargs)
     value.backward()
     grads = cl.grad
     return value, grads
@@ -58,6 +71,7 @@ def optimize_control(
     if scheduler is not None:
         scheduler = scheduler(optimizer)
     hist = defaultdict(list)
+    source_mask = kwargs.get("source_mask", None)
     i_last = 0
     loss_prev = None
     pbar = tqdm(range(num_steps), disable=not verbose)
@@ -73,6 +87,7 @@ def optimize_control(
                 hist["saved_at"].append(i)
                 hist["params"].append(params.detach().cpu().numpy())
                 hist["params_sm"].append(torch.sigmoid(params).detach().cpu().numpy())
+                hist["ol"].append(compute_total_shares(cl, g, source_mask=source_mask).detach().cpu().numpy())
 
                 if save_loss_arr:
                     losses = compute_value(loss_fn, params, g, lambd=lambd, as_separate=True, as_array=True, **kwargs)
@@ -102,7 +117,9 @@ def optimize_control(
 
     with torch.no_grad():
         hist["final_iter"] = i_last
+        hist["final_params"] = params.detach().cpu().numpy()
         hist["final_params_sm"] = torch.sigmoid(params).detach().cpu().numpy()
+        hist["final_ol"] = compute_total_shares(cl, g, source_mask=source_mask).detach().cpu().numpy()
         losses = compute_value(loss_fn, params, g, lambd=lambd, as_separate=True, as_array=True, **kwargs)
         hist["final_{}_arr".format(loss_1_name)] = losses[0].detach().cpu().numpy()
         hist["final_{}_arr".format(loss_2_name)] = losses[1].detach().cpu().numpy()
@@ -203,7 +220,9 @@ def constraint_optimize_control(
 
     with torch.no_grad():
         hist["final_iter"] = step_nr
+        hist["final_params"] = params.detach().cpu().numpy()
         hist["final_params_sm"] = torch.sigmoid(params).detach().cpu().numpy()
+        hist["final_ol"] = compute_total_shares(params, g, source_mask=kwargs.get("source_mask", None)).detach().cpu().numpy()
         losses = compute_value(loss_fns, params, g, lambd=1, as_separate=True, as_array=True, **kwargs)
         hist["final_{}_arr".format(loss_1_name)]= losses[0].detach().cpu().numpy()
         hist["final_{}_arr".format(loss_2_name)] = losses[1].detach().cpu().numpy()
