@@ -1,4 +1,5 @@
 #
+*.pickle
 figs/
 *.pdf
 *.png
