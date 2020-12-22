@@ -5,11 +5,13 @@ from .utils import *
 #
 # def shapley(C, control_cutoff):
 #
-def adjust_for_external_ownership(ol, g, source_mask=None):
+def adjust_for_external_ownership(ol, g):
     assert torch.min(ol) >= 0 and torch.max(ol) <= 1, "ol was outside bounds"
     C = g.ownership.clone()
     non_root_nodes = g.identify_controllable() # only non-roots should be adjusted
-    C[:,non_root_nodes] = C[:,non_root_nodes] * (1.0 - ol[non_root_nodes]) # remains the same if we don't own (ol=0)
+    tot_shares = reduce_from_mask(g.total_shares_in_network, non_root_nodes)
+    perc_avail_shares = torch.clamp(reduce_from_mask(ol, non_root_nodes) / tot_shares, min=0, max=1) # to be certain we clip
+    C[:,non_root_nodes] = C[:,non_root_nodes] * (1.0 - perc_avail_shares) # remains the same if we don't own (ol=0)
     return C
 
 def make_control_cutoff(C, control_cutoff):
@@ -25,7 +27,7 @@ def make_control_cutoff(C, control_cutoff):
 
 def compute_control_with_external(ol, g, source_mask=None, target_mask=None, weight_control=False, control_cutoff=None):
 
-    C = adjust_for_external_ownership(ol, g, source_mask=source_mask)
+    C = adjust_for_external_ownership(ol, g)
 
     if control_cutoff is not None:
         C = make_control_cutoff(C, control_cutoff)

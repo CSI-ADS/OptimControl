@@ -135,9 +135,7 @@ class Network:
         for n in targets:
             anc = anc.union(nx.ancestors(G, n))
         anc = list(anc)
-        print("anc = ", anc)
         mask = idx_to_mask(self.N, anc)
-        print("mask = ", mask)
         return mask
 
     def remove_irrelevant(self, target_mask):
@@ -172,20 +170,21 @@ class Network:
             print("no values to draw")
             return
         nans = torch.isnan(self.V).float().detach().cpu().numpy()
-        self.draw(color_arr=nans, rescale=False, scale_size=False, **kwargs)
+        self.draw(color_arr=nans, rescale_color=False, scale_size=False, **kwargs)
 
     def draw_zeros(self, **kwargs):
         if self.V is None:
             print("no values to draw")
             return
         zeros = (self.V == 0).float().detach().cpu().numpy()
-        self.draw(color_arr=zeros, rescale=False, scale_size=False, **kwargs)
+        self.draw(color_arr=zeros, rescale_color=False, scale_size=False, **kwargs)
 
     def draw(self, external_ownership=None, color_arr=None, size_arr=None, edge_arr=None,
             rescale_size=True, rescale_color=False,
             scale_size=True, scale_color=True,
             scale_edge=True, show_edge_values=True, source_mask=None,
              target_mask=None, exclusion_mask=None, colorbar=True, colorbar_text='Cost', colorbar_scale=None, **kwargs):
+        print("Drawing {} nodes".format(self.number_of_nodes))
         node_list = dict(zip(np.arange(self.number_of_nodes), self.nodes.detach().cpu().numpy()))
         V = self.V.detach().cpu().numpy()
             #nx.set_node_attributes(G, values, name="value")
@@ -214,7 +213,7 @@ class Network:
             if size_arr is not None:
                 assert len(size_arr) == self.number_of_nodes
                 node_size = np.array(size_arr)
-            if rescale_size and node_size is not None:
+            if rescale_size and node_size is not None and len(node_size) > 0:
                 node_size = node_size / np.nanmax([1, np.nanmax(node_size)])
                 node_size = np.clip(node_size, 0.01, None)
                 node_size *= 300
@@ -227,7 +226,7 @@ class Network:
                 edge_width = np.array(edge_arr)
 
         #print(node_size)
-        with_labels = self.number_of_nodes < 50
+        with_labels = self.number_of_nodes <= 50
         node_labels = node_list if with_labels else None
 
         if node_color is None:
@@ -275,11 +274,11 @@ def draw_nx_graph(
     # nx defaults
     if node_color is None:
         node_color = "#613613"#"#1f78b4"
-    if node_size is None:
+    if node_size is None or len(node_size) == 0:
         node_size = 300
     else:
         node_size = np.interp(node_size, (node_size.min(), node_size.max()), (100, 600))
-    if edge_width is None:
+    if edge_width is None or len(edge_width) == 0:
         edge_width = 1.0
     else:
         edge_width = np.interp(edge_width, (edge_width.min(), edge_width.max()), (0.5, 3))

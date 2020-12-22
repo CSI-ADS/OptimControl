@@ -63,6 +63,7 @@ def optimize_control(
         save_separate_losses=False,
         loss_1_name="loss_control", loss_2_name="loss_cost",
         loss_tol=1e-8,
+        es_wait=1,
         **kwargs):
     params = cl
     g.to(device)
@@ -75,6 +76,7 @@ def optimize_control(
     i_last = 0
     loss_prev = None
     pbar = tqdm(range(num_steps), disable=not verbose)
+    n_wait = 0
     for i in pbar:
         i_last = i
         params, loss = update(loss_fn, optimizer, params, g, lambd=lambd, **kwargs)
@@ -106,12 +108,17 @@ def optimize_control(
 
         with torch.no_grad():
             if (loss_prev is not None) and (torch.abs(loss - loss_prev) < loss_tol):
-                if verbose:
-                    print("breaking optimization at step {} with loss: {}".format(i, loss))
-                break
+                n_wait += 1
+                if n_wait >= es_wait:
+                    if verbose:
+                        print("breaking optimization at step {} with loss: {}".format(i, loss))
+                    break
+                else:
+                    if verbose:
+                        print("waiting, but no improvement: {}".format(n_wait))
             else:
-                loss_prev = loss
-
+                n_wait = 0 # reset, must be subsequent
+            loss_prev = loss
             pbar.set_postfix({'loss': loss.detach().cpu().numpy()})
 
 
@@ -141,6 +148,7 @@ def constraint_optimize_control(
         constr_tol = 1e-8,
         loss_tol = 1e-8,
         loss_1_name="loss_control", loss_2_name="loss_cost",
+        es_wait=1,
         **kwargs
         ):
     params = cl
@@ -163,14 +171,14 @@ def constraint_optimize_control(
                         l = pad_from_mask(l, tm, ttype='torch')
                     if tm is not None:
                         c = pad_from_mask(c, sm, ttype='torch')
-                c_l = c - budget
-                augm_l = l + 0.5 * rho * c_l**2 + alpha * c_l # augmented lagrangian
+                h_constr = c - budget
+                augm_lagr = l + 0.5 * rho * h_constr**2 + alpha * torch.abs(h_constr) # augmented lagrangian
                 # print("terms:", l.detach().cpu().numpy(), (0.5*rho*c**2).detach().cpu().numpy(), (alpha*c).detach().cpu().numpy())
                 # print("c = ", c)
                 if as_separate:
-                    return augm_l, c_l
+                    return augm_lagr, h_constr
                 else:
-                    return augm_l
+                    return augm_lagr
 
             params, augm_new, hist_new = optimize_control(augm_loss, params, g,
                     lambd=1,
@@ -179,6 +187,7 @@ def constraint_optimize_control(
                     device=device, save_params_every=save_params_every, save_loss_arr=save_loss_arr,
                     loss_1_name="loss_augm", loss_2_name="loss_costr",
                     loss_tol=loss_tol,
+                    es_wait=es_wait,
                     **kwargs
                     )
 
@@ -223,6 +232,7 @@ def constraint_optimize_control(
         hist["final_params"] = params.detach().cpu().numpy()
         hist["final_params_sm"] = torch.sigmoid(params).detach().cpu().numpy()
         hist["final_ol"] = compute_total_shares(params, g, source_mask=kwargs.get("source_mask", None)).detach().cpu().numpy()
+        hist["total_shares_in_network"] = g.total_shares_in_network.detach().cpu().numpy()
         losses = compute_value(loss_fns, params, g, lambd=1, as_separate=True, as_array=True, **kwargs)
         hist["final_{}_arr".format(loss_1_name)]= losses[0].detach().cpu().numpy()
         hist["final_{}_arr".format(loss_2_name)] = losses[1].detach().cpu().numpy()

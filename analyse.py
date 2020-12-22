@@ -7,7 +7,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.5.2
+#       jupytext_version: 1.6.0
 #   kernelspec:
 #     display_name: Python 3
 #     language: python
@@ -26,8 +26,21 @@ from src.utils import reduce_from_mask, pad_from_mask
 from src.plotting import *
 import sys, os
 
+np.random.seed(seed=33)
+
 # %load_ext autoreload
 # %autoreload 2
+
+plt.rcParams.update({
+    "text.usetex": True,
+    "font.family": "sans-serif",
+    "font.sans-serif": ["Helvetica"]})
+## for Palatino and other serif fonts use:
+plt.rcParams.update({
+    "text.usetex": True,
+    "font.family": "serif",
+    "font.serif": ["Palatino"],
+})
 
 device = 'cpu'
 use_gpu = False
@@ -48,6 +61,7 @@ NETWORK_NAME = [
 ][1]
 print(NETWORK_NAME)
 
+# set to false for most examples
 LIMIT_CONTROL=True
 
 if NETWORK_NAME in ("VITALI", "SIMPLE_CHAIN", "SIMPLE_CYCLE", "SIMPLE_STAR"):
@@ -113,8 +127,6 @@ assert len(values)>0, "?"
 assert len(edges)>0, "?"
 # -
 
-V
-
 nodes
 
 values
@@ -173,7 +185,7 @@ for col in node_nx_props.columns:
     y = node_nx_props[col].values
     plt.scatter(x, y, s=1) 
     plt.xlabel("value")
-    plt.ylabel(col)
+    plt.ylabel(col.replace("_","-"))
     plt.xscale('log')
 #     plt.yscale('log')
     plt.show()
@@ -218,7 +230,10 @@ if g.number_of_nodes < 10000:
     g.draw(color_arr=g.value, figsize=figsize, filename="figs/{}.pdf".format(NETWORK_NAME), show_edge_values=True)
     
 g = g.to(device)
+# -
 
+
+g.V
 
 # +
 source_mask=None
@@ -256,10 +271,10 @@ print(g.number_of_nodes, number_of_sources)
 cl = get_cl_init(number_of_sources, device=device)
 cl_soft = torch.sigmoid(cl)
 print(torch.min(cl_soft), torch.max(cl_soft))
-init_lr = 0.1
+init_lr = 0.01
 decay = 0.1
-max_steps = 2
-lambd=0.1
+max_steps = 5000
+lambd=0.75
 weight_control = False
 control_cutoff = None
 use_schedule = False
@@ -271,7 +286,7 @@ if use_schedule: # make new copy
 _,_, hist = optimize_control(compute_sparse_loss, cl, g, 
                              lambd=lambd, return_hist=True, verbose=True, 
                              save_loss_arr=True,
-                             save_params_every=500,
+                             save_params_every=100,
                              num_steps=max_steps, lr=lr, scheduler=scheduler,
                              device=device, 
                              weight_control=weight_control,
@@ -386,13 +401,19 @@ hist
 
 hist["ol"][0].shape
 
+g.total_shares_in_network
+
 # +
+print(source_mask, target_mask)
+
 plot_direct_control(
         g,
         hist["final_ol"],
         source_mask=source_mask,
         target_mask=target_mask,
-        figsize=(20, 5)
+        figsize=(15, 5),
+        total_shares_in_network=hist["total_shares_in_network"],
+        filename="figs/o_distr_{}_{}.pdf".format(NETWORK_NAME, lambd)
         )
 
 plot_control_distr(
@@ -402,7 +423,9 @@ plot_control_distr(
         source_mask=source_mask,
         target_mask=target_mask,
         cutoff=None,
-        figsize=(20, 5)
+        figsize=(20, 5),
+        total_shares_in_network=hist["total_shares_in_network"],
+        filename="figs/control_distr_{}_{}.pdf".format(NETWORK_NAME, lambd)
         )
 # -
 
@@ -447,7 +470,10 @@ plt.show()
 cs = []
 ss = []
 param_result = []
-lambd_range = np.logspace(-10, 2, num=15)#np.logspace(-2, 1, num=10)
+if NETWORK_NAME == 'SIMPLE_STAR':
+    lambd_range = [ 0.50, 0.6, 0.75, 1, 1.1]
+else:
+    lambd_range = np.logspace(-3, 3, num=15)#np.logspace(-2, 1, num=10)
 # lambd_range = np.linspace(0, 1, num=20)#np.logspace(-2, 1, num=10)
 print("lambdas to evaluate:", lambd_range)
 number_of_sources = g.number_of_nodes if source_mask is None else sum(source_mask)
@@ -481,7 +507,7 @@ with torch.no_grad():
 
 # +
 fig, ax1 = plt.subplots()
-
+print(lambd_range)
 if weight_control:
     raise NotImplemented("todo")
 #     y_control = (torch.sum(g.value).detach().cpu().numpy()-cs)/torch.sum(g.value).detach().cpu().numpy()
@@ -490,7 +516,7 @@ else:
     number_of_target_nodes = int(sum(target_mask) if target_mask is not None else g.number_of_nodes) 
     print("targets:", number_of_target_nodes)
     y_control = (number_of_target_nodes-cs)#/g.number_of_nodes
-    
+
 ax1.plot(lambd_range, y_control, label="control", color='blue')
 ax1.scatter(lambd_range, y_control, color='blue')
 ax1.set_ylabel("control", color='blue')
@@ -506,9 +532,20 @@ ax2.set_yscale('log')
 ax1.set_xlabel("lambda")
 plt.legend()
 
-plt.savefig("figs/{}_lambda_curve.pdf".format(NETWORK_NAME))
+plt.savefig("figs/{}_lambda_curve_bis.pdf".format(NETWORK_NAME))
 plt.show()
 
+plt.plot(y_control, ss, color='blue', lw=2)
+plt.scatter(y_control, ss, color='blue')
+plt.ylabel("cost")
+plt.xlabel("control")
+for i in range(len(lambd_range)):
+    #if i not in (4,8,9,10): continue
+        plt.text(y_control[i]+0.5, ss[i], r"   $\lambda={:.2f}$   ".format(lambd_range[i]), va='top', ha='right' if i < len(lambd_range)/2-2 else 'left')
+# plt.xscale('log')
+plt.yscale('log')
+plt.savefig("figs/{}_lambda_curve.pdf".format(NETWORK_NAME))
+plt.show()
 
 plt.plot(ss, y_control)
 plt.xlabel("total budget")
@@ -573,7 +610,8 @@ from src.loss import *
 from src.network import *
 
 print(g.number_of_nodes)
-budget = 10000
+#budget = 10000
+budget = 100000
 number_of_sources = g.number_of_nodes if source_mask is None else sum(source_mask)    
 cl = get_cl_init(number_of_sources, device=device)
 print(number_of_sources)
@@ -581,13 +619,13 @@ cl_soft = torch.sigmoid(cl)
 print(torch.min(cl_soft), torch.max(cl_soft))
 init_lr = 0.01
 decay = 0.1
-num_steps = 1000
-max_iter = 2
+num_steps = 5000
+max_iter = 20
 use_schedule = False
 lr = init_lr
 scheduler = None
 if use_schedule: # make new copy
-    scheduler = lambda opt : torch.optim.lr_scheduler.MultiStepLR(opt, milestones=[7500, 9500], gamma=decay)
+    scheduler = lambda opt : torch.optim.lr_scheduler.MultiStepLR(opt, milestones=[500, 1000, 2500, 4500, 7500, 9500, 9900], gamma=decay)
 
 print(torch.sum(g.compute_total_value()))
     
@@ -607,21 +645,22 @@ param_est, loss_vals, constr_vals, hist_all = constraint_optimize_control(
         max_iter=max_iter, num_steps=num_steps,
         device=device, save_params_every=10000, save_loss_arr=False,
         constr_tol=1e-8,
-        loss_tol = 1e-8,
+        loss_tol = 1e-6,
         source_mask=source_mask, target_mask=target_mask,
         weight_control=weight_control,
-        control_cutoff=control_cutoff
+        control_cutoff=control_cutoff,
+        es_wait=3
         )
 
 # +
 plt.scatter(hist_all["step_nr"], hist_all["loss_control"])
 plt.xlabel("i")
-plt.ylabel("loss_contr")
+plt.ylabel("loss contr")
 plt.show()
 
 plt.scatter(hist_all["step_nr"], hist_all["loss_cost"])
 plt.xlabel("i")
-plt.ylabel("loss_cost")
+plt.ylabel("loss cost")
 plt.show()
 
 plt.scatter(hist_all["step_nr"], hist_all["loss_augm"])
@@ -644,9 +683,9 @@ print("size = total control, color = cost")
 final_cost = pad_from_mask(hist_all["final_loss_cost_arr"], source_mask)
 final_control = pad_from_mask(1-hist_all["final_loss_control_arr"], target_mask)
      
-g.draw(color_arr=final_cost, vmin=0, vmax=1, figsize=figsize, 
+g.draw(color_arr=final_control, figsize=figsize, 
        filename="figs/{}_size_control_color_cost_budget_{}.pdf".format(NETWORK_NAME, budget),
-      target_mask=target_mask, source_mask=source_mask)
+      target_mask=target_mask, source_mask=source_mask, colorbar_text="control")
 
 
 # +
@@ -655,7 +694,9 @@ plot_direct_control(
         hist_all["final_ol"],
         source_mask=source_mask,
         target_mask=target_mask,
-        figsize=(20, 5)
+        figsize=(20, 5),
+        total_shares_in_network=hist_all["total_shares_in_network"],
+        filename="figs/o_distr_{}_budget{}.pdf".format(NETWORK_NAME, budget)
         )
 
 plot_control_distr(
@@ -665,12 +706,16 @@ plot_control_distr(
         source_mask=source_mask,
         target_mask=target_mask,
         cutoff=None,
-        figsize=(20, 5)
+        figsize=(20, 5),
+        total_shares_in_network=hist_all["total_shares_in_network"],
+        filename="figs/control_distr_{}_budget{}.pdf".format(NETWORK_NAME, budget)
         )
 # -
 
 import pickle
 with open('dump.pickle', 'wb') as handle:
     pickle.dump((param_est, loss_vals, constr_vals, hist_all, target_mask, source_mask), handle)
+
+
 
 
