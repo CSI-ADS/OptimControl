@@ -11,7 +11,7 @@ def adjust_for_external_ownership(ol, g):
     non_root_nodes = g.identify_controllable() # only non-roots should be adjusted
     tot_shares = reduce_from_mask(g.total_shares_in_network, non_root_nodes)
     perc_avail_shares = torch.clamp(reduce_from_mask(ol, non_root_nodes) / tot_shares, min=0, max=1) # to be certain we clip
-    C[:,non_root_nodes] = C[:,non_root_nodes] * (1.0 - perc_avail_shares) # remains the same if we don't own (ol=0)
+    C[:,non_root_nodes] = C[:,non_root_nodes] * (1 - perc_avail_shares) # remains the same if we don't own (ol=0)
     return C
 
 def make_control_cutoff(C, control_cutoff):
@@ -91,7 +91,7 @@ def compute_owned_cost(ol, g, as_array=False, source_mask=None, scale_by_total=T
     if g.value is not None: # then weight
         value = reduce_from_mask(value, source_mask)
         s_cost_per_comp *= value
-
+    #print(s_cost_per_comp.flatten())
     if as_array:
         return s_cost_per_comp.flatten()
     else:

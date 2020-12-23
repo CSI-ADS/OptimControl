@@ -4,10 +4,16 @@ import numpy as np
 from tqdm import tqdm, trange
 from .utils import *
 
-def get_cl_init(N, loc=-7, scale=1e-4, device=None, dtype=torch.float):
-    cl_normal = torch.normal(mean=loc, std=0.1, size=(N,))
+def get_cl_init(N, loc=-7, scale=1e-4, vals=None, device=None):
+    if vals is not None:
+        cl_normal = torch.tensor(vals)
+    else:
+        cl_normal = torch.normal(mean=loc, std=scale, size=(N,))
+
     #cl[0] = 0
-    cl = torch.tensor(cl_normal.clone().detach(), requires_grad=True, device=device, dtype=dtype)
+    cl = cl_normal.clone().detach().requires_grad_(True)
+    cl = cl.to(device)
+    #cl = torch.tensor(cl_normal.clone().detach(), requires_grad=True, device=device, dtype=dtype)
     return cl
 
 def compute_total_shares(cl, g, source_mask=None): # cl is |S|, while ol is N
@@ -33,7 +39,7 @@ def compute_total_shares(cl, g, source_mask=None): # cl is |S|, while ol is N
     return ol
 
 def compute_value(fn, cl, g, *args, **kwargs):
-    ol = compute_total_shares(cl, g, source_mask=kwargs.get("source_mask", "None"))
+    ol = compute_total_shares(cl, g, source_mask=kwargs.get("source_mask"))
     return fn(ol, g, *args, **kwargs)
 
 def compute_value_and_grad(fn, cl, g, *args, **kwargs):
@@ -123,10 +129,12 @@ def optimize_control(
 
 
     with torch.no_grad():
+        print("computing hist info")
         hist["final_iter"] = i_last
         hist["final_params"] = params.detach().cpu().numpy()
         hist["final_params_sm"] = torch.sigmoid(params).detach().cpu().numpy()
         hist["final_ol"] = compute_total_shares(cl, g, source_mask=source_mask).detach().cpu().numpy()
+        hist["total_shares_in_network"] = g.total_shares_in_network.detach().cpu().numpy()
         losses = compute_value(loss_fn, params, g, lambd=lambd, as_separate=True, as_array=True, **kwargs)
         hist["final_{}_arr".format(loss_1_name)] = losses[0].detach().cpu().numpy()
         hist["final_{}_arr".format(loss_2_name)] = losses[1].detach().cpu().numpy()
@@ -160,6 +168,7 @@ def constraint_optimize_control(
     step_nr = -1
 
     for i in range(max_iter):
+        print("Starting with iter i={}".format(i))
         while rho < 1e+20:
             # optimize the actual loss
             step_nr += 1
@@ -171,19 +180,24 @@ def constraint_optimize_control(
                         l = pad_from_mask(l, tm, ttype='torch')
                     if tm is not None:
                         c = pad_from_mask(c, sm, ttype='torch')
-                h_constr = c - budget
-                augm_lagr = l + 0.5 * rho * h_constr**2 + alpha * torch.abs(h_constr) # augmented lagrangian
+                #h_constr = torch.abs(c - budget)
+                h_constr = c - budget # can only be smaller than or equal to zero
+                # if c > budget, which is not allowed: h_constr is positive, and only then contribute to loss
+                h_constr = torch.clamp(h_constr/budget, min=0)
+                h_constr = torch.abs(h_constr) # just a check
+                augm_lagr = l + 0.5 * rho * h_constr**2 + alpha * h_constr # augmented lagrangian
                 # print("terms:", l.detach().cpu().numpy(), (0.5*rho*c**2).detach().cpu().numpy(), (alpha*c).detach().cpu().numpy())
                 # print("c = ", c)
+                #print("l, h:", l, h_constr)
                 if as_separate:
-                    return augm_lagr, h_constr
+                    return augm_lagr, h_constr#*0
                 else:
                     return augm_lagr
 
             params, augm_new, hist_new = optimize_control(augm_loss, params, g,
                     lambd=1,
                     verbose=verbose, return_hist=True,
-                    lr=lr, scheduler=scheduler, num_steps=num_steps,
+                    lr=lr if step_nr == 0 else lr/10, scheduler=scheduler, num_steps=num_steps,
                     device=device, save_params_every=save_params_every, save_loss_arr=save_loss_arr,
                     loss_1_name="loss_augm", loss_2_name="loss_costr",
                     loss_tol=loss_tol,
@@ -201,6 +215,7 @@ def constraint_optimize_control(
 
             hist[loss_1_name].append(losses_orig_new[0].detach().cpu().numpy())
             hist[loss_2_name].append(losses_orig_new[1].detach().cpu().numpy())
+            print("current required value (budget={}): {}".format(budget, losses_orig_new[1]))
             hist["loss_augm"].append(loss_new)
             hist["i_contr_iter"].append(i)
             hist["step_nr"].append(step_nr)
@@ -209,7 +224,7 @@ def constraint_optimize_control(
             hist["constr"].append(constr_new)
             hist["tot_cost"].append(constr_new+budget)
             hist["final_iter"].append(hist_new["final_iter"])
-
+            hist["total_shares_in_network"] = hist_new["total_shares_in_network"]
             hist["hist_optim"].append(hist_new)
             # print("iter:",hist["final_iter"][-1], " augm:", loss_new, "constr_new:", constr_new, "constr:", constr, "tot_cost:", hist["tot_cost"][-1])
             # print("loss_control:", hist["loss_control"][-1], "loss_cost:", hist["loss_cost"][-1])
@@ -221,18 +236,18 @@ def constraint_optimize_control(
                 break
 
         constr = constr_new
-        alpha += rho * constr
+        alpha += np.abs(rho * constr) # just to be sure, should go up!
         if np.abs(constr) <= constr_tol:
             flag_max_iter = False
             break
 
 
     with torch.no_grad():
+        print("computing final hist info")
         hist["final_iter"] = step_nr
         hist["final_params"] = params.detach().cpu().numpy()
         hist["final_params_sm"] = torch.sigmoid(params).detach().cpu().numpy()
         hist["final_ol"] = compute_total_shares(params, g, source_mask=kwargs.get("source_mask", None)).detach().cpu().numpy()
-        hist["total_shares_in_network"] = g.total_shares_in_network.detach().cpu().numpy()
         losses = compute_value(loss_fns, params, g, lambd=1, as_separate=True, as_array=True, **kwargs)
         hist["final_{}_arr".format(loss_1_name)]= losses[0].detach().cpu().numpy()
         hist["final_{}_arr".format(loss_2_name)] = losses[1].detach().cpu().numpy()

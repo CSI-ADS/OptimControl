@@ -9,7 +9,7 @@ from .utils import *
 
 class Network:
 
-    def __init__(self, A, value=None, node_list=None, dtype=torch.float):
+    def __init__(self, A, value=None, node_list=None):
         A = scipy.sparse.csr_matrix(A)
         if isinstance(value, np.ndarray):
             value = torch.from_numpy(value)
@@ -18,10 +18,8 @@ class Network:
         if isinstance(node_list, np.ndarray):
             node_list = torch.from_numpy(node_list)
         assert value is None or isinstance(value, torch.Tensor), "use torch, found {}".format(type(value))
-        if value is not None:
-            value = value.to(dtype)
         self.N = A.shape[0]
-        self.set_control_matrix(A, dtype=dtype)
+        self.set_control_matrix(A)
         self.V = value # value of each node
         self.node_list = node_list
         self.A = A
@@ -41,12 +39,12 @@ class Network:
     #     D = D - torch.diag(torch.diag(D))
     #     self.D = D > tol
 
-    def set_control_matrix(self, A, dtype=torch.float):
+    def set_control_matrix(self, A):
         if scipy.sparse.issparse(A):
             A = torch.from_numpy(A.todense())
         if isinstance(A, np.ndarray):
             A = torch.from_numpy(A)
-        self.C = A.to(dtype)
+        self.C = A
         #self.C.fill_diagonal_(1)
 
     @property
@@ -104,7 +102,7 @@ class Network:
 
     def identify_controllable(self):
         Ctot = self.total_shares_in_network
-        contr = Ctot > 1e-8
+        contr = Ctot >= 1e-8
         return contr
 
     # func 1
@@ -116,8 +114,7 @@ class Network:
         A = self.A[sel,:][:,sel]
         V = None if self.value is None else self.value[sel]
         node_list = None if self.node_list is None else self.node_list[sel]
-        dtype = self.C.dtype
-        return Network(A, value=V, node_list=node_list, dtype=dtype)
+        return Network(A, value=V, node_list=node_list)
 
     # func 2
     def remove_uncontrollable(self):
