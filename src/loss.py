@@ -25,7 +25,7 @@ def make_control_cutoff(C, control_cutoff):
     # rest is zero
     return C_adj
 
-def compute_control_with_external(ol, g, source_mask=None, target_mask=None, weight_control=False, control_cutoff=None):
+def compute_control_with_external(ol, g, source_mask=None, target_mask=None, weight_control=False, control_cutoff=None, as_matrix=False):
 
     C = adjust_for_external_ownership(ol, g)
 
@@ -33,7 +33,11 @@ def compute_control_with_external(ol, g, source_mask=None, target_mask=None, wei
         C = make_control_cutoff(C, control_cutoff)
 
     #core
-    control = compute_control(ol, C, reach=torch.arange(g.number_of_nodes)) # get the control of my node
+    control = compute_control(ol, C, reach=torch.arange(g.number_of_nodes), as_matrix=as_matrix) # get the control of my node
+    if as_matrix:
+        assert not weight_control, "not implemented"
+        return control
+
     assert control.shape[0] == g.number_of_nodes
     if control_cutoff:
         control[control >= control_cutoff] = 1.0

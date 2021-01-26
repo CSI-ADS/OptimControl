@@ -14,7 +14,7 @@ def get_d(cl, reach):
 def get_Isub(reach, device=None):
     return torch.eye(len(reach), device=device)
 
-def get_dtilde(cl, C, reach):
+def get_dtilde(cl, C, reach, as_matrix=False):
     Nreach = len(reach)
 
     if Nreach == 0:
@@ -36,15 +36,17 @@ def get_dtilde(cl, C, reach):
     inverted = torch.inverse(to_invert)
 #     print("INV", inverted)
     # TODO: adjust by p value
+    if as_matrix:
+        return d.reshape(-1, 1) * inverted
     dtilde = d.matmul(inverted)
 #     print("DTILDE", dtilde)
     return dtilde.flatten()
 
-def compute_control(ol, C, reach=None, control_cutoff=None):
+def compute_control(ol, C, reach=None, control_cutoff=None, as_matrix=False):
     if reach is None:
         reach = get_reachable(ol)
     assert len(reach) > 0, "no reachendents"
     if control_cutoff:
         C = make_control_cutoff(C, control_cutoff)
-    dtilde = get_dtilde(ol, C, reach)
+    dtilde = get_dtilde(ol, C, reach, as_matrix=as_matrix)
     return dtilde

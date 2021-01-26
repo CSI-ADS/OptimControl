@@ -23,6 +23,7 @@ def plot_direct_control(
 
     ol_plot = copy.copy(ol)
     total_shares_in_network_plot = copy.copy(total_shares_in_network)
+    total_shares_in_network_plot[g.identify_uncontrollable()] = 1.0
     if source_mask is not None:
         nodelist = nodelist[source_mask]
         ol_plot = ol_plot[source_mask]
@@ -73,6 +74,7 @@ def plot_control_distr(
     node_names = g.node_list.detach().cpu().numpy()
     ol_plot = ol
     total_shares_in_network_plot = total_shares_in_network
+    total_shares_in_network_plot[g.identify_uncontrollable()] = 1.0 #extra
     if target_mask is not None:
         target_mask = target_mask.detach().cpu().numpy()
         node_names = node_names[target_mask]

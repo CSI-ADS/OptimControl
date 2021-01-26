@@ -6,6 +6,7 @@ from .utils import *
 
 def get_cl_init(N, loc=-7, scale=1e-4, vals=None, device=None):
     if vals is not None:
+        assert N == len(vals)
         cl_normal = torch.tensor(vals)
     else:
         cl_normal = torch.normal(mean=loc, std=scale, size=(N,))

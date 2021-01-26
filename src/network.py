@@ -63,6 +63,10 @@ class Network:
     def number_of_edges(self):
         return self.A.count_nonzero()
 
+    def get_indices(self, node_list):
+        gnl = list(self.node_list.numpy())
+        return [gnl.index(int(x)) for x in node_list]
+
     def compute_total_value(self, only_network_shares=True, include_root_shares=True, sel_mask=None):
         if self.value is None:
             return None
