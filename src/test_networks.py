@@ -62,6 +62,15 @@ def simple_star():
     max_val = np.max(list(values.values()))
     values = {u:2**(max_val - v + 1) for u, v in values.items()}
     nx.set_node_attributes(G, values, name="value")
-    weights = dict(zip(G.edges(), np.random.uniform(0, 1, G.number_of_edges())))
+    weights = dict(zip(G.edges(), np.random.uniform(0, 1, G.number_of_edges()))) # correct: make sure sum is <=1
     nx.set_edge_attributes(G, weights, name="weight")
+    # for u in G.nodes():
+    #     tot_w = 0
+    #     for u, v, data in G.in_edges(u, data=True):
+    #         tot_w += data["weight"]
+    #     if tot_w <= 1:
+    #         continue
+    #     for u, v, data in G.in_edges(u, data=True):
+    #         G[u,v] = data["weight"]/tot_w
+    #         print(u, v,G[u,v])
     return G

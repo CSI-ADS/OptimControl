@@ -22,9 +22,10 @@ import networkx as nx
 from tqdm import tqdm
 import pandas as pd
 from src.test_networks import *
-from src.utils import reduce_from_mask, pad_from_mask
+from src.utils import reduce_from_mask, pad_from_mask, my_savefig
 from src.plotting import *
 import sys, os
+
 
 np.random.seed(seed=33)
 
@@ -50,6 +51,7 @@ if use_gpu and torch.cuda.is_available():
     print("CUDA available")
     device = 'cuda'
 print(device)
+
 # -
 
 COUNTRY_CODES = """
@@ -105,7 +107,7 @@ print(NETWORK_NAME)
 LIMIT_CONTROL=True
 assert LIMIT_CONTROL
 # WARNING: DONT CHANGE THIS, NEVER CHECKED WItHOUT SOUrCE MASK ETC
-
+LAYOUT = nx.spring_layout
 if NETWORK_NAME in ("VITALI", "SIMPLE_CHAIN", "SIMPLE_CYCLE", "SIMPLE_STAR"):
     G_nx = get_test_network(NETWORK_NAME)
     nx.adjacency_matrix(G_nx).todense()
@@ -116,6 +118,9 @@ if NETWORK_NAME in ("VITALI", "SIMPLE_CHAIN", "SIMPLE_CYCLE", "SIMPLE_STAR"):
     else:
         values = {u:{"value":1} for u in G_nx.nodes()}
     edges = {(u,v):{"weight":p} for (u,v),p, in nx.get_edge_attributes(G_nx, "weight").items()}
+    LAYOUT = lambda x: nx.nx_pydot.pydot_layout(x, prog='twopi', root=None)
+    V_target = np.array(nodes)
+    V_source = np.array(nodes)
 else:
     edge_filename, value_filename = {
         "PHARMA" : ("edges_pharma_lc-3.csv", "value_pharma_lc.csv"),
@@ -167,16 +172,28 @@ else:
         
     
     if LIMIT_CONTROL:
-        NETWORK_NAME += "_sc"
+        # sorry about the name, should be 'source is ...'
+#         NETWORK_NAME += "_sc_targetisallother"
+        NETWORK_NAME += "_sc_targetisNONGB"
+#         NETWORK_NAME += "_sc_targetisall"
         #V_source = V.loc[~V["is_financial"],"company_id"].astype(int).unique()
         #print("source:", V_source.shape)
         #V_target = V.loc[V["is_biotech"],"company_id"].astype(int).unique()
         #print("target:", V_target.shape)
         # let's try something else!
         
-        #source_sel = V.index#V.loc[:,"country_simple"] != "GB"
+        #source_sel = V.loc[:,"country_simple"] != "GB"
+        #source_sel = V.index
+        # always remains the same:
         target_sel = V.loc[:,"is_biotech"].astype(bool) & (V.loc[:,"country_simple"] == "GB")
-        source_sel = ~target_sel
+        if NETWORK_NAME.endswith("targetisNONGB"):
+            source_sel = V.loc[:,"country_simple"] != "GB" # non GB
+        elif NETWORK_NAME.endswith("targetisall"):
+            source_sel = V.index
+        elif NETWORK_NAME.endswith("targetisallother"):
+            source_sel = ~target_sel
+        else:
+            raise ValueError("unknown network name source")
         V_source = V.loc[source_sel,"company_id"].astype(int).unique()
         print("source:", V_source.shape)
         V_target = V.loc[target_sel,"company_id"].astype(int).unique()
@@ -186,8 +203,6 @@ print(NETWORK_NAME)
 assert len(values)>0, "?"
 assert len(edges)>0, "?"
 # -
-
-V
 
 V_source
 
@@ -274,13 +289,13 @@ print(g.number_of_nodes, g.number_of_edges)
 print("-"*100)
 g.educated_value_guess()
 print("ZEROS")
-g.draw_zeros(figsize=figsize)
+g.draw_zeros(figsize=figsize, layout=LAYOUT)
 print("NANS")
-g.draw_nans(figsize=figsize)
+g.draw_nans(figsize=figsize, layout=LAYOUT)
 print("="*100)
 if g.number_of_nodes < 10000:
     print("Value graph")
-    g.draw(color_arr=g.value, figsize=figsize)
+    g.draw(color_arr=g.value, figsize=figsize, layout=LAYOUT)
 print("dropping nans")
 # TODO: better handling of remaining nans: what are these?
 g = g.dropna_vals()
@@ -290,13 +305,15 @@ g = g.dropna_vals()
 print(g.number_of_nodes, g.number_of_edges)
 if g.number_of_nodes < 10000:
     print("Value graph")
-    g.draw(color_arr=g.value, figsize=figsize, filename="figs/{}.pdf".format(NETWORK_NAME), show_edge_values=True)
+    g.draw(color_arr=g.value, figsize=figsize, filename="figs/{}.pdf".format(NETWORK_NAME), show_edge_values=True, layout=LAYOUT)
     
 g = g.to(device)
 # -
 
 
 g.V
+
+g.node_list
 
 # +
 source_mask=None
@@ -313,7 +330,7 @@ if LIMIT_CONTROL:
     print(g.number_of_nodes, g.number_of_edges, source_mask.shape, target_mask.shape)
     
     g.draw(color_arr=g.value, figsize=figsize, filename="figs/{}.pdf".format(NETWORK_NAME), show_edge_values=True, 
-          source_mask=source_mask, target_mask=target_mask)
+          source_mask=source_mask, target_mask=target_mask, layout=LAYOUT)
     print("Number of source nodes:", torch.sum(source_mask))
     print("Number of target nodes:", torch.sum(target_mask))
 # -
@@ -323,6 +340,10 @@ plt.hist(g.compute_total_value(only_network_shares=True, include_root_shares=Tru
 plt.yscale('log')
 plt.ylabel("euro")
 plt.show()
+
+# save data
+with open("data_network_{}.pickle".format(NETWORK_NAME), 'wb') as f:
+    pickle.dump((source_mask, target_mask, g, NETWORK_NAME), f)
 
 # +
 from collections import defaultdict
@@ -336,10 +357,11 @@ print(g.number_of_nodes, number_of_sources)
 cl = get_cl_init(number_of_sources, device=device, loc=-8)
 cl_soft = torch.sigmoid(cl)
 print(torch.min(cl_soft), torch.max(cl_soft))
-init_lr = 0.01
+init_lr = 1#0.01
 decay = 0.1
-max_steps = 2000
-lambd = 1.38949549e-02 #1.93069773e-01#0#1.00000000e+01#5.17947468e-02 #1e-3
+max_steps = 3000
+lambd = 1#1 #0#0.75#0.75#1.38949549e-02 #1.93069773e-01#0#1.00000000e+01#5.17947468e-02 #1e-3
+print("lambda = ",lambd)
 weight_control = False
 control_cutoff = None
 use_schedule = False
@@ -351,7 +373,7 @@ if use_schedule: # make new copy
 _,_, hist = optimize_control(compute_sparse_loss, cl, g, 
                              lambd=lambd, return_hist=True, verbose=True, 
                              save_loss_arr=True,
-                             save_params_every=1000,
+                             save_params_every=500,
                              num_steps=max_steps, lr=lr, scheduler=scheduler,
                              device=device, 
                              weight_control=weight_control,
@@ -363,10 +385,14 @@ _,_, hist = optimize_control(compute_sparse_loss, cl, g,
                             )
 # -
 
+print(hist["time"], g.number_of_nodes)
+
 if source_mask is not None:
     print(torch.sum(g.compute_total_value(only_network_shares=True, include_root_shares=True)))
 Vtot = g.compute_total_value(only_network_shares=True, include_root_shares=True, sel_mask=source_mask)
 print(torch.sum(Vtot))
+
+hist["final_control"]
 
 # +
 # import torch.autograd.profiler as profiler
@@ -436,7 +462,7 @@ for loss_name, loss_arr in {k:v for k,v in hist.items() if (k.startswith("loss_"
         plt.yscale('log')
     if num_params <= 15:
         plt.legend()
-    plt.savefig("figs/{}_{}_{}_ifo_step.pdf".format(NETWORK_NAME, lambd, loss_name))
+    my_savefig("figs/{}_{}_{}_ifo_step.pdf".format(NETWORK_NAME, lambd, loss_name))
     plt.show()
 
 
@@ -448,7 +474,7 @@ plt.ylabel(r"parameter (sigmoid) = percent bought of !available! company i stock
 plt.yscale('log')
 if num_params <= 15:
     plt.legend()
-plt.savefig("figs/{}_{}_sigmoid_ifo_step.pdf".format(NETWORK_NAME, lambd))
+my_savefig("figs/{}_{}_sigmoid_ifo_step.pdf".format(NETWORK_NAME, lambd))
 plt.show()
 
 plt.figure()
@@ -459,7 +485,7 @@ plt.ylabel(r"o = percent bought of company i")
 plt.yscale('log')
 if num_params <= 15:
     plt.legend()
-plt.savefig("figs/{}_{}_totshares_ifo_step.pdf".format(NETWORK_NAME, lambd))
+my_savefig("figs/{}_{}_totshares_ifo_step.pdf".format(NETWORK_NAME, lambd))
 plt.show()
 # -
 
@@ -492,44 +518,49 @@ plot_control_distr(
         source_mask=source_mask,
         target_mask=target_mask,
         cutoff=None,
-        figsize=(20, 5),
+        figsize=(15, 2.5),
         total_shares_in_network=hist["total_shares_in_network"],
         filename="figs/control_distr_{}_{}.pdf".format(NETWORK_NAME, lambd)
         )
 # -
 
+g.V
+
 if num_params <= 1000:
+    kwargs = {"show_edge_values":False, "show_node_names":False}
     figsize=(10,10)
     print("direct direct control o")
     direct_control=hist["final_ol"]
-    g.draw(external_ownership=direct_control, vmin=0, vmax=1, figsize=figsize)
+    g.draw(external_ownership=direct_control, vmin=0, vmax=1, figsize=figsize, layout=LAYOUT, **kwargs)
 
     print("cost of buying")
     final_cost=pad_from_mask(hist["final_loss_cost_arr"], source_mask)
-    g.draw(color_arr=final_cost, vmin=0, vmax=1, figsize=figsize)
+    g.draw(color_arr=final_cost, vmin=0, vmax=1, figsize=figsize, layout=LAYOUT, **kwargs)
     
     print("total/propagated control")
     final_control = pad_from_mask(1-hist["final_loss_control_arr"], target_mask)
     #print(final_control)
-    g.draw(color_arr=final_control, vmin=0, vmax=1, figsize=figsize)
+    g.draw(color_arr=final_control, vmin=0, vmax=1, figsize=figsize, layout=LAYOUT, **kwargs)
     
     print("size = total control, color = cost")
-    #print(hist["final_loss_cost"].shape)
+    print(hist["final_loss_cost"].shape)
     g.draw(color_arr=final_cost, size_arr=final_control, vmin=0, vmax=1, figsize=figsize, filename="figs/{}_{}_size_control_color_cost.pdf".format(NETWORK_NAME, lambd),
-          target_mask=target_mask)
+          target_mask=target_mask, layout=LAYOUT, **kwargs)
+#     g.draw(color_arr=final_cost, size_arr=final_control, vmin=0, vmax=1, figsize=figsize, filename="figs/{}_{}_size_control_color_cost.pdf".format(NETWORK_NAME, lambd),
+#       layout=LAYOUT, **kwargs)
 
 sum(hist["final_loss_control_arr"])
 
 sum(target_mask)
 
 print(
-    "Fraction of control: ", 
-    1 - sum(hist["final_loss_control_arr"]) / sum(target_mask).numpy()
+    "Fraction of control: ", float(hist["final_control"])
 )
 
 
 # +
-def make_groupby_network(g, V, ol, target_mask, column="country"):
+
+def make_groupby_network(g, V, ol, target_mask, column="country", show=True, ax=None):
     node_list = list(g.node_list.numpy())
     #print(node_list)
     bar_list = []
@@ -553,15 +584,19 @@ def make_groupby_network(g, V, ol, target_mask, column="country"):
     #print(new_NL)
     bar_list = dict(bar_list)
     bar_list = {k: v for k, v in sorted(bar_list.items(), key=lambda item: -item[1])}
-    plt.bar(list(bar_list.keys()), list(bar_list.values()))
-    plt.yscale('log')
-    plt.ylabel("control on GB biotech")
-    plt.xlabel("country")
-    plt.show()
+    if ax is None:
+        fig, ax = plt.subplots()    
+    ax.bar(list(bar_list.keys()), list(bar_list.values()))
+    ax.set_yscale('log')
+    ax.set_ylabel("control on GB biotech")
+    ax.set_xlabel("country")
+    ax.set_ylim(0.01, tot_control)
+    if show:
+        plt.show()
 
 
 print(NETWORK_NAME)
-if NETWORK_NAME == "BIOTECH_SEC_sc":
+if "BIOTECH_SEC_sc" in NETWORK_NAME:
     make_groupby_network(g, V, hist["final_ol"], target_mask)     
 # -
 
@@ -582,18 +617,21 @@ plt.ylabel("value after optimization")
 # plt.xlim(-1,10)
 plt.show()
 
-# +
 cs = []
 ss = []
+control_values = []
 param_result = []
+hists = []
 if NETWORK_NAME == 'SIMPLE_STAR':
-    lambd_range = [ 0.50, 0.6, 0.75, 1, 1.1]
+    lambd_range = [ 0, 0.50, 0.6, 0.75, 1, 1.1]
 else:
-    lambd_range = np.logspace(-3, 5, num=15)#np.logspace(-2, 1, num=10)
+#     lambd_range = [0] + list(np.logspace(-3, 2, num=20))
+    lambd_range = [0] + np.logspace(-3, -1, num=20) # source non GB
+#     lambd_range = np.logspace(-4, 2, num=5)#np.logspace(-2, 1, num=10)
 # lambd_range = np.linspace(0, 1, num=20)#np.logspace(-2, 1, num=10)
 print("lambdas to evaluate:", lambd_range)
 number_of_sources = g.number_of_nodes if source_mask is None else sum(source_mask)
-    
+max_steps = 3000
 for lambd in lambd_range:
     cl = get_cl_init(number_of_sources, device=device)
 
@@ -609,13 +647,14 @@ for lambd in lambd_range:
         param_result.append(cl.detach().cpu())
         cs.append(c.detach().cpu())
         ss.append(s.detach().cpu())
+        control_values.append(hist["final_control"])
         #print(lambd, param_result[-1], c, s)
         if num_params <= 15:
             tot_shares = g.total_shares_in_network.detach().cpu().numpy()
             tot_shares[g.identify_uncontrollable().detach().cpu().numpy()] = 1
             print(tot_shares*hist["final_params_sm"])
             g.draw(external_ownership=tot_shares*hist["final_params_sm"])
-        
+        hists.append(hist)
 with torch.no_grad():
     cs = np.array([x.numpy() for x in cs])
     ss = np.array([x.numpy() for x in ss])
@@ -629,9 +668,10 @@ if weight_control:
 #     y_control = (torch.sum(g.value).detach().cpu().numpy()-cs)/torch.sum(g.value).detach().cpu().numpy()
     #print(y_control)
 else:
-    number_of_target_nodes = int(sum(target_mask) if target_mask is not None else g.number_of_nodes) 
-    print("targets:", number_of_target_nodes)
-    y_control = (number_of_target_nodes-cs)#/g.number_of_nodes
+    #number_of_target_nodes = int(sum(target_mask) if target_mask is not None else g.number_of_nodes) 
+    #print("targets:", number_of_target_nodes)
+    #y_control = (number_of_target_nodes-cs)#/g.number_of_nodes
+    y_control = control_values
 
 ax1.plot(lambd_range, y_control, label="control", color='blue')
 ax1.scatter(lambd_range, y_control, color='blue')
@@ -643,35 +683,39 @@ ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
 
 ax2.plot(lambd_range, ss, label="total budget", color='red')
 ax2.scatter(lambd_range, ss, color='red')
-ax2.set_ylabel("total budget", color='red')
+ax2.set_ylabel("total budget (€1M)", color='red')
 ax2.set_yscale('log')
 ax1.set_xlabel("lambda")
 plt.legend()
 
-plt.savefig("figs/{}_lambda_curve_bis.pdf".format(NETWORK_NAME))
+my_savefig("figs/{}_lambda_curve_bis.pdf".format(NETWORK_NAME))
 plt.show()
 
+with open("data_for_{}_lambda_curve.pickle".format(NETWORK_NAME), 'wb') as f:
+    pickle.dump((g, y_control, ss, lambd_range, NETWORK_NAME, hists, ss, cs), f)
 plt.plot(y_control, ss, color='blue', lw=2)
 plt.scatter(y_control, ss, color='blue')
-plt.ylabel("cost")
+plt.ylabel("cost (€1M)")
 plt.xlabel("control")
 for i in range(len(lambd_range)):
+    print(i)
     #if i not in (4,8,9,10): continue
-        plt.text(y_control[i]+0.5, ss[i], r"   $\lambda={:.2f}$   ".format(lambd_range[i]), va='top', ha='right' if i < len(lambd_range)/2-2 else 'left')
+    plt.text(y_control[i]+0.5, ss[i], r"   $\lambda={:.2f}$   ".format(lambd_range[i]), va='top', ha='right' if i < len(lambd_range)/2-2 else 'left')
 # plt.xscale('log')
 plt.yscale('log')
-plt.savefig("figs/{}_lambda_curve.pdf".format(NETWORK_NAME))
+my_savefig("figs/{}_lambda_curve.pdf".format(NETWORK_NAME))
 plt.show()
 
-plt.plot(ss, y_control)
-plt.xlabel("total budget")
-plt.ylabel("total control")
+plt.plot(ss, y_control, color='blue', lw=2)
+plt.xlabel("cost (€1M)")
+plt.ylabel("control")
 plt.xscale('log')
-plt.yscale('log')
-plt.savefig("figs/{}_control_vs_cost_curve.pdf".format(NETWORK_NAME))
+for i in range(len(lambd_range)):
+    plt.text(ss[i], y_control[i], r"   $\lambda={:.2f}$   ".format(lambd_range[i]), va='top', ha='right' if i < len(lambd_range)/2-2 else 'left')
+#plt.yscale('log')
+my_savefig("figs/{}_control_vs_cost_curve.pdf".format(NETWORK_NAME))
 
 plt.show()
-
 
 # +
 # node_nx_props.index = node_nx_props.index.astype(int)
@@ -701,20 +745,6 @@ plt.show()
 # plt.show()
 # -
 
-def make_groupby_network(g, V, column="country"):
-    node_list = g.node_list
-    new_A = None
-    new_NL = []
-    for k, v in V.groupby(columns):
-        if v.shape[0] == 0: continue
-        sel_NL = v.index
-        sel_NL = [x for x in sel_NL if x in node_list]
-        if len(sel_NL) == 0: continue
-        new_NL.append(k)
-        # do the aggregation
-        ... stuff with g.A etc
-
-
 # # Constraint
 
 source_mask
@@ -730,11 +760,11 @@ g.draw(
     colorbar_scale='log',
     colorbar_text='value (€1M)',
     rescale_color=False,
-    rescale_size=True
+    rescale_size=True,
+    layout=LAYOUT
 )
 
-plt.hist(torch.sigmoid(get_cl_init(number_of_sources, device=device).detach()).cpu().numpy())
-plt.show()
+print(NETWORK_NAME)
 
 # +
 from collections import defaultdict
@@ -743,21 +773,24 @@ from src.vitali import *
 from src.loss import *
 from src.network import *
 
+print(NETWORK_NAME)
 print(g.number_of_nodes)
 #budget = 10000
 # budget = 100000
-budget = 1000
-
-print("target value:", g.compute_total_value(only_network_shares=True, include_root_shares=True, sel_mask=target_mask).sum())
-print("with budget:", budget)
 number_of_sources = g.number_of_nodes if source_mask is None else sum(source_mask)    
 source_values = g.compute_total_value(only_network_shares=True, include_root_shares=True, sel_mask=source_mask)[source_mask]
+target_values = g.compute_total_value(only_network_shares=True, include_root_shares=True, sel_mask=target_mask)[target_mask]
 total_source_value = source_values.sum()
+total_target_value = target_values.sum()
+print("total value of the targets:", total_target_value)
+budget = float(total_target_value) #1000
+print("target value:", g.compute_total_value(only_network_shares=True, include_root_shares=True, sel_mask=target_mask).sum())
+print("with budget:", budget)
 source_value_ratio = budget/total_source_value
 print("need ratio:", source_value_ratio)
 guess = torch.clamp(source_value_ratio/source_values, min=1e-8, max=1-1e-8)
 guess = torch.log(guess/(1-guess))
-print("guess:", guess)
+#print("guess:", guess)
 cl = get_cl_init(number_of_sources, device=device, loc=-10, vals=guess)
 print(number_of_sources)
 cl_soft = torch.sigmoid(cl)
@@ -765,14 +798,14 @@ print(torch.min(cl_soft), torch.max(cl_soft))
 # init_lr = 0.001
 init_lr = 1
 decay = 0.1
-num_steps = 10000
+num_steps = 3000
 # num_steps = 100
 max_iter = 20
 use_schedule = True#False
 lr = init_lr
 scheduler = None
 if use_schedule: # make new copy
-    scheduler = lambda opt : torch.optim.lr_scheduler.MultiStepLR(opt, milestones=[2000, 6000], gamma=decay)
+    scheduler = lambda opt : torch.optim.lr_scheduler.MultiStepLR(opt, milestones=[2000], gamma=decay)
 
 #clip_value = 0.0001
 #cl.register_hook(lambda grad: torch.clamp(grad, -clip_value, clip_value))
@@ -798,8 +831,6 @@ param_est, loss_vals, constr_vals, hist_all = constraint_optimize_control(
         constr_tol=1e-8,
         loss_tol = 1e-6,
         source_mask=source_mask, target_mask=target_mask,
-        weight_control=weight_control,
-        control_cutoff=control_cutoff,
         es_wait=10
         )
 print("DONE!")
@@ -848,7 +879,7 @@ final_control = pad_from_mask(1-hist_all["final_loss_control_arr"], target_mask)
      
 g.draw(color_arr=final_control, figsize=figsize, 
        filename="figs/{}_size_control_color_cost_budget_{}.pdf".format(NETWORK_NAME, budget),
-      target_mask=target_mask, source_mask=source_mask, colorbar_text="control")
+      target_mask=target_mask, source_mask=source_mask, colorbar_text="control", layout=LAYOUT)
 # -
 
 
@@ -856,6 +887,9 @@ plt.hist(hist_all["final_ol"], bins=100)
 plt.show()
 
 g.value
+
+print(sum(final_cost))
+print(sum(final_control))
 
 # +
 #g.compute_total_value(only_network_shares=True, include_root_shares=True, sel_mask=target_mask)[target_mask]
@@ -928,7 +962,7 @@ plot_control_distr(
 
 import pickle
 with open('dump_network{}_budget{}.pickle'.format(NETWORK_NAME, budget), 'wb') as handle:
-    pickle.dump((param_est, loss_vals, constr_vals, hist_all, target_mask, source_mask), handle)
+    pickle.dump((g, V, param_est, loss_vals, constr_vals, hist_all, target_mask, source_mask), handle)
 
 sum(source_mask & target_mask)
 
@@ -938,9 +972,12 @@ reduce_from_mask(hist_all["final_ol"], source_mask)
 
 reduce_from_mask(hist_all["final_ol"], source_mask & target_mask)
 
+print(NETWORK_NAME)
+if "BIOTECH_SEC_sc" in NETWORK_NAME:
+    print(sum(1-hist_all["final_loss_control_arr"]))
+    make_groupby_network(g, V, hist_all["final_ol"], target_mask)     
 
-
-
+#
 
 
 

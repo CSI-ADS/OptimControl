@@ -12,7 +12,7 @@ class Network:
     def __init__(self, A, value=None, node_list=None):
         A = scipy.sparse.csr_matrix(A)
         if isinstance(value, np.ndarray):
-            value = torch.from_numpy(value)
+            value = torch.from_numpy(value).double()
         if isinstance(node_list, list):
             node_list = torch.from_numpy(np.array(node_list))
         if isinstance(node_list, np.ndarray):
@@ -75,6 +75,7 @@ class Network:
             shares = self.total_shares_in_network
             if include_root_shares:
                 contr = self.identify_controllable()
+                #print(V, contr, shares)
                 V[contr] *= shares[contr] # keep the rest at full value
             else:
                 V *= shares # roots are put to 0
@@ -89,6 +90,13 @@ class Network:
     @property
     def total_shares_in_network(self):
         return self.C.sum(axis=0)
+
+    def compute_total_target_shares(self, target_mask):
+        return float(self.total_shares_in_network[target_mask].sum()+sum(self.identify_uncontrollable()[target_mask]))
+
+
+    def total_target_shares(self, target_mask):
+        return self.C[:,target_mask]
 
     @property
     def device(self):
@@ -184,7 +192,9 @@ class Network:
             rescale_size=True, rescale_color=False,
             scale_size=True, scale_color=True,
             scale_edge=True, show_edge_values=True, source_mask=None,
-             target_mask=None, exclusion_mask=None, colorbar=True, colorbar_text='Cost', colorbar_scale=None, **kwargs):
+            show_node_names=False,
+             target_mask=None, exclusion_mask=None, colorbar=True, colorbar_text='Cost', colorbar_scale=None,
+             **kwargs):
         print("Drawing {} nodes".format(self.number_of_nodes))
         node_list = dict(zip(np.arange(self.number_of_nodes), self.nodes.detach().cpu().numpy()))
         V = self.V.detach().cpu().numpy()
@@ -217,7 +227,8 @@ class Network:
             if rescale_size and node_size is not None and len(node_size) > 0:
                 node_size = node_size / np.nanmax([1, np.nanmax(node_size)])
                 node_size = np.clip(node_size, 0.01, None)
-                node_size *= 300
+                node_size *= 100
+                #print("rescaling node size")
 
         edge_width = None
         if scale_edge:
@@ -227,7 +238,7 @@ class Network:
                 edge_width = np.array(edge_arr)
 
         #print(node_size)
-        with_labels = self.number_of_nodes <= 50
+        with_labels = show_node_names and (self.number_of_nodes <= 50)
         node_labels = node_list if with_labels else None
 
         if node_color is None:
@@ -271,18 +282,19 @@ def draw_nx_graph(
         colorbar_text='Cost',
         cmap=plt.cm.jet,
         colorbar_scale=None,
+        layout=nx.spring_layout,
         **kwargs):
     # nx defaults
     if node_color is None:
         node_color = "#613613"#"#1f78b4"
     if node_size is None or len(node_size) == 0:
-        node_size = 300
+        node_size = 100
     else:
-        node_size = np.interp(node_size, (node_size.min(), node_size.max()), (100, 600))
+        node_size = np.interp(node_size, (node_size.min(), node_size.max()), (50, 200))
     if edge_width is None or len(edge_width) == 0:
         edge_width = 1.0
     else:
-        edge_width = np.interp(edge_width, (edge_width.min(), edge_width.max()), (0.5, 3))
+        edge_width = np.interp(edge_width, (edge_width.min(), edge_width.max()), (0.25, 1.5))
 
     number_of_nodes = A.shape[0]
 
@@ -290,7 +302,8 @@ def draw_nx_graph(
     fig, ax = plt.subplots(figsize=figsize, frameon=False)
 
     G = nx.from_scipy_sparse_matrix(A, create_using=nx.DiGraph)
-    pos = nx.nx_pydot.pydot_layout(G, prog='twopi', root=None)
+    #pos = nx.nx_pydot.pydot_layout(G, prog='twopi', root=None)
+    pos = layout(G)
 
     vmin, vmax = kwargs.pop("vmin", None), kwargs.pop("vmax", None)
     if vmin is None:
@@ -310,7 +323,7 @@ def draw_nx_graph(
             #print(edge_index)
             if node_type == 'source':
                 nx.draw_networkx_nodes(G, pos, nodelist=nodelist, label=node_type,node_size=node_size[ix]#,node_shape='*'
-                                       ,node_color=node_color[ix],cmap=cmap,vmin=vmin,vmax=vmax,edgecolors='r',linewidths=1, **kwargs)
+                                       ,node_color='white',cmap=cmap,vmin=vmin,vmax=vmax,edgecolors='r',linewidths=1, **kwargs)
                 #edgelist = G.edges(nbunch=nodelist)
                 #nx.draw_networkx_edges(G,pos,edgelist=edgelist,width=edge_width[edge_index], arrowsize=1)
             elif node_type == 'target':
@@ -393,7 +406,7 @@ def draw_nx_graph(
 #     plt.margins(0,0)
 
     if filename is not None:
-        plt.savefig(filename, bbox_inches = 'tight', pad_inches = 0)
+        my_savefig(filename, bbox_inches = 'tight', pad_inches = 0)
     if show:
         plt.show()
 

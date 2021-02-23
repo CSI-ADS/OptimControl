@@ -1,5 +1,15 @@
 import torch
 import numpy as np
+import pickle
+import matplotlib.pyplot as plt
+
+def my_savefig(filename, **kwargs):
+    print("saving figure to:", filename)
+    fig_object = plt.gcf()
+    filename_pickle = "{}.pickle".format(filename)
+    with open(filename_pickle, 'wb') as f:
+        pickle.dump(fig_object, f)
+    plt.savefig(filename, **kwargs)
 
 def reduce_from_mask(arr, mask):
     if mask is None:

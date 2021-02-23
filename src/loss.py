@@ -120,3 +120,21 @@ def compute_sparse_loss(
         return c_loss, s_loss
     else:
         return c_loss + lambd*s_loss
+
+
+def compute_control_from_loss(cs, g, target_mask, normalize=''):
+    #print(sum(g.identify_uncontrollable()[target_mask]))
+    tot_target_shares = g.compute_total_target_shares(target_mask)
+    n_target_nodes = sum(target_mask)
+    #print(n_target_nodes)
+    #print(tot_target_shares)
+    tot_control = n_target_nodes-cs
+    #print(tot_control)
+    c = tot_control
+    if normalize == 'shares':
+        c /= tot_target_shares
+    elif normalize == 'nodes':
+        c /= sum(target_mask)
+    else:
+        pass
+    return c

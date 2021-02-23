@@ -3,6 +3,8 @@ import torch
 import numpy as np
 from tqdm import tqdm, trange
 from .utils import *
+from .loss import compute_control_from_loss
+import time
 
 def get_cl_init(N, loc=-7, scale=1e-4, vals=None, device=None):
     if vals is not None:
@@ -79,11 +81,13 @@ def optimize_control(
     if scheduler is not None:
         scheduler = scheduler(optimizer)
     hist = defaultdict(list)
+    target_mask = kwargs.get("target_mask", None)
     source_mask = kwargs.get("source_mask", None)
     i_last = 0
     loss_prev = None
     pbar = tqdm(range(num_steps), disable=not verbose)
     n_wait = 0
+    start = time.time()
     for i in pbar:
         i_last = i
         params, loss = update(loss_fn, optimizer, params, g, lambd=lambd, **kwargs)
@@ -127,10 +131,11 @@ def optimize_control(
                 n_wait = 0 # reset, must be subsequent
             loss_prev = loss
             pbar.set_postfix({'loss': loss.detach().cpu().numpy()})
-
+    end = time.time()
 
     with torch.no_grad():
         print("computing hist info")
+        hist["time"] = end - start
         hist["final_iter"] = i_last
         hist["final_params"] = params.detach().cpu().numpy()
         hist["final_params_sm"] = torch.sigmoid(params).detach().cpu().numpy()
@@ -142,6 +147,9 @@ def optimize_control(
         losses = compute_value(loss_fn, params, g, lambd=lambd, as_separate=True, as_array=False, **kwargs)
         hist["final_{}".format(loss_1_name)]= losses[0].detach().cpu().numpy()
         hist["final_{}".format(loss_2_name)] = losses[1].detach().cpu().numpy()
+        hist["final_control"] = compute_control_from_loss(losses[0].detach().cpu().numpy(), g, target_mask)
+        hist["final_control_shares"] = compute_control_from_loss(losses[0].detach().cpu().numpy(), g, target_mask, normalize='shares')
+        hist["final_control_nodes"] = compute_control_from_loss(losses[0].detach().cpu().numpy(), g, target_mask, normalize='nodes')
     ret = (params, loss)
     if return_hist:
         ret += (dict(hist), )
@@ -255,6 +263,9 @@ def constraint_optimize_control(
         losses = compute_value(loss_fns, params, g, lambd=1, as_separate=True, as_array=False, **kwargs)
         hist["final_{}".format(loss_1_name)]= losses[0].detach().cpu().numpy()
         hist["final_{}".format(loss_2_name)] = losses[1].detach().cpu().numpy()
+        hist["final_control"] = hist_new["final_control"]
+        hist["final_control_shares"] = hist_new["final_control_shares"]
+        hist["final_control_nodes"] = hist_new["final_control_nodes"]
         ret = (params, losses, constr)
         if return_hist:
             ret += (dict(hist), )
