@@ -1,18 +1,25 @@
 # Optim
 
-## assumptions
+(todo)
+Code for the paper on "Optimal Network Control", Nys et al.
 
-* when I buy 10%, I do this by buying 10% from everybody in the network who has something
-* % of stock bought is % of the value that is in the network (so not total value --> still inconsistencies)
-* there is no ownership cutoff of 50% or anything like that
-* implementation only for Vitali for now
+## How to use
 
-## issues
+Do the following:
+* install anaconda
+* create the conda environment from environment.yml
+* src folder contains the code
+* analyse.py reproduces some of the figures in the paper
 
-* vitali implementation might use different idea of ownership when not all stock is available
+## Cite
 
-## example
+(todo)
 
-To run:
-* install conda environment from environment.yml
-* see sparse.py (notebook with jupytext!!!)
+```python
+@article{...,
+  title={Optimal Network Control},
+  author={Nys Jannes},
+  journal={arXiv preprint},
+  year={2021}
+}
+```
