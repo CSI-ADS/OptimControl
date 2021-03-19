@@ -1,0 +1,1110 @@
+,company_id,assets,nace_4digit,nace_2digit,country,is_biotech,all_bvdid,Description,is_financial
+0,4111.0,2924807589.0,6619.0,66.0,5.0,False,GB01448919,Activities auxiliary to financial services and insurance activities,False
+1,5178.0,249093006.0,6420.0,64.0,0.0,False,NL34117654,"Financial service activities, except insurance and pension funding",True
+2,6902.0,12363488.0,7010.0,70.0,5.0,False,GB01548967,Activities of head offices; management consultancy activities,False
+3,9383.0,10645985.0,6499.0,64.0,20.0,False,IT01804680153,"Financial service activities, except insurance and pension funding",True
+4,10311.0,4615704000.0,6500.0,65.0,2.0,False,FR572044949,"Insurance, reinsurance and pension funding, except compulsory social security",False
+5,10983.0,366403.0,6420.0,64.0,20.0,False,IT07021240960,"Financial service activities, except insurance and pension funding",True
+6,12480.0,129498962294.0,6419.0,64.0,20.0,False,IT00884060526,"Financial service activities, except insurance and pension funding",True
+7,13690.0,1166031924.0,6499.0,64.0,20.0,False,IT00134350354,"Financial service activities, except insurance and pension funding",True
+8,14486.0,12733914000.0,7010.0,22.0,20.0,False,IT00860340157,Manufacture of rubber and plastic products,False
+9,15513.0,235340965.0,6612.0,66.0,5.0,False,GB01431068,Activities auxiliary to financial services and insurance activities,False
+10,16216.0,6266447.0,6820.0,68.0,18.0,False,NO872409572,Real estate activities,False
+11,19652.0,971143.0,7211.0,72.0,5.0,True,GB04793696,Scientific research and development ,False
+12,20178.0,10889992000.0,6420.0,64.0,21.0,False,ESB81343071,"Financial service activities, except insurance and pension funding",True
+13,20889.0,42722609.0,7010.0,70.0,16.0,False,SE5562716182,Activities of head offices; management consultancy activities,False
+14,24881.0,14020084000.0,6419.0,64.0,2.0,False,FR383451267,"Financial service activities, except insurance and pension funding",True
+15,27769.0,2223152050.0,6420.0,64.0,5.0,False,GB02646277,"Financial service activities, except insurance and pension funding",True
+16,28019.0,13469596000.0,6419.0,64.0,2.0,False,FR784275778,"Financial service activities, except insurance and pension funding",True
+17,29347.0,961203161.0,7022.0,70.0,5.0,False,GB04072979,Activities of head offices; management consultancy activities,False
+18,30399.0,870128000000.0,6500.0,65.0,2.0,False,FR572093920,"Insurance, reinsurance and pension funding, except compulsory social security",False
+19,30744.0,1508537044.0,6430.0,64.0,5.0,False,GB07514847,"Financial service activities, except insurance and pension funding",True
+20,33252.0,216366000000.0,6500.0,65.0,0.0,False,NL41179049,"Insurance, reinsurance and pension funding, except compulsory social security",False
+21,34128.0,2058122000.0,4711.0,47.0,20.0,False,IT01314250034,"Retail trade, except of motor vehicles and motorcycles",False
+22,34710.0,17294805000.0,6419.0,64.0,19.0,False,DEFEB13043,"Financial service activities, except insurance and pension funding",True
+23,37795.0,10017926157.0,6420.0,64.0,18.0,False,NO981276957,"Financial service activities, except insurance and pension funding",True
+24,41293.0,477085974.0,6499.0,64.0,5.0,False,GB00966604,"Financial service activities, except insurance and pension funding",True
+25,42052.0,1769100008.0,6419.0,64.0,18.0,False,NO937896859,"Financial service activities, except insurance and pension funding",True
+26,43123.0,142530000000.0,6499.0,64.0,2.0,False,FR180020026,"Financial service activities, except insurance and pension funding",True
+27,44012.0,67744567952.0,7010.0,70.0,5.0,False,GB05647873,Activities of head offices; management consultancy activities,False
+28,44038.0,170388331.0,8299.0,64.0,5.0,False,GB00794936,"Financial service activities, except insurance and pension funding",True
+29,44295.0,922147670373.0,6411.0,64.0,18.0,False,NO937884117,"Financial service activities, except insurance and pension funding",True
+30,46357.0,17331882000.0,6419.0,64.0,2.0,False,FR352483341,"Financial service activities, except insurance and pension funding",True
+31,48104.0,61971786.0,7211.0,21.0,5.0,True,GB02992058,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+32,48232.0,990520.0,7219.0,72.0,5.0,False,GB05464887,Scientific research and development ,False
+33,52785.0,432214.0,8299.0,82.0,5.0,False,GB04605261,"Office administrative, office support and other business support activities",False
+34,53069.0,133600674.0,7211.0,72.0,5.0,True,GB01626049,Scientific research and development ,False
+35,55735.0,8192038.0,7219.0,72.0,5.0,False,GB05414023,Scientific research and development ,False
+36,58499.0,9094624000.0,6419.0,64.0,2.0,False,FR775569726,"Financial service activities, except insurance and pension funding",True
+37,59350.0,73820438.0,7490.0,74.0,5.0,False,GBNI017859,"Other professional, scientific and technical activities",False
+38,59929.0,2314315000.0,6492.0,64.0,2.0,False,FR420698979,"Financial service activities, except insurance and pension funding",True
+39,61866.0,278521228.0,6619.0,66.0,14.0,False,AT9130023470,Activities auxiliary to financial services and insurance activities,False
+40,62267.0,31892550.0,6430.0,64.0,18.0,False,NO988435465,"Financial service activities, except insurance and pension funding",True
+41,62587.0,40590860600.0,6420.0,64.0,5.0,False,GBSC218813,"Financial service activities, except insurance and pension funding",True
+42,62755.0,4837771.0,4211.0,42.0,20.0,False,IT00210920047,Civil engineering,False
+43,63355.0,16435742258.0,6500.0,65.0,16.0,False,SE5020330642,"Insurance, reinsurance and pension funding, except compulsory social security",False
+44,63769.0,6065355.0,6430.0,64.0,18.0,False,NO988520330,"Financial service activities, except insurance and pension funding",True
+45,63808.0,27411702.0,8690.0,86.0,5.0,False,GB08467775,Human health activities,False
+46,66581.0,190716996.0,6499.0,64.0,5.0,False,GB02072264,"Financial service activities, except insurance and pension funding",True
+47,69328.0,17550673000.0,6419.0,64.0,2.0,False,FR384402871,"Financial service activities, except insurance and pension funding",True
+48,71312.0,304138677.0,6499.0,64.0,21.0,False,ESA61635512,"Financial service activities, except insurance and pension funding",True
+49,73824.0,49974057.0,150.0,64.0,21.0,False,ESB78562626,"Financial service activities, except insurance and pension funding",True
+50,75279.0,49155001198.0,6419.0,64.0,20.0,False,IT02113530345,"Financial service activities, except insurance and pension funding",True
+51,76449.0,1144322256.0,6420.0,64.0,5.0,False,GB03904126,"Financial service activities, except insurance and pension funding",True
+52,79724.0,244628969.0,6420.0,64.0,5.0,False,GB04659431,"Financial service activities, except insurance and pension funding",True
+53,81182.0,3294746.0,6619.0,66.0,20.0,False,IT00363210386,Activities auxiliary to financial services and insurance activities,False
+54,81826.0,168013333.0,7010.0,70.0,5.0,False,GB03773684,Activities of head offices; management consultancy activities,False
+55,82952.0,5509418723.0,6420.0,64.0,5.0,False,GB04431331,"Financial service activities, except insurance and pension funding",True
+56,84122.0,152104775819.0,6499.0,64.0,5.0,False,GB00242686,"Financial service activities, except insurance and pension funding",True
+57,84175.0,546396106.0,6209.0,62.0,5.0,False,GB03063054,"Computer programming, consultancy and related activities",False
+58,85925.0,1079749113.0,6420.0,64.0,5.0,False,GB04303322,"Financial service activities, except insurance and pension funding",True
+59,86089.0,38754845474.0,7010.0,70.0,5.0,False,GB06737611,Activities of head offices; management consultancy activities,False
+60,88365.0,34409.0,8299.0,82.0,14.0,False,AT9110929459,"Office administrative, office support and other business support activities",False
+61,91003.0,9610497.0,6611.0,66.0,21.0,False,ESB39445119,Activities auxiliary to financial services and insurance activities,False
+62,91074.0,4858264.0,7211.0,72.0,5.0,True,GB06425482,Scientific research and development ,False
+63,92173.0,2546049602.0,6420.0,64.0,19.0,False,DE7330846171,"Financial service activities, except insurance and pension funding",True
+64,92809.0,2266300000.0,6419.0,64.0,14.0,False,ATFEB48849,"Financial service activities, except insurance and pension funding",True
+65,94802.0,4251974.0,6430.0,64.0,18.0,False,NO986382178,"Financial service activities, except insurance and pension funding",True
+66,98902.0,2184636000.0,6420.0,64.0,21.0,False,ESA82500257,"Financial service activities, except insurance and pension funding",True
+67,103994.0,3835075.0,7211.0,72.0,5.0,True,GB08043701,Scientific research and development ,False
+68,104255.0,827488201.0,5221.0,42.0,20.0,False,IT00111080099,Civil engineering,False
+69,104911.0,44085416.0,6810.0,68.0,18.0,False,NO996257290,Real estate activities,False
+70,106741.0,218927667.0,5221.0,52.0,20.0,False,IT00955370010,Warehousing and support activities for transportation,False
+71,110987.0,13695570.0,6920.0,69.0,18.0,False,NO931031686,Legal and accounting activities,False
+72,111905.0,1000450899.0,6420.0,64.0,9.0,False,PT513720502,"Financial service activities, except insurance and pension funding",True
+73,111948.0,530877348.0,7010.0,70.0,2.0,False,FR403652555,Activities of head offices; management consultancy activities,False
+74,112682.0,809713586.0,7022.0,64.0,16.0,False,SE5564548781,"Financial service activities, except insurance and pension funding",True
+75,113787.0,39329000.0,6430.0,64.0,2.0,False,FR398954503,"Financial service activities, except insurance and pension funding",True
+76,115030.0,170405563.0,7010.0,70.0,20.0,False,IT03954790634,Activities of head offices; management consultancy activities,False
+77,115145.0,2118652.0,9609.0,96.0,5.0,False,GB08879741,Other personal service activities,False
+78,118033.0,77896647.0,6630.0,66.0,16.0,False,SE5563978922,Activities auxiliary to financial services and insurance activities,False
+79,119107.0,35347977.0,6820.0,68.0,18.0,False,NO989623907,Real estate activities,False
+80,119882.0,1002913878.0,6499.0,64.0,5.0,False,GB06150195,"Financial service activities, except insurance and pension funding",True
+81,119939.0,15122019000.0,6419.0,64.0,2.0,False,FR058801481,"Financial service activities, except insurance and pension funding",True
+82,120943.0,74215110.0,4941.0,49.0,20.0,False,IT01174150357,Land transport and transport via pipelines,False
+83,122174.0,6875676.0,7211.0,72.0,5.0,True,GB06605196,Scientific research and development ,False
+84,122674.0,194337966.0,6430.0,64.0,5.0,False,GB00253644,"Financial service activities, except insurance and pension funding",True
+85,123865.0,30285237.0,6820.0,68.0,18.0,False,NO986338934,Real estate activities,False
+86,124597.0,16508824.0,6430.0,64.0,18.0,False,NO990118434,"Financial service activities, except insurance and pension funding",True
+87,124844.0,2259337.0,6430.0,64.0,18.0,False,NO989145681,"Financial service activities, except insurance and pension funding",True
+88,125165.0,1870746455.0,6420.0,64.0,5.0,False,GB04204490,"Financial service activities, except insurance and pension funding",True
+89,125959.0,1297500000.0,6419.0,64.0,14.0,False,ATFEB38383,"Financial service activities, except insurance and pension funding",True
+90,128026.0,408405000000.0,6419.0,64.0,0.0,False,NL34334259,"Financial service activities, except insurance and pension funding",True
+91,128264.0,20675690.0,9499.0,94.0,18.0,False,NO975893243,Activities of membership organisations,False
+92,131108.0,513638620.0,6630.0,66.0,2.0,False,FR353534506,Activities auxiliary to financial services and insurance activities,False
+93,131187.0,1121000000.0,6419.0,64.0,14.0,False,ATFEB48355,"Financial service activities, except insurance and pension funding",True
+94,133801.0,12620090000.0,6419.0,64.0,20.0,False,IT04385190485,"Financial service activities, except insurance and pension funding",True
+95,134696.0,65264000000.0,6420.0,64.0,0.0,False,NL33231073,"Financial service activities, except insurance and pension funding",True
+96,134893.0,8398435000.0,6500.0,65.0,20.0,False,IT03035950231,"Insurance, reinsurance and pension funding, except compulsory social security",False
+97,135565.0,1108247465.0,5020.0,50.0,18.0,False,NO989005731,Water transport,False
+98,135662.0,20819298.0,6430.0,64.0,18.0,False,NO993769614,"Financial service activities, except insurance and pension funding",True
+99,138095.0,5424224000.0,6419.0,64.0,19.0,False,DEFEB41688,"Financial service activities, except insurance and pension funding",True
+100,138709.0,107864695.0,8690.0,86.0,16.0,False,SE5566245717,Human health activities,False
+101,138768.0,6009921418.0,6500.0,65.0,5.0,False,GBGG27151,"Insurance, reinsurance and pension funding, except compulsory social security",False
+102,140627.0,38203091.0,6420.0,64.0,5.0,False,GB05656952,"Financial service activities, except insurance and pension funding",True
+103,141438.0,32203450.0,1010.0,10.0,20.0,False,IT02036060206,Manufacture of food products,False
+104,141852.0,212879636.0,5020.0,50.0,18.0,False,NO915383416,Water transport,False
+105,142579.0,73893640.0,7211.0,72.0,5.0,True,GB03028927,Scientific research and development ,False
+106,145255.0,2845320298.0,6420.0,64.0,5.0,False,GB08312487,"Financial service activities, except insurance and pension funding",True
+107,145473.0,3635847000.0,6419.0,64.0,2.0,False,FR652027384,"Financial service activities, except insurance and pension funding",True
+108,148023.0,21624274289.0,6511.0,65.0,5.0,False,GB00111982,"Insurance, reinsurance and pension funding, except compulsory social security",False
+109,149064.0,1613315.0,8690.0,86.0,5.0,False,GB10197256,Human health activities,False
+110,149347.0,35311536.0,7219.0,72.0,5.0,False,GB05807272,Scientific research and development ,False
+111,149566.0,57345805000.0,6419.0,64.0,2.0,False,FR382900942,"Financial service activities, except insurance and pension funding",True
+112,150653.0,209506789.0,6612.0,66.0,5.0,False,GBOC305288,Activities auxiliary to financial services and insurance activities,False
+113,151324.0,169122014.0,7211.0,72.0,5.0,True,GB09777975,Scientific research and development ,False
+114,152019.0,136285.0,7211.0,72.0,5.0,True,GB04220433,Scientific research and development ,False
+115,153091.0,271780423.0,6499.0,64.0,5.0,False,GB00941082,"Financial service activities, except insurance and pension funding",True
+116,153282.0,407846912.0,5629.0,56.0,20.0,False,IT00464110352,Food and beverage service activities,False
+117,153300.0,73158973.0,6420.0,64.0,5.0,False,GB09046568,"Financial service activities, except insurance and pension funding",True
+118,153649.0,249609000.0,2740.0,27.0,22.0,False,FI01109462,Manufacture of electrical equipment,False
+119,154103.0,37352100000.0,6511.0,65.0,22.0,False,FI05332979,"Insurance, reinsurance and pension funding, except compulsory social security",False
+120,154430.0,28823353.0,7211.0,72.0,5.0,True,GB08603529,Scientific research and development ,False
+121,156112.0,655875.0,7211.0,72.0,5.0,True,GB04148891,Scientific research and development ,False
+122,156320.0,6485930.0,7211.0,72.0,5.0,True,GB05934843,Scientific research and development ,False
+123,156902.0,61741.0,7211.0,72.0,5.0,True,GB08493544,Scientific research and development ,False
+124,156933.0,5854082211.0,6420.0,64.0,5.0,False,GB08818124,"Financial service activities, except insurance and pension funding",True
+125,159528.0,93266234.0,9609.0,96.0,7.0,False,BE0436329061,Other personal service activities,False
+126,162188.0,237923348.0,6499.0,64.0,5.0,False,GB02334172,"Financial service activities, except insurance and pension funding",True
+127,162189.0,20626850.0,7219.0,72.0,3.0,False,IE518691,Scientific research and development ,False
+128,163522.0,27365212.0,4120.0,82.0,20.0,False,IT03404220109,"Office administrative, office support and other business support activities",False
+129,164890.0,72950662.0,6619.0,70.0,5.0,False,GB05160210,Activities of head offices; management consultancy activities,False
+130,165818.0,1618828.0,6420.0,64.0,5.0,False,GB04367489,"Financial service activities, except insurance and pension funding",True
+131,166058.0,207460544.0,6499.0,64.0,5.0,False,GB02129187,"Financial service activities, except insurance and pension funding",True
+132,168202.0,7365581.0,6630.0,66.0,5.0,False,GB03861194,Activities auxiliary to financial services and insurance activities,False
+133,168235.0,1889612088.0,6530.0,65.0,18.0,False,NO938465606,"Insurance, reinsurance and pension funding, except compulsory social security",False
+134,169009.0,6615209200.0,3511.0,35.0,18.0,False,NO962986277,"Electricity, gas, steam and air conditioning supply",False
+135,169788.0,597053530.0,6810.0,68.0,18.0,False,NO980322939,Real estate activities,False
+136,170159.0,54591338.0,7010.0,70.0,16.0,False,SE5566900188,Activities of head offices; management consultancy activities,False
+137,170787.0,1066091.0,6630.0,66.0,18.0,False,NO989887831,Activities auxiliary to financial services and insurance activities,False
+138,171571.0,2700766.0,7022.0,70.0,7.0,False,BE0819863497,Activities of head offices; management consultancy activities,False
+139,171785.0,189745000000.0,6419.0,64.0,2.0,False,FR775670284,"Financial service activities, except insurance and pension funding",True
+140,172715.0,125920726.0,7211.0,72.0,5.0,True,GB11185179,Scientific research and development ,False
+141,172866.0,60180185136.0,6419.0,64.0,20.0,False,IT01153230360,"Financial service activities, except insurance and pension funding",True
+142,174323.0,5197193900.0,6420.0,64.0,5.0,False,GB03909886,"Financial service activities, except insurance and pension funding",True
+143,174553.0,98929625000.0,6419.0,64.0,14.0,False,ATFEB46588,"Financial service activities, except insurance and pension funding",True
+144,178389.0,24171859252.0,6419.0,64.0,20.0,False,IT03285880104,"Financial service activities, except insurance and pension funding",True
+145,178536.0,192291552.0,6492.0,64.0,20.0,False,IT08559260156,"Financial service activities, except insurance and pension funding",True
+146,179003.0,10256194772.0,6500.0,65.0,21.0,False,ESA28007268,"Insurance, reinsurance and pension funding, except compulsory social security",False
+147,181211.0,2026670158.0,2651.0,26.0,5.0,False,GB02025003,"Manufacture of computer, electronic and optical products",False
+148,182515.0,222817676.0,7010.0,70.0,5.0,False,GB02251850,Activities of head offices; management consultancy activities,False
+149,182576.0,190162752.0,7010.0,70.0,5.0,False,GB01428443,Activities of head offices; management consultancy activities,False
+150,182588.0,34833390.0,2110.0,21.0,5.0,False,GB06600173,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+151,184074.0,20995202.0,6820.0,68.0,18.0,False,NO988896381,Real estate activities,False
+152,184483.0,1092884.0,7211.0,72.0,5.0,True,GB08150010,Scientific research and development ,False
+153,186126.0,70255000.0,6619.0,66.0,19.0,False,DEFEB16749,Activities auxiliary to financial services and insurance activities,False
+154,186290.0,667268000.0,7211.0,21.0,19.0,True,DE2150836879,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+155,186374.0,21096784000.0,6420.0,64.0,2.0,False,FR507523678,"Financial service activities, except insurance and pension funding",True
+156,186566.0,497518023.0,7010.0,70.0,20.0,False,IT01795570066,Activities of head offices; management consultancy activities,False
+157,187875.0,46607000.0,6630.0,66.0,2.0,False,FR439599721,Activities auxiliary to financial services and insurance activities,False
+158,189029.0,1244865000.0,6419.0,64.0,14.0,False,ATFEB33745,"Financial service activities, except insurance and pension funding",True
+159,189761.0,12219170.0,6820.0,68.0,18.0,False,NO886508212,Real estate activities,False
+160,190053.0,15111398000.0,6419.0,64.0,2.0,False,FR549800373,"Financial service activities, except insurance and pension funding",True
+161,191235.0,5111676.0,2110.0,21.0,5.0,False,GB03131723,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+162,193098.0,63519756626.0,2120.0,21.0,5.0,False,GB03888792,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+163,193838.0,3344923954.0,6612.0,66.0,5.0,False,GB05807599,Activities auxiliary to financial services and insurance activities,False
+164,194185.0,189922732.0,6629.0,66.0,5.0,False,GB02244297,Activities auxiliary to financial services and insurance activities,False
+165,194212.0,415929913.0,8121.0,81.0,20.0,False,IT00310180351,Services to buildings and landscape activities,False
+166,197231.0,11853000.0,2120.0,21.0,5.0,False,GB07514939,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+167,197651.0,333633000000.0,6419.0,64.0,2.0,False,FR493455042,"Financial service activities, except insurance and pension funding",True
+168,198992.0,35106870.0,9499.0,94.0,18.0,False,NO977152445,Activities of membership organisations,False
+169,200049.0,77842224.0,7010.0,70.0,20.0,False,IT04122870159,Activities of head offices; management consultancy activities,False
+170,200149.0,23306758000.0,6419.0,64.0,2.0,False,FR434651246,"Financial service activities, except insurance and pension funding",True
+171,200874.0,67339.0,7211.0,72.0,5.0,True,GB06588565,Scientific research and development ,False
+172,202017.0,2482282213.0,6612.0,64.0,5.0,False,GB08172396,"Financial service activities, except insurance and pension funding",True
+173,202883.0,2850103.0,7211.0,72.0,5.0,True,GB08284658,Scientific research and development ,False
+174,203066.0,75200760.0,6499.0,64.0,3.0,False,IE395271,"Financial service activities, except insurance and pension funding",True
+175,206951.0,731923000.0,6630.0,66.0,2.0,False,FR491910691,Activities auxiliary to financial services and insurance activities,False
+176,207613.0,468223.0,7211.0,72.0,5.0,True,GB04392865,Scientific research and development ,False
+177,207840.0,143466000.0,6419.0,64.0,14.0,False,ATFEB48378,"Financial service activities, except insurance and pension funding",True
+178,209057.0,596794595.0,7010.0,70.0,5.0,False,GB04604778,Activities of head offices; management consultancy activities,False
+179,211348.0,6383239000.0,6630.0,66.0,2.0,False,FR437574452,Activities auxiliary to financial services and insurance activities,False
+180,214808.0,487445211.0,6420.0,64.0,5.0,False,GB01664573,"Financial service activities, except insurance and pension funding",True
+181,215111.0,1143292387.0,9499.0,94.0,22.0,False,FI02001381,Activities of membership organisations,False
+182,216568.0,1021328.0,6420.0,64.0,20.0,False,IT13953081000,"Financial service activities, except insurance and pension funding",True
+183,217363.0,21291572.0,6810.0,68.0,20.0,False,IT00128380359,Real estate activities,False
+184,219103.0,57933981.0,6619.0,66.0,14.0,False,AT9090026729,Activities auxiliary to financial services and insurance activities,False
+185,220422.0,1698950000.0,6419.0,64.0,14.0,False,ATFEB48341,"Financial service activities, except insurance and pension funding",True
+186,220723.0,3072000000.0,7010.0,21.0,2.0,False,FR419838529,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+187,221633.0,506779000.0,6420.0,64.0,21.0,False,ESA28294718,"Financial service activities, except insurance and pension funding",True
+188,224316.0,1922357813.0,4762.0,64.0,7.0,False,BE0403581960,"Financial service activities, except insurance and pension funding",True
+189,224411.0,7176616.0,7219.0,72.0,5.0,False,GB05735040,Scientific research and development ,False
+190,226018.0,8103331.0,7211.0,72.0,5.0,True,GB11029583,Scientific research and development ,False
+191,226165.0,2804824326.0,5813.0,18.0,18.0,False,NO933739384,Printing and reproduction of recorded media,False
+192,226809.0,6072447499.0,6420.0,64.0,5.0,False,GB04267675,"Financial service activities, except insurance and pension funding",True
+193,227200.0,1339434183.0,6420.0,64.0,5.0,False,GB02045601,"Financial service activities, except insurance and pension funding",True
+194,228197.0,1603512000.0,6419.0,64.0,14.0,False,ATFEB48361,"Financial service activities, except insurance and pension funding",True
+195,230014.0,15393720.0,6499.0,64.0,5.0,False,GB01844601,"Financial service activities, except insurance and pension funding",True
+196,230344.0,12201119.0,7219.0,46.0,16.0,False,SE5565956538,"Wholesale trade, except of motor vehicles and motorcycles",False
+197,232805.0,58429303.0,7010.0,70.0,20.0,False,IT04122800156,Activities of head offices; management consultancy activities,False
+198,233045.0,68496858000.0,6619.0,66.0,2.0,False,FR692024722,Activities auxiliary to financial services and insurance activities,False
+199,233599.0,1240521137.0,6499.0,64.0,5.0,False,GB06007148,"Financial service activities, except insurance and pension funding",True
+200,235144.0,568211211119.0,6500.0,65.0,5.0,False,GB01417162,"Insurance, reinsurance and pension funding, except compulsory social security",False
+201,235341.0,8654507000.0,4711.0,47.0,20.0,False,IT03503411203,"Retail trade, except of motor vehicles and motorcycles",False
+202,237176.0,298886191.0,6430.0,64.0,18.0,False,NO992447141,"Financial service activities, except insurance and pension funding",True
+203,238044.0,375568963.0,6820.0,68.0,7.0,False,BE0448341027,Real estate activities,False
+204,238766.0,122806524.0,6420.0,64.0,20.0,False,IT06659851007,"Financial service activities, except insurance and pension funding",True
+205,239874.0,325016425.0,6499.0,70.0,5.0,False,GB02028843,Activities of head offices; management consultancy activities,False
+206,242888.0,2851157000.0,6512.0,65.0,7.0,False,BE0403292346,"Insurance, reinsurance and pension funding, except compulsory social security",False
+207,243136.0,6037814.0,6619.0,66.0,5.0,False,GBOC322586,Activities auxiliary to financial services and insurance activities,False
+208,243182.0,48215800.0,8299.0,82.0,5.0,False,GB09790902,"Office administrative, office support and other business support activities",False
+209,245500.0,204480540530.0,6419.0,64.0,16.0,False,SE5020077862,"Financial service activities, except insurance and pension funding",True
+210,246406.0,721277.0,7211.0,72.0,5.0,True,GB06403643,Scientific research and development ,False
+211,246465.0,271738959.0,6420.0,64.0,20.0,False,IT13135581000,"Financial service activities, except insurance and pension funding",True
+212,247273.0,18882104000.0,6500.0,65.0,19.0,False,DEFEI1005293,"Insurance, reinsurance and pension funding, except compulsory social security",False
+213,249020.0,21640199000.0,6420.0,64.0,7.0,False,BE0403227515,"Financial service activities, except insurance and pension funding",True
+214,251199.0,6064122892.0,6492.0,64.0,5.0,False,GBJE101484,"Financial service activities, except insurance and pension funding",True
+215,252111.0,10690748399.0,6419.0,64.0,5.0,False,GB03838766,"Financial service activities, except insurance and pension funding",True
+216,253920.0,825707265.0,7010.0,70.0,5.0,False,GB01048359,Activities of head offices; management consultancy activities,False
+217,254761.0,9501272000.0,6419.0,64.0,2.0,False,FR457506566,"Financial service activities, except insurance and pension funding",True
+218,258995.0,76697625.0,6420.0,64.0,16.0,False,SE5562748458,"Financial service activities, except insurance and pension funding",True
+219,259598.0,1121726839.0,6499.0,64.0,5.0,False,GB01161446,"Financial service activities, except insurance and pension funding",True
+220,268869.0,15209220000.0,6419.0,64.0,2.0,False,FR433786738,"Financial service activities, except insurance and pension funding",True
+221,269880.0,7446344000.0,6511.0,65.0,21.0,False,ESV28027118,"Insurance, reinsurance and pension funding, except compulsory social security",False
+222,272170.0,171871000.0,3011.0,30.0,20.0,False,IT01140130582,Manufacture of other transport equipment,False
+223,273828.0,498736160448.0,6500.0,65.0,5.0,False,GB02468686,"Insurance, reinsurance and pension funding, except compulsory social security",False
+224,274264.0,9092433.0,7211.0,72.0,5.0,True,GB03375897,Scientific research and development ,False
+225,274288.0,9822725.0,6430.0,64.0,18.0,False,NO988435414,"Financial service activities, except insurance and pension funding",True
+226,277122.0,20257894000.0,6419.0,64.0,2.0,False,FR445200488,"Financial service activities, except insurance and pension funding",True
+227,277590.0,2545582000.0,6420.0,64.0,7.0,False,BE0403552959,"Financial service activities, except insurance and pension funding",True
+228,278702.0,146755000.0,6630.0,66.0,20.0,False,IT06611990158,Activities auxiliary to financial services and insurance activities,False
+229,279275.0,54662575912.0,7010.0,70.0,0.0,False,NL27093931,Activities of head offices; management consultancy activities,False
+230,284483.0,210501506.0,6630.0,66.0,5.0,False,GBOC340922,Activities auxiliary to financial services and insurance activities,False
+231,284595.0,424268.0,113.0,1.0,20.0,False,IT01869160208,"Crop and animal production, hunting and related service activities",False
+232,285325.0,58582000.0,6619.0,66.0,20.0,False,IT00717010151,Activities auxiliary to financial services and insurance activities,False
+233,285429.0,71799522.0,5020.0,50.0,18.0,False,NO987250879,Water transport,False
+234,287575.0,1968018511.0,6420.0,64.0,5.0,False,GB03004959,"Financial service activities, except insurance and pension funding",True
+235,289556.0,156763988.0,6420.0,64.0,7.0,False,BE0430555581,"Financial service activities, except insurance and pension funding",True
+236,292877.0,3090309.0,7211.0,72.0,5.0,True,GB04097593,Scientific research and development ,False
+237,294367.0,188239000.0,6430.0,64.0,2.0,False,FR342125366,"Financial service activities, except insurance and pension funding",True
+238,297379.0,43458814.0,4120.0,41.0,20.0,False,IT00141440354,Construction of buildings,False
+239,298022.0,1682421000.0,6400.0,23.0,20.0,False,IT00796400158,Manufacture of other non-metallic mineral products,False
+240,298779.0,649745706.0,7010.0,46.0,16.0,False,SE5560791419,"Wholesale trade, except of motor vehicles and motorcycles",False
+241,299317.0,12379986.0,6420.0,64.0,20.0,False,IT09570770967,"Financial service activities, except insurance and pension funding",True
+242,301665.0,820496782.0,6499.0,64.0,5.0,False,GB04055414,"Financial service activities, except insurance and pension funding",True
+243,303865.0,105096000.0,7010.0,70.0,2.0,False,FR352730394,Activities of head offices; management consultancy activities,False
+244,304260.0,12689240000.0,6419.0,64.0,14.0,False,ATFEB47752,"Financial service activities, except insurance and pension funding",True
+245,305105.0,429135120.0,6820.0,68.0,20.0,False,IT04191521006,Real estate activities,False
+246,305671.0,133652412777.0,6419.0,64.0,20.0,False,IT09722490969,"Financial service activities, except insurance and pension funding",True
+247,306309.0,9937109000.0,6511.0,65.0,14.0,False,ATFEI1008484,"Insurance, reinsurance and pension funding, except compulsory social security",False
+248,307433.0,131211000000.0,6419.0,64.0,19.0,False,DEFEB40607,"Financial service activities, except insurance and pension funding",True
+249,307981.0,146361335.0,7010.0,70.0,20.0,False,IT04122810155,Activities of head offices; management consultancy activities,False
+250,308939.0,19113952000.0,6419.0,64.0,2.0,False,FR402121958,"Financial service activities, except insurance and pension funding",True
+251,308997.0,18349673000.0,6419.0,64.0,2.0,False,FR414993998,"Financial service activities, except insurance and pension funding",True
+252,309104.0,3350388180.0,6420.0,64.0,2.0,False,FR321513327,"Financial service activities, except insurance and pension funding",True
+253,309407.0,21995374000.0,6419.0,64.0,2.0,False,FR302958491,"Financial service activities, except insurance and pension funding",True
+254,313617.0,72149706.0,6810.0,68.0,18.0,False,NO989101471,Real estate activities,False
+255,314257.0,752918835658.0,6419.0,64.0,5.0,False,GB00014259,"Financial service activities, except insurance and pension funding",True
+256,314884.0,102640602000.0,6500.0,65.0,2.0,False,FR602062481,"Insurance, reinsurance and pension funding, except compulsory social security",False
+257,316116.0,227896000.0,6500.0,65.0,19.0,False,DEFEI1006705,"Insurance, reinsurance and pension funding, except compulsory social security",False
+258,319080.0,31675819.0,8120.0,87.0,20.0,False,IT02370870368,Residential care activities,False
+259,319939.0,146792000.0,1051.0,46.0,20.0,False,IT00162900369,"Wholesale trade, except of motor vehicles and motorcycles",False
+260,321253.0,88946000000.0,6500.0,65.0,19.0,False,DEFEI1007130,"Insurance, reinsurance and pension funding, except compulsory social security",False
+261,327116.0,996000000.0,6419.0,64.0,14.0,False,ATFEB48364,"Financial service activities, except insurance and pension funding",True
+262,327884.0,552485553.0,4311.0,42.0,20.0,False,IT03120030378,Civil engineering,False
+263,327996.0,1313271000000.0,6419.0,64.0,2.0,False,FR662042449,"Financial service activities, except insurance and pension funding",True
+264,329486.0,9259254000.0,6419.0,64.0,2.0,False,FR775616162,"Financial service activities, except insurance and pension funding",True
+265,329989.0,8563100000.0,6419.0,64.0,2.0,False,FR400868188,"Financial service activities, except insurance and pension funding",True
+266,332756.0,3245720000.0,6500.0,65.0,14.0,False,ATFEI1001765,"Insurance, reinsurance and pension funding, except compulsory social security",False
+267,334160.0,565426740.0,4120.0,41.0,20.0,False,IT00281620377,Construction of buildings,False
+268,335720.0,3699054.0,7211.0,72.0,5.0,True,GB06169490,Scientific research and development ,False
+269,337871.0,8936320916.0,6500.0,65.0,5.0,False,GB00078950,"Insurance, reinsurance and pension funding, except compulsory social security",False
+270,339685.0,60462311.0,6820.0,68.0,18.0,False,NO977047587,Real estate activities,False
+271,340091.0,360527000.0,6420.0,64.0,0.0,False,NL27350018,"Financial service activities, except insurance and pension funding",True
+272,340547.0,348077135.0,6630.0,66.0,5.0,False,GB02769904,Activities auxiliary to financial services and insurance activities,False
+273,341646.0,5562105.0,7211.0,62.0,5.0,True,GB03916791,"Computer programming, consultancy and related activities",False
+274,341686.0,574443988.0,6430.0,64.0,5.0,False,GB01091347,"Financial service activities, except insurance and pension funding",True
+275,346901.0,29150636.0,6420.0,68.0,21.0,False,ESB28456895,Real estate activities,False
+276,346943.0,3420084.0,6430.0,64.0,18.0,False,NO989145924,"Financial service activities, except insurance and pension funding",True
+277,347196.0,118320159.0,6499.0,64.0,5.0,False,GB01902009,"Financial service activities, except insurance and pension funding",True
+278,348492.0,786948283.0,8299.0,82.0,5.0,False,GB04194548,"Office administrative, office support and other business support activities",False
+279,352611.0,85842216509.0,6511.0,65.0,16.0,False,SE5020146865,"Insurance, reinsurance and pension funding, except compulsory social security",False
+280,353784.0,16721230000.0,6419.0,64.0,2.0,False,FR755501590,"Financial service activities, except insurance and pension funding",True
+281,355677.0,1182658000000.0,6419.0,64.0,2.0,False,FR552120222,"Financial service activities, except insurance and pension funding",True
+282,357704.0,2981210.0,8299.0,82.0,5.0,False,GBSC176354,"Office administrative, office support and other business support activities",False
+283,359763.0,39033746.0,7211.0,26.0,18.0,True,NO992219688,"Manufacture of computer, electronic and optical products",False
+284,360124.0,53083526000.0,6500.0,65.0,20.0,False,IT00818570012,"Insurance, reinsurance and pension funding, except compulsory social security",False
+285,360178.0,2246238000.0,6420.0,64.0,7.0,False,BE0253445063,"Financial service activities, except insurance and pension funding",True
+286,361492.0,149886570.0,6499.0,64.0,20.0,False,IT01715610364,"Financial service activities, except insurance and pension funding",True
+287,362313.0,218471751.0,7211.0,72.0,5.0,True,GB09881898,Scientific research and development ,False
+288,362984.0,456280.0,7211.0,72.0,5.0,True,GB07809177,Scientific research and development ,False
+289,365498.0,6177393000.0,4211.0,52.0,20.0,False,IT00488270018,Warehousing and support activities for transportation,False
+290,366216.0,2796106.0,6622.0,66.0,20.0,False,IT03871471003,Activities auxiliary to financial services and insurance activities,False
+291,367209.0,1230419.0,7211.0,72.0,5.0,True,GBSC170071,Scientific research and development ,False
+292,367301.0,8965095000.0,6511.0,65.0,2.0,False,FR353457245,"Insurance, reinsurance and pension funding, except compulsory social security",False
+293,369255.0,61957963.0,2120.0,21.0,5.0,False,GB08957107,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+294,369608.0,27633900.0,6420.0,64.0,16.0,False,SE5590265574,"Financial service activities, except insurance and pension funding",True
+295,370911.0,193170.0,6820.0,68.0,18.0,False,NO990040125,Real estate activities,False
+296,371244.0,2129466000000.0,6419.0,64.0,19.0,False,DEFEB50917,"Financial service activities, except insurance and pension funding",True
+297,371257.0,59559507.0,7010.0,70.0,20.0,False,IT07303271006,Activities of head offices; management consultancy activities,False
+298,371274.0,9453038000.0,6419.0,64.0,2.0,False,FR777903816,"Financial service activities, except insurance and pension funding",True
+299,371413.0,1601219.0,4638.0,46.0,18.0,False,NO912754502,"Wholesale trade, except of motor vehicles and motorcycles",False
+300,372374.0,125104762596.0,6621.0,65.0,5.0,False,GB02223202,"Insurance, reinsurance and pension funding, except compulsory social security",False
+301,373236.0,5246017000.0,7010.0,52.0,20.0,False,IT08381620015,Warehousing and support activities for transportation,False
+302,373331.0,17441000000.0,6500.0,65.0,2.0,False,FR451746077,"Insurance, reinsurance and pension funding, except compulsory social security",False
+303,374298.0,664836175.0,6420.0,64.0,20.0,False,IT06928810586,"Financial service activities, except insurance and pension funding",True
+304,374668.0,2680716.0,6820.0,68.0,18.0,False,NO888421262,Real estate activities,False
+305,374767.0,788358806.0,6420.0,64.0,5.0,False,GB07067763,"Financial service activities, except insurance and pension funding",True
+306,375760.0,135194.0,7211.0,72.0,5.0,True,GB03555265,Scientific research and development ,False
+307,376793.0,24374163.0,6630.0,66.0,5.0,False,GBOC309628,Activities auxiliary to financial services and insurance activities,False
+308,378034.0,27726.0,6820.0,68.0,18.0,False,NO990040427,Real estate activities,False
+309,381047.0,40346171000.0,6500.0,65.0,7.0,False,BE0404483367,"Insurance, reinsurance and pension funding, except compulsory social security",False
+310,383414.0,98125000.0,1310.0,13.0,20.0,False,IT00771920154,Manufacture of textiles,False
+311,383947.0,514388000.0,6500.0,65.0,20.0,False,IT03843680376,"Insurance, reinsurance and pension funding, except compulsory social security",False
+312,385910.0,5962735.0,6430.0,64.0,5.0,False,GB06297129,"Financial service activities, except insurance and pension funding",True
+313,386675.0,16289328000.0,6419.0,64.0,2.0,False,FR444953830,"Financial service activities, except insurance and pension funding",True
+314,386920.0,10821079000.0,6500.0,65.0,19.0,False,DEFEI1007378,"Insurance, reinsurance and pension funding, except compulsory social security",False
+315,393081.0,87580902.0,8690.0,86.0,5.0,False,GB08840579,Human health activities,False
+316,396596.0,438063363.0,7010.0,66.0,5.0,False,GBSC123321,Activities auxiliary to financial services and insurance activities,False
+317,398151.0,8598336.0,7490.0,74.0,5.0,False,GB01191772,"Other professional, scientific and technical activities",False
+318,398595.0,393214915.0,7211.0,72.0,5.0,True,GB09339823,Scientific research and development ,False
+319,399760.0,3098302000.0,6420.0,66.0,7.0,False,BE0464965639,Activities auxiliary to financial services and insurance activities,False
+320,400054.0,62126573.0,7010.0,70.0,20.0,False,IT02625000589,Activities of head offices; management consultancy activities,False
+321,403124.0,47958358000.0,6500.0,65.0,19.0,False,DEFEI1003496,"Insurance, reinsurance and pension funding, except compulsory social security",False
+322,404527.0,311912563.0,6499.0,64.0,5.0,False,GB01903304,"Financial service activities, except insurance and pension funding",True
+323,405216.0,11690507000.0,6419.0,64.0,2.0,False,FR778134601,"Financial service activities, except insurance and pension funding",True
+324,406116.0,749108131.0,4120.0,41.0,20.0,False,IT03530851207,Construction of buildings,False
+325,406204.0,49414472655.0,8299.0,82.0,5.0,False,GB08657873,"Office administrative, office support and other business support activities",False
+326,408833.0,342902942.0,1102.0,11.0,20.0,False,IT00127310357,Manufacture of beverages,False
+327,409142.0,422008509.0,6420.0,64.0,20.0,False,IT01203610413,"Financial service activities, except insurance and pension funding",True
+328,410082.0,4512544.0,7220.0,72.0,5.0,False,GB03078401,Scientific research and development ,False
+329,410287.0,15313343.0,6810.0,68.0,18.0,False,NO929970519,Real estate activities,False
+330,410907.0,133727235671.0,6419.0,64.0,16.0,False,SE5020177753,"Financial service activities, except insurance and pension funding",True
+331,411231.0,7145283000.0,6419.0,64.0,14.0,False,ATFEB45107,"Financial service activities, except insurance and pension funding",True
+332,414799.0,19412514000.0,6619.0,66.0,7.0,False,BE0429875591,Activities auxiliary to financial services and insurance activities,False
+333,418245.0,3571599164.0,6619.0,66.0,5.0,False,GBSC082015,Activities auxiliary to financial services and insurance activities,False
+334,421707.0,11007886910.0,6499.0,64.0,16.0,False,SE5560434200,"Financial service activities, except insurance and pension funding",True
+335,422997.0,2604255.0,6630.0,66.0,5.0,False,GBSC199908,Activities auxiliary to financial services and insurance activities,False
+336,423980.0,324227920.0,6619.0,66.0,5.0,False,GBOC380907,Activities auxiliary to financial services and insurance activities,False
+337,427056.0,581187000.0,7010.0,18.0,20.0,False,IT05897851001,Printing and reproduction of recorded media,False
+338,428186.0,20070079.0,6430.0,64.0,18.0,False,NO993769533,"Financial service activities, except insurance and pension funding",True
+339,429410.0,88553241000.0,6500.0,65.0,20.0,False,IT02505650370,"Insurance, reinsurance and pension funding, except compulsory social security",False
+340,430227.0,267469709.0,6630.0,66.0,16.0,False,SE5561973719,Activities auxiliary to financial services and insurance activities,False
+341,431208.0,13113621.0,6430.0,64.0,5.0,False,GB01949322,"Financial service activities, except insurance and pension funding",True
+342,431895.0,371558073.0,6499.0,64.0,5.0,False,GB02036243,"Financial service activities, except insurance and pension funding",True
+343,434267.0,6280056000.0,6419.0,64.0,14.0,False,ATFEB42637,"Financial service activities, except insurance and pension funding",True
+344,434534.0,2844308.0,7211.0,21.0,5.0,True,GB05147578,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+345,436369.0,29967995003.0,7010.0,65.0,5.0,False,GB01555746,"Insurance, reinsurance and pension funding, except compulsory social security",False
+346,436403.0,13123115973.0,7010.0,68.0,16.0,False,SE5560568817,Real estate activities,False
+347,437342.0,12272395755.0,6419.0,64.0,5.0,False,GB00938937,"Financial service activities, except insurance and pension funding",True
+348,438209.0,1267443397684.0,6419.0,64.0,5.0,False,GB01026167,"Financial service activities, except insurance and pension funding",True
+349,449898.0,83749.0,6400.0,64.0,20.0,False,IT03746060262,"Financial service activities, except insurance and pension funding",True
+350,451503.0,19278388305.0,6420.0,64.0,2.0,False,FR439208190,"Financial service activities, except insurance and pension funding",True
+351,452029.0,1123571109.0,6420.0,64.0,5.0,False,GB01105245,"Financial service activities, except insurance and pension funding",True
+352,457840.0,19562880.0,6430.0,64.0,18.0,False,NO993769649,"Financial service activities, except insurance and pension funding",True
+353,460648.0,620376344.0,4211.0,42.0,20.0,False,IT01668980061,Civil engineering,False
+354,462940.0,732159770.0,2651.0,26.0,5.0,False,GB01106260,"Manufacture of computer, electronic and optical products",False
+355,463162.0,8069766.0,6612.0,66.0,5.0,False,GB02378144,Activities auxiliary to financial services and insurance activities,False
+356,463174.0,12940000000.0,6419.0,64.0,3.0,False,IE594283,"Financial service activities, except insurance and pension funding",True
+357,463518.0,1826704002.0,6499.0,64.0,5.0,False,GB06007134,"Financial service activities, except insurance and pension funding",True
+358,464477.0,77138295108.0,6420.0,64.0,5.0,False,GB00048839,"Financial service activities, except insurance and pension funding",True
+359,464760.0,9953763000.0,6500.0,65.0,19.0,False,DEFEI1009925,"Insurance, reinsurance and pension funding, except compulsory social security",False
+360,465773.0,241560066.0,6612.0,66.0,5.0,False,GB01546400,Activities auxiliary to financial services and insurance activities,False
+361,466256.0,323404.0,7211.0,72.0,5.0,True,GBSC456741,Scientific research and development ,False
+362,467156.0,534518.0,6820.0,68.0,18.0,False,NO990040478,Real estate activities,False
+363,468490.0,2839742421.0,6420.0,64.0,5.0,False,GB08310813,"Financial service activities, except insurance and pension funding",True
+364,469425.0,31194725.0,7211.0,72.0,5.0,True,GB07434246,Scientific research and development ,False
+365,472180.0,52487391.0,7211.0,72.0,5.0,True,GB09501998,Scientific research and development ,False
+366,472345.0,2799955964.0,6420.0,64.0,5.0,False,GB06652620,"Financial service activities, except insurance and pension funding",True
+367,472865.0,2013093000.0,6400.0,64.0,20.0,False,IT03202170589,"Financial service activities, except insurance and pension funding",True
+368,472913.0,663000000.0,6419.0,64.0,14.0,False,ATFEB48377,"Financial service activities, except insurance and pension funding",True
+369,476698.0,1326945125.0,7490.0,74.0,5.0,False,GB02670500,"Other professional, scientific and technical activities",False
+370,478829.0,2563596.0,7211.0,72.0,5.0,True,GB06802470,Scientific research and development ,False
+371,479592.0,42617643.0,7211.0,72.0,5.0,True,GB05363294,Scientific research and development ,False
+372,480772.0,7136638.0,6630.0,66.0,16.0,False,SE5566142906,Activities auxiliary to financial services and insurance activities,False
+373,482435.0,34537028000.0,6419.0,64.0,2.0,False,FR775559404,"Financial service activities, except insurance and pension funding",True
+374,484062.0,60425621000.0,6419.0,64.0,2.0,False,FR552091795,"Financial service activities, except insurance and pension funding",True
+375,486575.0,8188891.0,7010.0,70.0,20.0,False,IT07883321007,Activities of head offices; management consultancy activities,False
+376,491178.0,1673642208.0,5813.0,58.0,5.0,False,GBSC005830,Publishing activities,False
+377,491630.0,293337000.0,6420.0,64.0,21.0,False,ESB28166320,"Financial service activities, except insurance and pension funding",True
+378,493692.0,8019130.0,7211.0,72.0,5.0,True,GBSC336222,Scientific research and development ,False
+379,496152.0,424255553318.0,6419.0,64.0,5.0,False,GBSC327000,"Financial service activities, except insurance and pension funding",True
+380,496850.0,25598452000.0,6419.0,64.0,2.0,False,FR857500227,"Financial service activities, except insurance and pension funding",True
+381,497018.0,1671713000.0,6612.0,66.0,2.0,False,FR342040268,Activities auxiliary to financial services and insurance activities,False
+382,498034.0,7950514.0,7219.0,72.0,5.0,False,GB04983543,Scientific research and development ,False
+383,498485.0,14693920.0,6820.0,68.0,18.0,False,NO989058746,Real estate activities,False
+384,499294.0,41599901.0,5813.0,58.0,18.0,False,NO890413102,Publishing activities,False
+385,500072.0,51031214.0,7211.0,72.0,5.0,True,GB02674265,Scientific research and development ,False
+386,500495.0,121418900000.0,6419.0,64.0,19.0,False,DEFEB59028,"Financial service activities, except insurance and pension funding",True
+387,500950.0,684368000.0,6419.0,64.0,14.0,False,ATFEB44483,"Financial service activities, except insurance and pension funding",True
+388,501578.0,42616000.0,6420.0,64.0,2.0,False,FR690802491,"Financial service activities, except insurance and pension funding",True
+389,504462.0,6186250.0,7211.0,72.0,5.0,True,GBNI055207,Scientific research and development ,False
+390,505097.0,34509.0,7211.0,72.0,5.0,True,GB06861757,Scientific research and development ,False
+391,507268.0,3447985000.0,6419.0,64.0,14.0,False,ATFEB33785,"Financial service activities, except insurance and pension funding",True
+392,508853.0,25340784.0,1721.0,17.0,20.0,False,IT00173530361,Manufacture of paper and paper products,False
+393,509756.0,13548560.0,6420.0,64.0,20.0,False,IT10771561007,"Financial service activities, except insurance and pension funding",True
+394,510945.0,2893511000.0,6419.0,64.0,14.0,False,ATFEB23416,"Financial service activities, except insurance and pension funding",True
+395,516092.0,42989259.0,6612.0,66.0,5.0,False,GB02698671,Activities auxiliary to financial services and insurance activities,False
+396,520662.0,56640523.0,7022.0,70.0,7.0,False,BE0463489061,Activities of head offices; management consultancy activities,False
+397,521577.0,33395873.0,7219.0,72.0,16.0,False,SE5565131660,Scientific research and development ,False
+398,521711.0,11320452571.0,6419.0,64.0,18.0,False,NO832554332,"Financial service activities, except insurance and pension funding",True
+399,523685.0,427663568.0,6419.0,64.0,5.0,False,GB02474901,"Financial service activities, except insurance and pension funding",True
+400,524069.0,8588405.0,4321.0,43.0,20.0,False,IT00271900359,Specialised construction activities,False
+401,524743.0,716342109.0,6499.0,64.0,5.0,False,GBSC108419,"Financial service activities, except insurance and pension funding",True
+402,524967.0,208585716691.0,6419.0,64.0,18.0,False,NO984851006,"Financial service activities, except insurance and pension funding",True
+403,525096.0,4316470579.0,6499.0,64.0,5.0,False,GB01420459,"Financial service activities, except insurance and pension funding",True
+404,525909.0,36620227.0,6420.0,64.0,21.0,False,ESB08251175,"Financial service activities, except insurance and pension funding",True
+405,529864.0,893388742.0,6612.0,66.0,5.0,False,GB02474912,Activities auxiliary to financial services and insurance activities,False
+406,533748.0,65135236.0,7211.0,68.0,5.0,True,GB03585995,Real estate activities,False
+407,534741.0,154579000.0,6419.0,64.0,14.0,False,ATFEB48351,"Financial service activities, except insurance and pension funding",True
+408,536551.0,3519544.0,7211.0,72.0,5.0,True,GB07757916,Scientific research and development ,False
+409,536851.0,3139056338.0,6420.0,64.0,0.0,False,NL33055010,"Financial service activities, except insurance and pension funding",True
+410,537084.0,33730712.0,6430.0,64.0,18.0,False,NO988843296,"Financial service activities, except insurance and pension funding",True
+411,537997.0,892594.0,7211.0,72.0,5.0,True,GB08134798,Scientific research and development ,False
+412,539249.0,156958880.0,6499.0,64.0,5.0,False,GB02954692,"Financial service activities, except insurance and pension funding",True
+413,540923.0,35361235000.0,6419.0,64.0,14.0,False,ATFEB43719,"Financial service activities, except insurance and pension funding",True
+414,541360.0,1610430.0,7211.0,72.0,5.0,True,GB09061413,Scientific research and development ,False
+415,541591.0,5682627000.0,6430.0,64.0,2.0,False,FR334356672,"Financial service activities, except insurance and pension funding",True
+416,545041.0,55633366.0,6820.0,68.0,18.0,False,NO911839024,Real estate activities,False
+417,545183.0,41536224.0,6420.0,64.0,5.0,False,GB03146580,"Financial service activities, except insurance and pension funding",True
+418,546537.0,489494484.0,6420.0,64.0,0.0,False,NL68825986,"Financial service activities, except insurance and pension funding",True
+419,547611.0,22817361.0,7211.0,72.0,5.0,True,GB02326557,Scientific research and development ,False
+420,548086.0,2284118000.0,6630.0,66.0,20.0,False,IT04550250015,Activities auxiliary to financial services and insurance activities,False
+421,549897.0,182793.0,7211.0,72.0,5.0,True,GB04926092,Scientific research and development ,False
+422,553995.0,76447789.0,5020.0,50.0,18.0,False,NO930994278,Water transport,False
+423,554082.0,271418855.0,7010.0,70.0,20.0,False,IT04122930151,Activities of head offices; management consultancy activities,False
+424,554097.0,83986440000.0,6500.0,65.0,20.0,False,IT00409920584,"Insurance, reinsurance and pension funding, except compulsory social security",False
+425,557654.0,188720636.0,7010.0,70.0,20.0,False,IT10342110011,Activities of head offices; management consultancy activities,False
+426,558871.0,1521577029.0,3511.0,35.0,18.0,False,NO976967771,"Electricity, gas, steam and air conditioning supply",False
+427,559420.0,25312663.0,6420.0,64.0,5.0,False,GB10025910,"Financial service activities, except insurance and pension funding",True
+428,559854.0,4675507522.0,6511.0,65.0,16.0,False,SE5020061619,"Insurance, reinsurance and pension funding, except compulsory social security",False
+429,560449.0,15606653.0,6430.0,64.0,18.0,False,NO929734513,"Financial service activities, except insurance and pension funding",True
+430,561592.0,61953000.0,6630.0,66.0,2.0,False,FR784393688,Activities auxiliary to financial services and insurance activities,False
+431,562266.0,410301588.0,6420.0,64.0,7.0,False,BE0474480151,"Financial service activities, except insurance and pension funding",True
+432,566349.0,41961000.0,6630.0,66.0,20.0,False,IT04428430013,Activities auxiliary to financial services and insurance activities,False
+433,566372.0,1812456000.0,6630.0,26.0,2.0,False,FR562078261,"Manufacture of computer, electronic and optical products",False
+434,566960.0,308080218303.0,6419.0,64.0,8.0,False,DK61126228,"Financial service activities, except insurance and pension funding",True
+435,567383.0,15023895000.0,6419.0,64.0,2.0,False,FR542820352,"Financial service activities, except insurance and pension funding",True
+436,567439.0,51824.0,6630.0,66.0,5.0,False,GB08416124,Activities auxiliary to financial services and insurance activities,False
+437,568618.0,334605057.0,6499.0,64.0,5.0,False,GB06156953,"Financial service activities, except insurance and pension funding",True
+438,569674.0,126081938.0,5000.0,50.0,20.0,False,IT00103850822,Water transport,False
+439,570007.0,319802988.0,4651.0,46.0,18.0,False,NO885648312,"Wholesale trade, except of motor vehicles and motorcycles",False
+440,570841.0,21433257000.0,6419.0,64.0,2.0,False,FR394157085,"Financial service activities, except insurance and pension funding",True
+441,572845.0,621254562.0,6499.0,64.0,5.0,False,GB01281415,"Financial service activities, except insurance and pension funding",True
+442,573835.0,260947279.0,5020.0,50.0,18.0,False,NO929831357,Water transport,False
+443,576050.0,22800052.0,6430.0,64.0,18.0,False,NO988435422,"Financial service activities, except insurance and pension funding",True
+444,576474.0,16915018.0,6419.0,64.0,5.0,False,GB09928412,"Financial service activities, except insurance and pension funding",True
+445,578579.0,1394140000.0,6500.0,65.0,21.0,False,ESA80246663,"Insurance, reinsurance and pension funding, except compulsory social security",False
+446,578904.0,517769095.0,8299.0,82.0,19.0,False,DE7331159662,"Office administrative, office support and other business support activities",False
+447,580059.0,305670689.0,7010.0,70.0,14.0,False,AT9130070471,Activities of head offices; management consultancy activities,False
+448,580373.0,13263654.0,2120.0,21.0,5.0,False,GB08026888,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+449,580881.0,133735694.0,6630.0,66.0,18.0,False,NO880109162,Activities auxiliary to financial services and insurance activities,False
+450,581312.0,392818581.0,4221.0,42.0,20.0,False,IT00154950364,Civil engineering,False
+451,581762.0,19334101.0,7211.0,72.0,5.0,True,GB06385396,Scientific research and development ,False
+452,584890.0,27050857.0,6630.0,66.0,5.0,False,GBOC320318,Activities auxiliary to financial services and insurance activities,False
+453,588690.0,7303780.0,6420.0,64.0,20.0,False,IT11915681008,"Financial service activities, except insurance and pension funding",True
+454,589508.0,2431522000.0,6419.0,64.0,20.0,False,IT04781291002,"Financial service activities, except insurance and pension funding",True
+455,590991.0,344904052.0,6420.0,64.0,20.0,False,IT02324900030,"Financial service activities, except insurance and pension funding",True
+456,591672.0,852106139.0,6420.0,64.0,5.0,False,GB03118553,"Financial service activities, except insurance and pension funding",True
+457,595848.0,346932422.0,6499.0,64.0,5.0,False,GB06838433,"Financial service activities, except insurance and pension funding",True
+458,595934.0,20503395000.0,6511.0,65.0,22.0,False,FI02011037,"Insurance, reinsurance and pension funding, except compulsory social security",False
+459,597069.0,223513736.0,6820.0,68.0,18.0,False,NO966703032,Real estate activities,False
+460,598001.0,49440000.0,6419.0,64.0,14.0,False,ATFEB45365,"Financial service activities, except insurance and pension funding",True
+461,598149.0,36937677662.0,6511.0,65.0,16.0,False,SE8020051952,"Insurance, reinsurance and pension funding, except compulsory social security",False
+462,598816.0,5424197328.0,1071.0,24.0,18.0,False,NO910747711,Manufacture of basic metals,False
+463,599693.0,12352136000.0,6500.0,65.0,20.0,False,IT00320160237,"Insurance, reinsurance and pension funding, except compulsory social security",False
+464,602096.0,2216027000.0,6419.0,64.0,2.0,False,FR313976383,"Financial service activities, except insurance and pension funding",True
+465,602695.0,100168846.0,1811.0,18.0,20.0,False,IT06356971009,Printing and reproduction of recorded media,False
+466,605905.0,168343871.0,7010.0,70.0,16.0,False,SE5560021387,Activities of head offices; management consultancy activities,False
+467,607416.0,767584000.0,6499.0,64.0,0.0,False,NL58476369,"Financial service activities, except insurance and pension funding",True
+468,607993.0,1682914978.0,4710.0,47.0,20.0,False,IT00103220091,"Retail trade, except of motor vehicles and motorcycles",False
+469,612968.0,650004684999.0,6419.0,64.0,5.0,False,GB00002065,"Financial service activities, except insurance and pension funding",True
+470,614960.0,28628313.0,6430.0,64.0,2.0,False,FR444071989,"Financial service activities, except insurance and pension funding",True
+471,616373.0,1442734318.0,9499.0,94.0,18.0,False,NO984853971,Activities of membership organisations,False
+472,618567.0,14259947.0,9499.0,64.0,18.0,False,NO931002406,"Financial service activities, except insurance and pension funding",True
+473,620069.0,152701009.0,6420.0,64.0,16.0,False,SE5560642018,"Financial service activities, except insurance and pension funding",True
+474,621551.0,492415000000.0,6419.0,64.0,21.0,False,ESA39000013,"Financial service activities, except insurance and pension funding",True
+475,627438.0,2049714471.0,3511.0,35.0,18.0,False,NO880309102,"Electricity, gas, steam and air conditioning supply",False
+476,628344.0,3409586099.0,6622.0,66.0,5.0,False,GB00210725,Activities auxiliary to financial services and insurance activities,False
+477,629626.0,69324084080.0,6420.0,64.0,5.0,False,GBSC095000,"Financial service activities, except insurance and pension funding",True
+478,633873.0,2250302000.0,5000.0,50.0,20.0,False,IT00278730825,Water transport,False
+479,638679.0,48254994000.0,6500.0,65.0,20.0,False,IT00079760328,"Insurance, reinsurance and pension funding, except compulsory social security",False
+480,639607.0,58957758.0,6499.0,64.0,20.0,False,IT03951801004,"Financial service activities, except insurance and pension funding",True
+481,641559.0,40648744.0,7211.0,72.0,5.0,True,GB03107561,Scientific research and development ,False
+482,642575.0,10985175000.0,6419.0,64.0,2.0,False,FR380386854,"Financial service activities, except insurance and pension funding",True
+483,644150.0,163111.0,4779.0,47.0,21.0,False,ESB28814556,"Retail trade, except of motor vehicles and motorcycles",False
+484,646190.0,283724276.0,2812.0,28.0,18.0,False,NO914367751,Manufacture of machinery and equipment n.e.c.,False
+485,649082.0,4052324.0,6499.0,64.0,5.0,False,GB01932894,"Financial service activities, except insurance and pension funding",True
+486,650746.0,107094294.0,7211.0,21.0,5.0,True,GB02304992,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+487,653285.0,266039000.0,6419.0,64.0,14.0,False,ATFEB48386,"Financial service activities, except insurance and pension funding",True
+488,653674.0,106010746.0,6630.0,66.0,16.0,False,SE5564188851,Activities auxiliary to financial services and insurance activities,False
+489,653722.0,51556218.0,7219.0,21.0,5.0,False,GB05969271,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+490,654310.0,21685596.0,7211.0,72.0,5.0,True,GB10718340,Scientific research and development ,False
+491,654476.0,88383000.0,6430.0,64.0,2.0,False,FR342113404,"Financial service activities, except insurance and pension funding",True
+492,656108.0,44098184.0,6499.0,64.0,5.0,False,GBSC098335,"Financial service activities, except insurance and pension funding",True
+493,656479.0,9611139.0,6611.0,66.0,21.0,False,ESB39445101,Activities auxiliary to financial services and insurance activities,False
+494,657686.0,24723343.0,6420.0,64.0,2.0,False,FR809030679,"Financial service activities, except insurance and pension funding",True
+495,659130.0,12727790.0,6430.0,64.0,18.0,False,NO896400312,"Financial service activities, except insurance and pension funding",True
+496,661499.0,4590169.0,8299.0,82.0,5.0,False,GB04586837,"Office administrative, office support and other business support activities",False
+497,663266.0,576434699.0,143.0,1.0,21.0,False,ESB85972180,"Crop and animal production, hunting and related service activities",False
+498,666052.0,120246017.0,6499.0,64.0,5.0,False,GBSC113505,"Financial service activities, except insurance and pension funding",True
+499,666325.0,195510749.0,7010.0,70.0,5.0,False,GB02703164,Activities of head offices; management consultancy activities,False
+500,668272.0,101402231513.0,6500.0,65.0,5.0,False,GB03183415,"Insurance, reinsurance and pension funding, except compulsory social security",False
+501,677124.0,5756187.0,7211.0,72.0,5.0,True,GB05834378,Scientific research and development ,False
+502,677506.0,3292224.0,6619.0,66.0,5.0,False,GBSO302575,Activities auxiliary to financial services and insurance activities,False
+503,679131.0,14846426.0,6430.0,64.0,2.0,False,FR479949976,"Financial service activities, except insurance and pension funding",True
+504,679658.0,8656477.0,7211.0,72.0,5.0,True,GB07187804,Scientific research and development ,False
+505,679707.0,37380695333.0,6511.0,65.0,16.0,False,SE8020144120,"Insurance, reinsurance and pension funding, except compulsory social security",False
+506,680271.0,34598669.0,4120.0,41.0,20.0,False,IT07346521003,Construction of buildings,False
+507,680503.0,446571019.0,6499.0,64.0,5.0,False,GB04002470,"Financial service activities, except insurance and pension funding",True
+508,681315.0,134437179.0,4110.0,41.0,18.0,False,NO990761736,Construction of buildings,False
+509,681742.0,17248073.0,6420.0,64.0,5.0,False,GB09665469,"Financial service activities, except insurance and pension funding",True
+510,682291.0,12388980000.0,6419.0,64.0,2.0,False,FR775590847,"Financial service activities, except insurance and pension funding",True
+511,685371.0,94268000.0,6630.0,66.0,2.0,False,FR434692828,Activities auxiliary to financial services and insurance activities,False
+512,686828.0,609869.0,7211.0,72.0,5.0,True,GBNI619901,Scientific research and development ,False
+513,688528.0,8366101000.0,6420.0,64.0,0.0,False,NL33144695,"Financial service activities, except insurance and pension funding",True
+514,692057.0,12749959139.0,6419.0,64.0,5.0,False,GB01487359,"Financial service activities, except insurance and pension funding",True
+515,692137.0,42374206.0,9499.0,94.0,18.0,False,NO938558892,Activities of membership organisations,False
+516,692358.0,21179435.0,6820.0,68.0,18.0,False,NO986330402,Real estate activities,False
+517,694533.0,47149730.0,3312.0,33.0,18.0,False,NO912762378,Repair and installation of machinery and equipment,False
+518,696132.0,70566000.0,6619.0,66.0,21.0,False,ESB86547643,Activities auxiliary to financial services and insurance activities,False
+519,696169.0,585454.0,6900.0,69.0,20.0,False,IT04314890965,Legal and accounting activities,False
+520,696649.0,6583946.0,7211.0,72.0,5.0,True,GB05480340,Scientific research and development ,False
+521,698266.0,40072617078.0,6419.0,64.0,5.0,False,GB02035362,"Financial service activities, except insurance and pension funding",True
+522,698702.0,295284000.0,6420.0,64.0,2.0,False,FR797476223,"Financial service activities, except insurance and pension funding",True
+523,699139.0,23309692354.0,6420.0,64.0,5.0,False,GB08700698,"Financial service activities, except insurance and pension funding",True
+524,699382.0,5834081000.0,6419.0,64.0,2.0,False,FR312617046,"Financial service activities, except insurance and pension funding",True
+525,702767.0,606279367.0,6619.0,66.0,5.0,False,GB00205468,Activities auxiliary to financial services and insurance activities,False
+526,702956.0,129728.0,7010.0,70.0,5.0,False,GB08953513,Activities of head offices; management consultancy activities,False
+527,703077.0,1857452382.0,2059.0,20.0,5.0,False,GB00206132,Manufacture of chemicals and chemical products,False
+528,703242.0,1033107.0,7211.0,72.0,5.0,True,GB04929486,Scientific research and development ,False
+529,704080.0,2187232000.0,4120.0,42.0,20.0,False,IT00084280395,Civil engineering,False
+530,705610.0,215183724.0,6630.0,66.0,5.0,False,GB02091894,Activities auxiliary to financial services and insurance activities,False
+531,708097.0,626466000.0,6419.0,64.0,14.0,False,ATFEB48301,"Financial service activities, except insurance and pension funding",True
+532,710489.0,16850076.0,6420.0,64.0,14.0,False,AT9110477255,"Financial service activities, except insurance and pension funding",True
+533,712354.0,105176854.0,6420.0,64.0,20.0,False,IT11028980156,"Financial service activities, except insurance and pension funding",True
+534,713103.0,350633428.0,6499.0,64.0,5.0,False,GB00947644,"Financial service activities, except insurance and pension funding",True
+535,716162.0,389637913.0,6619.0,66.0,5.0,False,GBOC302228,Activities auxiliary to financial services and insurance activities,False
+536,718424.0,452863631.0,6419.0,64.0,5.0,False,GB00976145,"Financial service activities, except insurance and pension funding",True
+537,718450.0,187914072000.0,6419.0,64.0,7.0,False,BE0462920226,"Financial service activities, except insurance and pension funding",True
+538,719533.0,41902.0,7211.0,72.0,5.0,True,GB07877836,Scientific research and development ,False
+539,720352.0,7335759000.0,6419.0,64.0,2.0,False,FR391007457,"Financial service activities, except insurance and pension funding",True
+540,721542.0,197776000.0,6500.0,65.0,3.0,False,IE219727,"Insurance, reinsurance and pension funding, except compulsory social security",False
+541,722388.0,192931842000.0,6419.0,64.0,7.0,False,BE0403199702,"Financial service activities, except insurance and pension funding",True
+542,722439.0,50663937.0,2120.0,21.0,5.0,False,GB09761509,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+543,723810.0,36098821.0,6430.0,64.0,18.0,False,NO980956237,"Financial service activities, except insurance and pension funding",True
+544,724380.0,37744357.0,7022.0,70.0,5.0,False,GB01069886,Activities of head offices; management consultancy activities,False
+545,725324.0,24985929.0,6420.0,64.0,7.0,False,BE0427815233,"Financial service activities, except insurance and pension funding",True
+546,725364.0,237449685.0,6420.0,64.0,20.0,False,IT08281301005,"Financial service activities, except insurance and pension funding",True
+547,726725.0,2854716.0,6420.0,64.0,20.0,False,IT13953071001,"Financial service activities, except insurance and pension funding",True
+548,728004.0,262149095.0,6209.0,62.0,5.0,False,GB04598955,"Computer programming, consultancy and related activities",False
+549,729560.0,1283002.0,7211.0,72.0,5.0,True,GB09213110,Scientific research and development ,False
+550,729858.0,3588792236.0,6419.0,64.0,5.0,False,GB01592029,"Financial service activities, except insurance and pension funding",True
+551,730785.0,10821150.0,7211.0,21.0,5.0,True,GB04206001,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+552,731242.0,91136409.0,4110.0,41.0,20.0,False,IT00671780369,Construction of buildings,False
+553,731750.0,328619311286.0,6419.0,64.0,5.0,False,GB02312079,"Financial service activities, except insurance and pension funding",True
+554,732362.0,10626732000.0,6419.0,64.0,2.0,False,FR437642531,"Financial service activities, except insurance and pension funding",True
+555,734857.0,3944015000.0,6420.0,64.0,20.0,False,IT00778570267,"Financial service activities, except insurance and pension funding",True
+556,742222.0,28042218.0,6492.0,64.0,7.0,False,BE0888498620,"Financial service activities, except insurance and pension funding",True
+557,742284.0,777108485.0,6820.0,68.0,18.0,False,NO938455384,Real estate activities,False
+558,745962.0,338647763.0,6630.0,66.0,5.0,False,GBSC069524,Activities auxiliary to financial services and insurance activities,False
+559,748541.0,8848953.0,3514.0,35.0,18.0,False,NO993297836,"Electricity, gas, steam and air conditioning supply",False
+560,749156.0,13267524257.0,7010.0,70.0,5.0,False,GB00305979,Activities of head offices; management consultancy activities,False
+561,749757.0,8227357.0,7211.0,21.0,5.0,True,GBNI039740,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+562,752697.0,461717000.0,6419.0,64.0,14.0,False,ATFEB48346,"Financial service activities, except insurance and pension funding",True
+563,753101.0,28843022000.0,6612.0,66.0,2.0,False,FR341369833,Activities auxiliary to financial services and insurance activities,False
+564,753886.0,81648151.0,7010.0,70.0,20.0,False,IT07491740960,Activities of head offices; management consultancy activities,False
+565,758170.0,264188155.0,6420.0,64.0,5.0,False,GB03011784,"Financial service activities, except insurance and pension funding",True
+566,758825.0,4834531.0,4743.0,64.0,18.0,False,NO986904506,"Financial service activities, except insurance and pension funding",True
+567,763103.0,6152911000.0,6419.0,64.0,2.0,False,FR776179335,"Financial service activities, except insurance and pension funding",True
+568,764668.0,939683.0,7211.0,72.0,5.0,True,GBNI040375,Scientific research and development ,False
+569,765603.0,28911754.0,6630.0,66.0,16.0,False,SE5565492922,Activities auxiliary to financial services and insurance activities,False
+570,765655.0,656331230.0,6499.0,64.0,7.0,False,BE0431954658,"Financial service activities, except insurance and pension funding",True
+571,767172.0,252633493.0,163.0,1.0,20.0,False,IT00127740405,"Crop and animal production, hunting and related service activities",False
+572,770779.0,265861180.0,7010.0,70.0,5.0,False,GB00949417,Activities of head offices; management consultancy activities,False
+573,776842.0,15145611000.0,6419.0,64.0,2.0,False,FR560801300,"Financial service activities, except insurance and pension funding",True
+574,776917.0,111894409613.0,6511.0,65.0,5.0,False,GB00099064,"Insurance, reinsurance and pension funding, except compulsory social security",False
+575,778167.0,116865107.0,9499.0,94.0,18.0,False,NO993151564,Activities of membership organisations,False
+576,778272.0,28393918.0,4211.0,42.0,20.0,False,IT00489390013,Civil engineering,False
+577,778396.0,519000000.0,6419.0,64.0,14.0,False,ATFEB48372,"Financial service activities, except insurance and pension funding",True
+578,778743.0,171607508.0,6499.0,64.0,5.0,False,GB07667924,"Financial service activities, except insurance and pension funding",True
+579,782035.0,18446714000.0,6419.0,64.0,2.0,False,FR381976448,"Financial service activities, except insurance and pension funding",True
+580,784239.0,2074711048.0,6420.0,64.0,8.0,False,DK10582989,"Financial service activities, except insurance and pension funding",True
+581,784326.0,61564357.0,7211.0,21.0,5.0,True,GB05197494,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+582,784355.0,245370127.0,6630.0,66.0,16.0,False,SE5561980128,Activities auxiliary to financial services and insurance activities,False
+583,784675.0,6357968.0,6820.0,68.0,20.0,False,IT00987550589,Real estate activities,False
+584,786330.0,31737563000.0,6419.0,64.0,2.0,False,FR605520071,"Financial service activities, except insurance and pension funding",True
+585,786365.0,9901393.0,6499.0,64.0,5.0,False,GB00561323,"Financial service activities, except insurance and pension funding",True
+586,786886.0,13812523.0,7211.0,72.0,5.0,True,GB09647035,Scientific research and development ,False
+587,787623.0,10657220.0,6630.0,66.0,5.0,False,GB04056163,Activities auxiliary to financial services and insurance activities,False
+588,787728.0,2873287.0,7211.0,72.0,5.0,True,GB08365743,Scientific research and development ,False
+589,788406.0,3597988000.0,6420.0,64.0,20.0,False,IT07178180589,"Financial service activities, except insurance and pension funding",True
+590,789058.0,15429396.0,7211.0,20.0,5.0,True,GB05442961,Manufacture of chemicals and chemical products,False
+591,792193.0,2572468810.0,6499.0,64.0,16.0,False,SE5560083585,"Financial service activities, except insurance and pension funding",True
+592,794513.0,8694986.0,6430.0,46.0,18.0,False,NO984136110,"Wholesale trade, except of motor vehicles and motorcycles",False
+593,798104.0,759566115.0,6420.0,64.0,5.0,False,GB03650236,"Financial service activities, except insurance and pension funding",True
+594,798274.0,420022758.0,6420.0,64.0,20.0,False,IT10193341004,"Financial service activities, except insurance and pension funding",True
+595,799131.0,1966993290.0,7010.0,70.0,5.0,False,GB01104312,Activities of head offices; management consultancy activities,False
+596,799250.0,561185632.0,7010.0,65.0,5.0,False,GBSC199548,"Insurance, reinsurance and pension funding, except compulsory social security",False
+597,799969.0,9039586493.0,6420.0,64.0,0.0,False,NL34236682,"Financial service activities, except insurance and pension funding",True
+598,800014.0,9517158152.0,6420.0,64.0,2.0,False,FR409030053,"Financial service activities, except insurance and pension funding",True
+599,804193.0,214173225.0,6630.0,66.0,18.0,False,NO835615472,Activities auxiliary to financial services and insurance activities,False
+600,804593.0,4025400.0,2120.0,21.0,5.0,False,GB09759376,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+601,809437.0,629093559.0,6420.0,64.0,5.0,False,GB00637347,"Financial service activities, except insurance and pension funding",True
+602,809810.0,61986495.0,7211.0,72.0,5.0,True,GB04295642,Scientific research and development ,False
+603,809878.0,2467213204.0,6420.0,64.0,5.0,False,GB02398246,"Financial service activities, except insurance and pension funding",True
+604,810726.0,26338777.0,6420.0,64.0,16.0,False,SE5590262019,"Financial service activities, except insurance and pension funding",True
+605,810855.0,631157000.0,6419.0,64.0,14.0,False,ATFEB48344,"Financial service activities, except insurance and pension funding",True
+606,811608.0,12153364000.0,6419.0,64.0,2.0,False,FR399354810,"Financial service activities, except insurance and pension funding",True
+607,812452.0,5859787.0,6499.0,64.0,5.0,False,GB04533970,"Financial service activities, except insurance and pension funding",True
+608,815280.0,16957929.0,6810.0,68.0,18.0,False,NO977097932,Real estate activities,False
+609,816551.0,1076849000.0,6419.0,64.0,20.0,False,IT00243830049,"Financial service activities, except insurance and pension funding",True
+610,817312.0,100836670.0,7211.0,21.0,5.0,True,GB05375156,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+611,818223.0,25100913.0,2120.0,21.0,5.0,False,GB08446337,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+612,821121.0,465597560.0,4639.0,46.0,20.0,False,IT02186650368,"Wholesale trade, except of motor vehicles and motorcycles",False
+613,821792.0,232987896.0,6420.0,64.0,20.0,False,IT11028950159,"Financial service activities, except insurance and pension funding",True
+614,822313.0,108532586.0,2120.0,21.0,5.0,False,GB09481161,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+615,822525.0,786072154546.0,6419.0,64.0,5.0,False,GB02263951,"Financial service activities, except insurance and pension funding",True
+616,822889.0,159871648563.0,6420.0,64.0,5.0,False,GB00617987,"Financial service activities, except insurance and pension funding",True
+617,823358.0,13092060000.0,6419.0,64.0,14.0,False,ATFEB43890,"Financial service activities, except insurance and pension funding",True
+618,825505.0,1068997.0,7211.0,72.0,5.0,True,GB05085935,Scientific research and development ,False
+619,825938.0,464589590.0,5813.0,58.0,18.0,False,NO996334767,Publishing activities,False
+620,829713.0,45473598351.0,6419.0,64.0,5.0,False,GB00995939,"Financial service activities, except insurance and pension funding",True
+621,832487.0,497472282.0,7490.0,74.0,5.0,False,GB02060639,"Other professional, scientific and technical activities",False
+622,833897.0,1258089000.0,6500.0,65.0,2.0,False,FR542066394,"Insurance, reinsurance and pension funding, except compulsory social security",False
+623,834851.0,38882714000.0,6500.0,65.0,20.0,False,IT10908160012,"Insurance, reinsurance and pension funding, except compulsory social security",False
+624,835140.0,26204993.0,7010.0,70.0,19.0,False,DE5050062198,Activities of head offices; management consultancy activities,False
+625,835379.0,714850776.0,6810.0,68.0,20.0,False,IT06288720581,Real estate activities,False
+626,835755.0,68304035.0,5020.0,50.0,18.0,False,NO971510153,Water transport,False
+627,838006.0,697018813.0,9609.0,96.0,5.0,False,GB04012726,Other personal service activities,False
+628,838760.0,16104684.0,6820.0,68.0,7.0,False,BE0451774035,Real estate activities,False
+629,839243.0,58174311.0,4120.0,41.0,20.0,False,IT00524000064,Construction of buildings,False
+630,840454.0,646240963.0,6420.0,64.0,2.0,False,FR439982646,"Financial service activities, except insurance and pension funding",True
+631,842646.0,4486978446.0,6419.0,64.0,20.0,False,IT00026870881,"Financial service activities, except insurance and pension funding",True
+632,843801.0,12694520000.0,6419.0,64.0,2.0,False,FR384899399,"Financial service activities, except insurance and pension funding",True
+633,846026.0,1735329.0,7211.0,72.0,5.0,True,GB07543974,Scientific research and development ,False
+634,846659.0,112729966.0,7211.0,72.0,5.0,True,GB10852952,Scientific research and development ,False
+635,847897.0,72103045.0,6832.0,68.0,7.0,False,BE0415973315,Real estate activities,False
+636,854468.0,1123756314.0,8610.0,86.0,18.0,False,NO983974724,Human health activities,False
+637,854641.0,2405599000.0,6419.0,64.0,14.0,False,ATFEB43944,"Financial service activities, except insurance and pension funding",True
+638,855083.0,389333000.0,6419.0,64.0,14.0,False,ATFEB48340,"Financial service activities, except insurance and pension funding",True
+639,855472.0,55259571971.0,6500.0,65.0,16.0,False,SE5020332259,"Insurance, reinsurance and pension funding, except compulsory social security",False
+640,855744.0,57088032.0,7219.0,72.0,18.0,False,NO959432538,Scientific research and development ,False
+641,855820.0,2188143.0,6430.0,64.0,18.0,False,NO989145754,"Financial service activities, except insurance and pension funding",True
+642,856679.0,248000.0,6430.0,64.0,2.0,False,FR612039099,"Financial service activities, except insurance and pension funding",True
+643,859671.0,217231801287.0,6419.0,64.0,5.0,False,GB01550505,"Financial service activities, except insurance and pension funding",True
+644,863038.0,17174864471.0,3511.0,35.0,18.0,False,NO987059699,"Electricity, gas, steam and air conditioning supply",False
+645,863929.0,21306692.0,6430.0,64.0,18.0,False,NO988435430,"Financial service activities, except insurance and pension funding",True
+646,865309.0,15013783637.0,6499.0,64.0,8.0,False,DK25679288,"Financial service activities, except insurance and pension funding",True
+647,867098.0,2106509000.0,6419.0,64.0,2.0,False,FR314560772,"Financial service activities, except insurance and pension funding",True
+648,868231.0,263221000000.0,6419.0,64.0,19.0,False,DEFEB46802,"Financial service activities, except insurance and pension funding",True
+649,868752.0,417542000000.0,6420.0,64.0,16.0,False,SE5164060120,"Financial service activities, except insurance and pension funding",True
+650,869851.0,2746014700.0,7010.0,70.0,5.0,False,GB06404270,Activities of head offices; management consultancy activities,False
+651,870066.0,404979900996.0,6419.0,64.0,20.0,False,IT00348170101,"Financial service activities, except insurance and pension funding",True
+652,872712.0,12393110.0,7010.0,70.0,14.0,False,AT9030036087,Activities of head offices; management consultancy activities,False
+653,877570.0,351925442.0,7010.0,70.0,5.0,False,GB04895098,Activities of head offices; management consultancy activities,False
+654,877601.0,729785707.0,7010.0,70.0,5.0,False,GB06582618,Activities of head offices; management consultancy activities,False
+655,878100.0,33926195.0,6400.0,64.0,20.0,False,IT01137850150,"Financial service activities, except insurance and pension funding",True
+656,882073.0,17010212.0,6619.0,66.0,5.0,False,GBOC302585,Activities auxiliary to financial services and insurance activities,False
+657,882669.0,197542151.0,7211.0,72.0,5.0,True,GB09878478,Scientific research and development ,False
+658,883563.0,3604560000.0,6420.0,64.0,19.0,False,DEFEB18830,"Financial service activities, except insurance and pension funding",True
+659,883693.0,6921658358.0,6500.0,65.0,8.0,False,DK24260666,"Insurance, reinsurance and pension funding, except compulsory social security",False
+660,889923.0,584218300.0,4619.0,46.0,20.0,False,IT01751820356,"Wholesale trade, except of motor vehicles and motorcycles",False
+661,892384.0,13699536.0,7211.0,72.0,5.0,True,GB06108621,Scientific research and development ,False
+662,893336.0,19510901000.0,6419.0,64.0,2.0,False,FR415176072,"Financial service activities, except insurance and pension funding",True
+663,893436.0,284615986.0,6630.0,66.0,18.0,False,NO930208868,Activities auxiliary to financial services and insurance activities,False
+664,893698.0,11630115.0,7320.0,70.0,7.0,False,BE0414609375,Activities of head offices; management consultancy activities,False
+665,894320.0,42556857.0,7211.0,72.0,5.0,True,GB03845467,Scientific research and development ,False
+666,894331.0,1169521.0,7010.0,70.0,5.0,False,GB04388436,Activities of head offices; management consultancy activities,False
+667,895323.0,9456818.0,620.0,6.0,5.0,False,GB05845469,Extraction of crude petroleum and natural gas,False
+668,896394.0,120707798.0,6492.0,64.0,20.0,False,IT00081510398,"Financial service activities, except insurance and pension funding",True
+669,897458.0,4471246.0,6430.0,46.0,18.0,False,NO988522651,"Wholesale trade, except of motor vehicles and motorcycles",False
+670,898369.0,14518000.0,6430.0,64.0,2.0,False,FR552119604,"Financial service activities, except insurance and pension funding",True
+671,898697.0,68273.0,7211.0,72.0,5.0,True,GB07802577,Scientific research and development ,False
+672,898818.0,620275802.0,6430.0,64.0,5.0,False,GB01774003,"Financial service activities, except insurance and pension funding",True
+673,899314.0,4199190000.0,6612.0,66.0,0.0,False,NL33001320,Activities auxiliary to financial services and insurance activities,False
+674,899868.0,50569302.0,2120.0,21.0,5.0,False,GB08008725,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+675,901962.0,27212559.0,2120.0,21.0,5.0,False,GB09846650,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+676,905037.0,643371168.0,6499.0,64.0,5.0,False,GB01102517,"Financial service activities, except insurance and pension funding",True
+677,906261.0,73682963.0,2120.0,21.0,5.0,False,GB03252665,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+678,909746.0,103187000.0,6420.0,64.0,0.0,False,NL33147325,"Financial service activities, except insurance and pension funding",True
+679,910274.0,9273306.0,6611.0,66.0,7.0,False,BE0891787217,Activities auxiliary to financial services and insurance activities,False
+680,911236.0,880032700.0,6499.0,64.0,5.0,False,GB01915961,"Financial service activities, except insurance and pension funding",True
+681,911275.0,1119992976.0,8299.0,82.0,5.0,False,GB03769030,"Office administrative, office support and other business support activities",False
+682,913141.0,27708659.0,6499.0,64.0,7.0,False,BE0839133043,"Financial service activities, except insurance and pension funding",True
+683,915805.0,204909580.0,161.0,1.0,20.0,False,IT00144760352,"Crop and animal production, hunting and related service activities",False
+684,917834.0,42574919000.0,6511.0,65.0,22.0,False,FI01076381,"Insurance, reinsurance and pension funding, except compulsory social security",False
+685,919703.0,564186.0,7211.0,72.0,5.0,True,GB10522001,Scientific research and development ,False
+686,924300.0,5437685.0,7490.0,74.0,5.0,False,GB01688454,"Other professional, scientific and technical activities",False
+687,925705.0,1694017613.0,6820.0,68.0,18.0,False,NO938701237,Real estate activities,False
+688,925797.0,473008796.0,6420.0,64.0,5.0,False,GB04533948,"Financial service activities, except insurance and pension funding",True
+689,926286.0,22996284000.0,6499.0,64.0,2.0,False,FR483790069,"Financial service activities, except insurance and pension funding",True
+690,926870.0,502357461.0,6612.0,66.0,5.0,False,GB03981143,Activities auxiliary to financial services and insurance activities,False
+691,930881.0,20609758000.0,6430.0,64.0,2.0,False,FR509584074,"Financial service activities, except insurance and pension funding",True
+692,930954.0,48638296.0,7211.0,21.0,5.0,True,GB05474163,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+693,930987.0,105740027.0,6820.0,68.0,20.0,False,IT02823130360,Real estate activities,False
+694,931780.0,1757351.0,7211.0,72.0,5.0,True,GB08335008,Scientific research and development ,False
+695,933702.0,6521982.0,8299.0,82.0,5.0,False,GB02957407,"Office administrative, office support and other business support activities",False
+696,933796.0,8180475.0,6430.0,64.0,18.0,False,NO971583460,"Financial service activities, except insurance and pension funding",True
+697,934100.0,15530291.0,6619.0,66.0,5.0,False,GBOC351668,Activities auxiliary to financial services and insurance activities,False
+698,934899.0,1271493976.0,6419.0,64.0,20.0,False,IT00200060044,"Financial service activities, except insurance and pension funding",True
+699,937548.0,319419395160.0,6419.0,64.0,5.0,False,GB02294747,"Financial service activities, except insurance and pension funding",True
+700,939372.0,9086801000.0,6419.0,64.0,2.0,False,FR314222902,"Financial service activities, except insurance and pension funding",True
+701,941145.0,393171000000.0,6419.0,64.0,0.0,False,NL34370515,"Financial service activities, except insurance and pension funding",True
+702,942377.0,187028668.0,6420.0,64.0,2.0,False,FR402556716,"Financial service activities, except insurance and pension funding",True
+703,943316.0,2873998.0,6630.0,64.0,5.0,False,GB02966283,"Financial service activities, except insurance and pension funding",True
+704,947409.0,2134792000.0,5221.0,52.0,20.0,False,IT00486040017,Warehousing and support activities for transportation,False
+705,947581.0,1695793537.0,6500.0,65.0,8.0,False,DK26460212,"Insurance, reinsurance and pension funding, except compulsory social security",False
+706,955567.0,72949000.0,6411.0,64.0,3.0,False,IE539157,"Financial service activities, except insurance and pension funding",True
+707,957631.0,57956525.0,7010.0,64.0,5.0,False,GB01709014,"Financial service activities, except insurance and pension funding",True
+708,958962.0,8744301000.0,6500.0,65.0,20.0,False,IT00284160371,"Insurance, reinsurance and pension funding, except compulsory social security",False
+709,960913.0,19707439000.0,6500.0,65.0,20.0,False,IT01749470157,"Insurance, reinsurance and pension funding, except compulsory social security",False
+710,964153.0,5737123.0,2120.0,21.0,5.0,False,GB09632100,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+711,964186.0,8816047.0,6430.0,64.0,18.0,False,NO988828556,"Financial service activities, except insurance and pension funding",True
+712,965080.0,378085.0,8299.0,82.0,5.0,False,GB07376729,"Office administrative, office support and other business support activities",False
+713,966852.0,31050758.0,6420.0,64.0,7.0,False,BE0466463892,"Financial service activities, except insurance and pension funding",True
+714,967018.0,321929188.0,6619.0,66.0,16.0,False,SE5561103895,Activities auxiliary to financial services and insurance activities,False
+715,970032.0,8541725000.0,6500.0,65.0,20.0,False,IT00902170018,"Insurance, reinsurance and pension funding, except compulsory social security",False
+716,973853.0,2312267404.0,7120.0,71.0,5.0,False,GB04267576,Architectural and engineering activities; technical testing and analysis,False
+717,974000.0,904887444.0,4120.0,41.0,20.0,False,IT00154410369,Construction of buildings,False
+718,974528.0,359388788.0,7820.0,78.0,20.0,False,IT00592240378,Employment activities,False
+719,975587.0,91421887.0,6420.0,64.0,19.0,False,DE7330524506,"Financial service activities, except insurance and pension funding",True
+720,975797.0,2479906791.0,7010.0,70.0,5.0,False,GB09926779,Activities of head offices; management consultancy activities,False
+721,976764.0,256909000.0,6419.0,64.0,14.0,False,ATFEB48367,"Financial service activities, except insurance and pension funding",True
+722,978645.0,290745306.0,7022.0,70.0,3.0,False,IE227552,Activities of head offices; management consultancy activities,False
+723,979341.0,714989043.0,6619.0,66.0,5.0,False,GB00796793,Activities auxiliary to financial services and insurance activities,False
+724,981184.0,29804635.0,7211.0,72.0,5.0,True,GB04636431,Scientific research and development ,False
+725,983334.0,975222775.0,7211.0,72.0,5.0,True,GB03625145,Scientific research and development ,False
+726,984863.0,2550742121.0,6420.0,64.0,8.0,False,DK21855545,"Financial service activities, except insurance and pension funding",True
+727,986705.0,283777760.0,7010.0,70.0,5.0,False,GB04053653,Activities of head offices; management consultancy activities,False
+728,988967.0,68070587.0,9412.0,94.0,7.0,False,BE0445807545,Activities of membership organisations,False
+729,989879.0,18354546.0,4211.0,42.0,20.0,False,IT00437530587,Civil engineering,False
+730,990061.0,116150864.0,8891.0,88.0,20.0,False,IT01164310359,Social work activities without accommodation,False
+731,990691.0,321342564.0,5020.0,50.0,18.0,False,NO958339038,Water transport,False
+732,990693.0,7777033.0,7211.0,72.0,5.0,True,GB02358299,Scientific research and development ,False
+733,991112.0,8355242.0,3291.0,32.0,20.0,False,IT00179800362,Other manufacturing,False
+734,994040.0,49440000.0,6499.0,64.0,14.0,False,ATFEB39510,"Financial service activities, except insurance and pension funding",True
+735,995685.0,146452.0,6630.0,66.0,18.0,False,NO988752967,Activities auxiliary to financial services and insurance activities,False
+736,996020.0,865275158.0,7211.0,72.0,5.0,True,GB03022416,Scientific research and development ,False
+737,996775.0,57479966.0,8299.0,82.0,5.0,False,GB00948153,"Office administrative, office support and other business support activities",False
+738,997278.0,99498351.0,9200.0,92.0,5.0,False,GB03542879,Gambling and betting activities,False
+739,997296.0,971072000.0,6420.0,64.0,19.0,False,DEFEB11456,"Financial service activities, except insurance and pension funding",True
+740,1001995.0,776717480.0,6499.0,64.0,5.0,False,GB00898166,"Financial service activities, except insurance and pension funding",True
+741,1005516.0,120012886894.0,6499.0,64.0,8.0,False,DK43405810,"Financial service activities, except insurance and pension funding",True
+742,1005781.0,28416858.0,6499.0,64.0,5.0,False,GB02998803,"Financial service activities, except insurance and pension funding",True
+743,1005782.0,575887903.0,1091.0,10.0,7.0,False,BE0403552464,Manufacture of food products,False
+744,1006111.0,592475147524.0,6419.0,64.0,5.0,False,GBSC090312,"Financial service activities, except insurance and pension funding",True
+745,1007127.0,680587.0,7211.0,72.0,5.0,True,GB09000503,Scientific research and development ,False
+746,1007593.0,1107048154.0,7010.0,70.0,5.0,False,GB04968626,Activities of head offices; management consultancy activities,False
+747,1010836.0,7600864.0,7219.0,72.0,18.0,False,NO974360829,Scientific research and development ,False
+748,1012023.0,9160660.0,6820.0,68.0,20.0,False,IT06026810587,Real estate activities,False
+749,1013940.0,35311796.0,7211.0,21.0,5.0,True,GB04748597,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+750,1014073.0,7279078.0,6499.0,64.0,5.0,False,GB02248663,"Financial service activities, except insurance and pension funding",True
+751,1014529.0,10024630000.0,6419.0,64.0,14.0,False,ATFEB43887,"Financial service activities, except insurance and pension funding",True
+752,1014643.0,1116512332.0,7010.0,70.0,20.0,False,IT08998170156,Activities of head offices; management consultancy activities,False
+753,1014960.0,600294000.0,6420.0,64.0,2.0,False,FR352778187,"Financial service activities, except insurance and pension funding",True
+754,1017386.0,18448615.0,7211.0,72.0,5.0,True,GB06182024,Scientific research and development ,False
+755,1017764.0,1619195.0,7211.0,72.0,5.0,True,GBSC348293,Scientific research and development ,False
+756,1018719.0,18440851817.0,6511.0,65.0,16.0,False,SE5020061585,"Insurance, reinsurance and pension funding, except compulsory social security",False
+757,1019018.0,331720000.0,6420.0,64.0,21.0,False,ESA08007478,"Financial service activities, except insurance and pension funding",True
+758,1019596.0,16847065000.0,6419.0,64.0,2.0,False,FR478834930,"Financial service activities, except insurance and pension funding",True
+759,1020573.0,900846.0,4941.0,49.0,16.0,False,SE5563780815,Land transport and transport via pipelines,False
+760,1021666.0,524177379397.0,6420.0,64.0,5.0,False,GB03871969,"Financial service activities, except insurance and pension funding",True
+761,1022711.0,1930575000.0,6419.0,64.0,14.0,False,ATFEB51007,"Financial service activities, except insurance and pension funding",True
+762,1022840.0,396291000000.0,6500.0,65.0,0.0,False,NL27076669,"Insurance, reinsurance and pension funding, except compulsory social security",False
+763,1023896.0,907085302.0,7211.0,72.0,5.0,True,GB02972325,Scientific research and development ,False
+764,1027963.0,57843245.0,7010.0,70.0,20.0,False,IT13165310155,Activities of head offices; management consultancy activities,False
+765,1030015.0,149851201.0,7020.0,70.0,20.0,False,IT00127720357,Activities of head offices; management consultancy activities,False
+766,1032414.0,89507416.0,7010.0,70.0,5.0,False,GB00373440,Activities of head offices; management consultancy activities,False
+767,1033084.0,30788699.0,6499.0,64.0,20.0,False,IT01137860159,"Financial service activities, except insurance and pension funding",True
+768,1035526.0,115742884000.0,6419.0,64.0,7.0,False,BE0403200393,"Financial service activities, except insurance and pension funding",True
+769,1036493.0,11048111.0,7211.0,72.0,5.0,True,GBNI043067,Scientific research and development ,False
+770,1037832.0,767462326.0,6499.0,64.0,5.0,False,GBSC160821,"Financial service activities, except insurance and pension funding",True
+771,1037836.0,5029834.0,6430.0,64.0,18.0,False,NO988879657,"Financial service activities, except insurance and pension funding",True
+772,1038666.0,482420902.0,6420.0,64.0,20.0,False,IT03332211204,"Financial service activities, except insurance and pension funding",True
+773,1040264.0,2208683698.0,6420.0,70.0,2.0,False,FR393051826,Activities of head offices; management consultancy activities,False
+774,1041152.0,2766488541.0,6209.0,62.0,5.0,False,GB09951963,"Computer programming, consultancy and related activities",False
+775,1041701.0,56678942.0,6420.0,64.0,5.0,False,GB01237167,"Financial service activities, except insurance and pension funding",True
+776,1042479.0,93329779000.0,6499.0,64.0,19.0,False,DEFEB13229,"Financial service activities, except insurance and pension funding",True
+777,1043978.0,10536579000.0,6419.0,64.0,2.0,False,FR776916207,"Financial service activities, except insurance and pension funding",True
+778,1047893.0,47435322.0,7010.0,70.0,14.0,False,AT9010064430,Activities of head offices; management consultancy activities,False
+779,1050420.0,17011907.0,6420.0,64.0,5.0,False,GB10587192,"Financial service activities, except insurance and pension funding",True
+780,1050443.0,1509402285.0,6630.0,66.0,5.0,False,GB10657226,Activities auxiliary to financial services and insurance activities,False
+781,1051688.0,248937240.0,6820.0,68.0,20.0,False,IT07647310585,Real estate activities,False
+782,1053177.0,324402385.0,7010.0,70.0,2.0,False,FR380867978,Activities of head offices; management consultancy activities,False
+783,1057467.0,363678803.0,7022.0,66.0,16.0,False,SE5568660723,Activities auxiliary to financial services and insurance activities,False
+784,1059974.0,15053542.0,7490.0,74.0,5.0,False,GB03457136,"Other professional, scientific and technical activities",False
+785,1060015.0,70669979000.0,6499.0,64.0,19.0,False,DEFEB48901,"Financial service activities, except insurance and pension funding",True
+786,1060077.0,170853457.0,5813.0,58.0,16.0,False,SE5560245812,Publishing activities,False
+787,1060493.0,18300471.0,5020.0,50.0,18.0,False,NO931061194,Water transport,False
+788,1061742.0,762792439.0,6420.0,64.0,20.0,False,IT09220111000,"Financial service activities, except insurance and pension funding",True
+789,1063099.0,14825000.0,7010.0,70.0,20.0,False,IT07093710965,Activities of head offices; management consultancy activities,False
+790,1064494.0,17151033.0,7211.0,72.0,5.0,True,GB09647034,Scientific research and development ,False
+791,1064977.0,177305029.0,7010.0,70.0,20.0,False,IT08063021003,Activities of head offices; management consultancy activities,False
+792,1065098.0,103588999.0,4730.0,47.0,20.0,False,IT03647160369,"Retail trade, except of motor vehicles and motorcycles",False
+793,1066184.0,517731139503.0,6612.0,66.0,5.0,False,GB02711006,Activities auxiliary to financial services and insurance activities,False
+794,1069794.0,21631133.0,6619.0,66.0,5.0,False,GBOC309813,Activities auxiliary to financial services and insurance activities,False
+795,1069797.0,377412626.0,7211.0,72.0,5.0,True,GB04160917,Scientific research and development ,False
+796,1070661.0,321938000.0,6419.0,64.0,14.0,False,ATFEB48356,"Financial service activities, except insurance and pension funding",True
+797,1071434.0,56130942.0,2829.0,28.0,20.0,False,IT00162700363,Manufacture of machinery and equipment n.e.c.,False
+798,1071442.0,32602148.0,6499.0,64.0,20.0,False,IT01072540105,"Financial service activities, except insurance and pension funding",True
+799,1072564.0,432816415.0,6499.0,64.0,5.0,False,GB03992877,"Financial service activities, except insurance and pension funding",True
+800,1074635.0,86926338.0,1413.0,14.0,5.0,False,GB04347937,Manufacture of wearing apparel,False
+801,1075293.0,111037055.0,6499.0,64.0,5.0,False,GB03195646,"Financial service activities, except insurance and pension funding",True
+802,1077080.0,461812000000.0,6419.0,64.0,2.0,False,FR304187701,"Financial service activities, except insurance and pension funding",True
+803,1079609.0,7473314.0,7211.0,72.0,5.0,True,GB09646998,Scientific research and development ,False
+804,1079617.0,446708805.0,7010.0,70.0,5.0,False,GB03015818,Activities of head offices; management consultancy activities,False
+805,1081083.0,12843553000.0,6500.0,65.0,14.0,False,ATFEI1004161,"Insurance, reinsurance and pension funding, except compulsory social security",False
+806,1081683.0,4975706731.0,6430.0,64.0,8.0,False,DK36533846,"Financial service activities, except insurance and pension funding",True
+807,1083342.0,36779054.0,7010.0,70.0,20.0,False,IT04122780150,Activities of head offices; management consultancy activities,False
+808,1084219.0,1044838.0,7211.0,72.0,5.0,True,GB06407331,Scientific research and development ,False
+809,1085602.0,55456563.0,2120.0,21.0,5.0,False,GB09216368,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+810,1089683.0,2309610.0,6810.0,68.0,18.0,False,NO931001612,Real estate activities,False
+811,1090598.0,1511202618.0,8299.0,82.0,5.0,False,GBSC298143,"Office administrative, office support and other business support activities",False
+812,1090724.0,825993028.0,6820.0,68.0,20.0,False,IT05359160586,Real estate activities,False
+813,1091427.0,341879047.0,6420.0,64.0,20.0,False,IT12164371002,"Financial service activities, except insurance and pension funding",True
+814,1094241.0,7907720.0,6630.0,66.0,5.0,False,GB10608481,Activities auxiliary to financial services and insurance activities,False
+815,1097635.0,1711225891.0,6530.0,65.0,18.0,False,NO938548560,"Insurance, reinsurance and pension funding, except compulsory social security",False
+816,1097892.0,47607687.0,111.0,1.0,20.0,False,IT01770481206,"Crop and animal production, hunting and related service activities",False
+817,1101577.0,1046186575.0,6420.0,64.0,18.0,False,NO962964591,"Financial service activities, except insurance and pension funding",True
+818,1101830.0,1079861775.0,6420.0,64.0,5.0,False,GB07042902,"Financial service activities, except insurance and pension funding",True
+819,1102025.0,192217758575.0,6419.0,64.0,16.0,False,SE5020329081,"Financial service activities, except insurance and pension funding",True
+820,1103025.0,23140373000.0,6420.0,64.0,21.0,False,ESA63379135,"Financial service activities, except insurance and pension funding",True
+821,1106390.0,64303672.0,7490.0,74.0,18.0,False,NO980516229,"Other professional, scientific and technical activities",False
+822,1109322.0,198489000.0,6831.0,66.0,21.0,False,ESB28026680,Activities auxiliary to financial services and insurance activities,False
+823,1111636.0,772294384.0,5814.0,58.0,5.0,False,GB04752535,Publishing activities,False
+824,1115929.0,97697708.0,6810.0,68.0,18.0,False,NO911259931,Real estate activities,False
+825,1116328.0,965544538.0,6420.0,64.0,21.0,False,ESB63523674,"Financial service activities, except insurance and pension funding",True
+826,1118400.0,101146547.0,4120.0,41.0,20.0,False,IT05171700585,Construction of buildings,False
+827,1122551.0,31389929.0,2120.0,21.0,5.0,False,GB07368089,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+828,1122976.0,99498350.0,9200.0,92.0,5.0,False,GB03720378,Gambling and betting activities,False
+829,1123461.0,20688388.0,6619.0,66.0,5.0,False,GBOC343805,Activities auxiliary to financial services and insurance activities,False
+830,1124365.0,24933000.0,6629.0,66.0,0.0,False,NL17068311,Activities auxiliary to financial services and insurance activities,False
+831,1126222.0,523033895.0,7010.0,70.0,5.0,False,GB03322151,Activities of head offices; management consultancy activities,False
+832,1128508.0,29863351.0,6430.0,64.0,18.0,False,NO975963861,"Financial service activities, except insurance and pension funding",True
+833,1129175.0,292830000.0,6419.0,64.0,14.0,False,ATFEB48392,"Financial service activities, except insurance and pension funding",True
+834,1130513.0,1368149000.0,6420.0,64.0,2.0,False,FR562050724,"Financial service activities, except insurance and pension funding",True
+835,1131238.0,800841.0,7211.0,72.0,5.0,True,GBSC451036,Scientific research and development ,False
+836,1133310.0,53435997.0,6420.0,64.0,16.0,False,SE5563953701,"Financial service activities, except insurance and pension funding",True
+837,1134047.0,31839.0,7211.0,72.0,5.0,True,GB06608123,Scientific research and development ,False
+838,1138068.0,11499840000.0,6419.0,64.0,2.0,False,FR554200808,"Financial service activities, except insurance and pension funding",True
+839,1138471.0,136999928.0,6492.0,64.0,5.0,False,GBSC317950,"Financial service activities, except insurance and pension funding",True
+840,1140759.0,4960287.0,6619.0,66.0,5.0,False,GBOC304213,Activities auxiliary to financial services and insurance activities,False
+841,1141862.0,577072926.0,6420.0,64.0,21.0,False,ESB86594330,"Financial service activities, except insurance and pension funding",True
+842,1145417.0,13188116.0,7010.0,70.0,14.0,False,AT9030046367,Activities of head offices; management consultancy activities,False
+843,1147939.0,253213773.0,140.0,1.0,20.0,False,IT00326280377,"Crop and animal production, hunting and related service activities",False
+844,1148478.0,7615968234.0,7010.0,64.0,5.0,False,GB07227809,"Financial service activities, except insurance and pension funding",True
+845,1148942.0,1714710.0,6630.0,66.0,5.0,False,GB01858790,Activities auxiliary to financial services and insurance activities,False
+846,1149404.0,467691.0,6430.0,64.0,18.0,False,NO947301357,"Financial service activities, except insurance and pension funding",True
+847,1150289.0,1172774.0,7211.0,72.0,5.0,True,GB10555293,Scientific research and development ,False
+848,1150336.0,14525704.0,6630.0,66.0,5.0,False,GB10118169,Activities auxiliary to financial services and insurance activities,False
+849,1150593.0,4929814000.0,6511.0,65.0,22.0,False,FI02013198,"Insurance, reinsurance and pension funding, except compulsory social security",False
+850,1153462.0,2055333000.0,5000.0,50.0,20.0,False,IT00117240820,Water transport,False
+851,1153576.0,2147718000.0,6430.0,64.0,2.0,False,FR437580160,"Financial service activities, except insurance and pension funding",True
+852,1153581.0,86044321.0,6420.0,64.0,0.0,False,NL33288678,"Financial service activities, except insurance and pension funding",True
+853,1157006.0,37047640.0,6619.0,66.0,5.0,False,GBOC382552,Activities auxiliary to financial services and insurance activities,False
+854,1158421.0,15638850852.0,8899.0,88.0,8.0,False,DK11666779,Social work activities without accommodation,False
+855,1160521.0,909230359.0,8299.0,82.0,5.0,False,GB05022252,"Office administrative, office support and other business support activities",False
+856,1162080.0,5149763.0,6612.0,66.0,5.0,False,GB05107012,Activities auxiliary to financial services and insurance activities,False
+857,1163898.0,1699463946.0,4211.0,42.0,20.0,False,IT00140570466,Civil engineering,False
+858,1164687.0,478193000.0,7010.0,70.0,0.0,False,NL24236419,Activities of head offices; management consultancy activities,False
+859,1165164.0,12583370.0,6820.0,68.0,18.0,False,NO986398228,Real estate activities,False
+860,1168396.0,103240702.0,9609.0,96.0,5.0,False,GBNI061368,Other personal service activities,False
+861,1170230.0,8632135.0,7219.0,21.0,5.0,False,GB05233429,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+862,1170321.0,541168399.0,7010.0,70.0,20.0,False,IT08765190015,Activities of head offices; management consultancy activities,False
+863,1170831.0,23459578000.0,6419.0,64.0,2.0,False,FR492826417,"Financial service activities, except insurance and pension funding",True
+864,1172139.0,434442000.0,2361.0,23.0,20.0,False,IT03873920585,Manufacture of other non-metallic mineral products,False
+865,1172504.0,857484.0,6820.0,68.0,18.0,False,NO990583218,Real estate activities,False
+866,1172569.0,57908908253.0,6419.0,64.0,20.0,False,IT00714490158,"Financial service activities, except insurance and pension funding",True
+867,1177165.0,12585041000.0,6419.0,64.0,2.0,False,FR399780097,"Financial service activities, except insurance and pension funding",True
+868,1177567.0,98302889.0,6420.0,64.0,20.0,False,IT11028990155,"Financial service activities, except insurance and pension funding",True
+869,1177736.0,2300621000.0,6419.0,64.0,2.0,False,FR782989206,"Financial service activities, except insurance and pension funding",True
+870,1180693.0,15181965.0,7219.0,72.0,5.0,False,GB06970743,Scientific research and development ,False
+871,1183221.0,19956.0,7211.0,72.0,5.0,True,GB05978215,Scientific research and development ,False
+872,1184160.0,470532447.0,6630.0,66.0,5.0,False,GB01371973,Activities auxiliary to financial services and insurance activities,False
+873,1185211.0,24964951000.0,6419.0,64.0,2.0,False,FR356801571,"Financial service activities, except insurance and pension funding",True
+874,1186083.0,63153606.0,6420.0,64.0,5.0,False,GB07997006,"Financial service activities, except insurance and pension funding",True
+875,1186762.0,358940.0,7211.0,72.0,5.0,True,GB08795000,Scientific research and development ,False
+876,1187934.0,144163053.0,6430.0,64.0,5.0,False,GBGG28917,"Financial service activities, except insurance and pension funding",True
+877,1189430.0,5230000.0,6420.0,49.0,2.0,False,FR570504472,Land transport and transport via pipelines,False
+878,1189801.0,80369431.0,6499.0,64.0,5.0,False,GBSC101825,"Financial service activities, except insurance and pension funding",True
+879,1189894.0,1867240663.0,4711.0,47.0,20.0,False,IT00856620158,"Retail trade, except of motor vehicles and motorcycles",False
+880,1190652.0,69752198.0,7490.0,21.0,5.0,False,GB04081094,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+881,1190783.0,27037931000.0,6419.0,64.0,2.0,False,FR353821028,"Financial service activities, except insurance and pension funding",True
+882,1194376.0,51886051.0,6430.0,64.0,18.0,False,NO991423532,"Financial service activities, except insurance and pension funding",True
+883,1195502.0,134429975.0,6420.0,64.0,7.0,False,BE0466459439,"Financial service activities, except insurance and pension funding",True
+884,1195513.0,17698047000.0,6500.0,65.0,22.0,False,FI10300592,"Insurance, reinsurance and pension funding, except compulsory social security",False
+885,1195702.0,559252000000.0,6419.0,64.0,0.0,False,NL33031431,"Financial service activities, except insurance and pension funding",True
+886,1196499.0,2523036.0,7022.0,70.0,20.0,False,IT08226800962,Activities of head offices; management consultancy activities,False
+887,1199637.0,87942002.0,6420.0,64.0,7.0,False,BE0417119004,"Financial service activities, except insurance and pension funding",True
+888,1205236.0,1032022761.0,8299.0,82.0,5.0,False,GB04008957,"Office administrative, office support and other business support activities",False
+889,1214152.0,1055402934.0,6499.0,64.0,5.0,False,GB02218729,"Financial service activities, except insurance and pension funding",True
+890,1216937.0,10939000000.0,6500.0,65.0,22.0,False,FI01422133,"Insurance, reinsurance and pension funding, except compulsory social security",False
+891,1217067.0,338166291.0,6619.0,66.0,5.0,False,GB02949554,Activities auxiliary to financial services and insurance activities,False
+892,1217427.0,29138533000.0,6419.0,64.0,2.0,False,FR399973825,"Financial service activities, except insurance and pension funding",True
+893,1217451.0,120556767.0,6203.0,62.0,18.0,False,NO996084639,"Computer programming, consultancy and related activities",False
+894,1221417.0,137984779.0,6619.0,66.0,5.0,False,GB03498808,Activities auxiliary to financial services and insurance activities,False
+895,1225272.0,248603.0,7211.0,72.0,5.0,True,GB06784728,Scientific research and development ,False
+896,1226232.0,11803447000.0,6419.0,64.0,14.0,False,ATFEB44015,"Financial service activities, except insurance and pension funding",True
+897,1226798.0,886985055.0,6619.0,66.0,5.0,False,GB01893220,Activities auxiliary to financial services and insurance activities,False
+898,1226891.0,111575341.0,8121.0,81.0,20.0,False,IT00209050392,Services to buildings and landscape activities,False
+899,1227526.0,96745258.0,7022.0,70.0,7.0,False,BE0443780344,Activities of head offices; management consultancy activities,False
+900,1231647.0,17376937000.0,6419.0,64.0,2.0,False,FR349974931,"Financial service activities, except insurance and pension funding",True
+901,1234385.0,81084000.0,7022.0,66.0,21.0,False,ESA28031730,Activities auxiliary to financial services and insurance activities,False
+902,1237302.0,104089317.0,6499.0,64.0,5.0,False,GB02100399,"Financial service activities, except insurance and pension funding",True
+903,1238772.0,41504792646.0,6499.0,64.0,16.0,False,SE5560138298,"Financial service activities, except insurance and pension funding",True
+904,1239393.0,1130244101.0,6420.0,64.0,20.0,False,IT06971070583,"Financial service activities, except insurance and pension funding",True
+905,1239858.0,164241.0,7010.0,70.0,14.0,False,AT9090018190,Activities of head offices; management consultancy activities,False
+906,1240850.0,1295787743.0,6420.0,64.0,8.0,False,DK11814913,"Financial service activities, except insurance and pension funding",True
+907,1241896.0,47985284.0,7010.0,70.0,20.0,False,IT02010600035,Activities of head offices; management consultancy activities,False
+908,1247052.0,73348427.0,6499.0,64.0,16.0,False,SE5562885417,"Financial service activities, except insurance and pension funding",True
+909,1247085.0,618385.0,7211.0,72.0,5.0,True,GB02466556,Scientific research and development ,False
+910,1248073.0,150494.0,6420.0,64.0,0.0,False,NL33250547,"Financial service activities, except insurance and pension funding",True
+911,1248157.0,27584240000.0,6419.0,64.0,2.0,False,FR487625436,"Financial service activities, except insurance and pension funding",True
+912,1248414.0,410598000000.0,6419.0,64.0,2.0,False,FR542044524,"Financial service activities, except insurance and pension funding",True
+913,1248490.0,8267220.0,7211.0,72.0,5.0,True,GB10124988,Scientific research and development ,False
+914,1249105.0,12324591.0,7022.0,70.0,18.0,False,NO987753153,Activities of head offices; management consultancy activities,False
+915,1249159.0,185959132.0,5020.0,50.0,18.0,False,NO929979397,Water transport,False
+916,1250015.0,159318198397.0,6500.0,65.0,5.0,False,GB00166055,"Insurance, reinsurance and pension funding, except compulsory social security",False
+917,1250555.0,1803000000.0,4646.0,46.0,2.0,False,FR308197185,"Wholesale trade, except of motor vehicles and motorcycles",False
+918,1252248.0,9413610000.0,6419.0,64.0,2.0,False,FR777456179,"Financial service activities, except insurance and pension funding",True
+919,1253471.0,98456000000.0,6419.0,64.0,22.0,False,FI02425221,"Financial service activities, except insurance and pension funding",True
+920,1254761.0,34065214000.0,6500.0,65.0,7.0,False,BE0403552563,"Insurance, reinsurance and pension funding, except compulsory social security",False
+921,1256096.0,1065581000.0,6611.0,66.0,0.0,False,NL60234520,Activities auxiliary to financial services and insurance activities,False
+922,1256912.0,6895090368.0,7010.0,64.0,5.0,False,GB07295772,"Financial service activities, except insurance and pension funding",True
+923,1257379.0,361797069.0,6430.0,64.0,5.0,False,GB01000403,"Financial service activities, except insurance and pension funding",True
+924,1258745.0,13411198.0,6820.0,68.0,18.0,False,NO989101501,Real estate activities,False
+925,1259525.0,763669009.0,6499.0,64.0,5.0,False,GB06150193,"Financial service activities, except insurance and pension funding",True
+926,1259626.0,29049673000.0,6419.0,64.0,20.0,False,IT00816350482,"Financial service activities, except insurance and pension funding",True
+927,1260689.0,12251814.0,7120.0,71.0,18.0,False,NO983524125,Architectural and engineering activities; technical testing and analysis,False
+928,1260734.0,628668000.0,6499.0,64.0,20.0,False,IT00395320583,"Financial service activities, except insurance and pension funding",True
+929,1265659.0,33915689661.0,6511.0,65.0,16.0,False,SE8020057538,"Insurance, reinsurance and pension funding, except compulsory social security",False
+930,1267121.0,36437935.0,6612.0,66.0,5.0,False,GB01976691,Activities auxiliary to financial services and insurance activities,False
+931,1271688.0,32489577282.0,6619.0,66.0,20.0,False,IT00714540150,Activities auxiliary to financial services and insurance activities,False
+932,1272370.0,111173000.0,6832.0,64.0,2.0,False,FR414818906,"Financial service activities, except insurance and pension funding",True
+933,1274424.0,178957690.0,6400.0,64.0,19.0,False,DE8170348025,"Financial service activities, except insurance and pension funding",True
+934,1274530.0,465022000.0,7010.0,70.0,2.0,False,FR519116552,Activities of head offices; management consultancy activities,False
+935,1275268.0,111745.0,6420.0,64.0,5.0,False,GB02331936,"Financial service activities, except insurance and pension funding",True
+936,1276659.0,204612682.0,8299.0,82.0,5.0,False,GB03528371,"Office administrative, office support and other business support activities",False
+937,1276692.0,75408031.0,7010.0,70.0,20.0,False,IT11028960158,Activities of head offices; management consultancy activities,False
+938,1277337.0,32168808000.0,6500.0,65.0,20.0,False,IT00979820321,"Insurance, reinsurance and pension funding, except compulsory social security",False
+939,1281215.0,6574178.0,7219.0,72.0,18.0,False,NO974374765,Scientific research and development ,False
+940,1281590.0,4684000.0,6420.0,64.0,2.0,False,FR562111773,"Financial service activities, except insurance and pension funding",True
+941,1282125.0,64253525.0,6499.0,64.0,5.0,False,GB01644127,"Financial service activities, except insurance and pension funding",True
+942,1282498.0,2402539.0,6810.0,68.0,18.0,False,NO981937937,Real estate activities,False
+943,1289450.0,23026912.0,6630.0,66.0,5.0,False,GB00874802,Activities auxiliary to financial services and insurance activities,False
+944,1291287.0,19068601000.0,6419.0,64.0,2.0,False,FR383354594,"Financial service activities, except insurance and pension funding",True
+945,1291851.0,4861775.0,2120.0,21.0,5.0,False,GB09246681,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+946,1293833.0,808667.0,7211.0,72.0,5.0,True,GB09967702,Scientific research and development ,False
+947,1294035.0,26914428.0,8299.0,82.0,5.0,False,GB05257246,"Office administrative, office support and other business support activities",False
+948,1296961.0,9141928400.0,6420.0,64.0,5.0,False,GB06107228,"Financial service activities, except insurance and pension funding",True
+949,1297687.0,69120814.0,7219.0,21.0,16.0,False,SE5567345359,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+950,1301405.0,8609370.0,6820.0,68.0,18.0,False,NO929975022,Real estate activities,False
+951,1306095.0,156872314.0,6612.0,64.0,5.0,False,GB00936683,"Financial service activities, except insurance and pension funding",True
+952,1306163.0,13432166.0,7219.0,72.0,5.0,False,GB02776963,Scientific research and development ,False
+953,1306510.0,47488277.0,4120.0,41.0,20.0,False,IT07952230584,Construction of buildings,False
+954,1307424.0,20022846000.0,6419.0,64.0,14.0,False,ATFEB44316,"Financial service activities, except insurance and pension funding",True
+955,1308716.0,20743370749.0,6419.0,64.0,20.0,False,IT02124090164,"Financial service activities, except insurance and pension funding",True
+956,1310966.0,2579951.0,7211.0,72.0,5.0,True,GB07809175,Scientific research and development ,False
+957,1312216.0,53171600000.0,6420.0,50.0,2.0,False,FR056801046,Water transport,False
+958,1313605.0,258696.0,7211.0,72.0,5.0,True,GB07343550,Scientific research and development ,False
+959,1314640.0,30028120000.0,6419.0,64.0,2.0,False,FR440676559,"Financial service activities, except insurance and pension funding",True
+960,1315090.0,154663000.0,4120.0,41.0,20.0,False,IT09259601004,Construction of buildings,False
+961,1315939.0,73859000000.0,6419.0,64.0,3.0,False,IE024173,"Financial service activities, except insurance and pension funding",True
+962,1318862.0,2089874940.0,8412.0,84.0,18.0,False,NO983658725,Public administration and defence; compulsory social security,False
+963,1319556.0,31279831.0,6630.0,66.0,16.0,False,SE5565336210,Activities auxiliary to financial services and insurance activities,False
+964,1320184.0,308398557000.0,6419.0,64.0,21.0,False,ESA08663619,"Financial service activities, except insurance and pension funding",True
+965,1320235.0,1232245000000.0,6419.0,64.0,19.0,False,DEFEB13216,"Financial service activities, except insurance and pension funding",True
+966,1320864.0,357883134.0,6612.0,66.0,3.0,False,IE349135,Activities auxiliary to financial services and insurance activities,False
+967,1324585.0,942225764.0,8690.0,86.0,5.0,False,GB04325234,Human health activities,False
+968,1324811.0,1605647.0,7211.0,72.0,5.0,True,GB04698400,Scientific research and development ,False
+969,1325841.0,4306125000.0,6420.0,64.0,21.0,False,ESA80027097,"Financial service activities, except insurance and pension funding",True
+970,1327960.0,2517376805.0,910.0,9.0,18.0,False,NO968360302,Mining support service activities,False
+971,1329092.0,8064898.0,6430.0,64.0,18.0,False,NO984554753,"Financial service activities, except insurance and pension funding",True
+972,1330746.0,6620897.0,5020.0,50.0,18.0,False,NO913156056,Water transport,False
+973,1331639.0,508251562.0,7010.0,70.0,5.0,False,GB03200696,Activities of head offices; management consultancy activities,False
+974,1333187.0,21282114.0,7220.0,72.0,18.0,False,NO985827117,Scientific research and development ,False
+975,1334037.0,18652709.0,7010.0,70.0,20.0,False,IT04122790159,Activities of head offices; management consultancy activities,False
+976,1334416.0,32266312.0,6420.0,82.0,7.0,False,BE0428597666,"Office administrative, office support and other business support activities",False
+977,1337455.0,5230621.0,6430.0,64.0,18.0,False,NO987308877,"Financial service activities, except insurance and pension funding",True
+978,1338925.0,215869833.0,2120.0,21.0,5.0,False,GB08921143,Manufacture of basic pharmaceutical products and pharmaceutical preparations,False
+979,1339286.0,5331514.0,7211.0,72.0,5.0,True,GB05237326,Scientific research and development ,False
+980,1339382.0,11690120262.0,6419.0,64.0,20.0,False,IT00864530159,"Financial service activities, except insurance and pension funding",True
+981,1341251.0,20403322000.0,6419.0,64.0,2.0,False,FR440242469,"Financial service activities, except insurance and pension funding",True
+982,1341552.0,369042339.0,7010.0,70.0,5.0,False,GB02627518,Activities of head offices; management consultancy activities,False
+983,1343598.0,83468466.0,7211.0,72.0,5.0,True,GB05221615,Scientific research and development ,False
+984,1349198.0,2849931011.0,6209.0,62.0,5.0,False,GB09952065,"Computer programming, consultancy and related activities",False
+985,1351115.0,36146931879.0,6612.0,66.0,5.0,False,GB01009248,Activities auxiliary to financial services and insurance activities,False
+986,1355643.0,281654.0,6499.0,64.0,5.0,False,GB00955951,"Financial service activities, except insurance and pension funding",True
+987,1356284.0,919810019.0,6419.0,64.0,5.0,False,GB00520241,"Financial service activities, except insurance and pension funding",True
+988,1357392.0,14693000.0,6430.0,30.0,2.0,False,FR612039545,Manufacture of other transport equipment,False
+989,1358385.0,575754656.0,6420.0,64.0,21.0,False,ESB86594298,"Financial service activities, except insurance and pension funding",True
+990,1359987.0,592370.0,8211.0,82.0,5.0,False,GB08179075,"Office administrative, office support and other business support activities",False
+991,1360510.0,6844198.0,7211.0,72.0,5.0,True,GB07925932,Scientific research and development ,False
+992,1363507.0,613512.0,7211.0,72.0,5.0,True,GB07133063,Scientific research and development ,False
+993,1364820.0,478916467.0,6820.0,68.0,18.0,False,NO917853002,Real estate activities,False
+994,1364853.0,383097776402.0,6419.0,64.0,5.0,False,GB02068222,"Financial service activities, except insurance and pension funding",True
+995,1365275.0,9274768.0,7211.0,72.0,5.0,True,GB07543971,Scientific research and development ,False
+996,1365996.0,679995772.0,8299.0,82.0,5.0,False,GB05796766,"Office administrative, office support and other business support activities",False
+997,1366128.0,43961683.0,6420.0,64.0,20.0,False,IT10575701007,"Financial service activities, except insurance and pension funding",True
+998,1366319.0,5321011.0,6820.0,68.0,18.0,False,NO990283672,Real estate activities,False
+999,1366657.0,1063690710.0,8299.0,82.0,14.0,False,AT9110770256,"Office administrative, office support and other business support activities",False
+1000,1367188.0,53640458.0,8299.0,82.0,5.0,False,GB06450145,"Office administrative, office support and other business support activities",False
+1001,1368424.0,903546.0,7211.0,72.0,5.0,True,GB07618820,Scientific research and development ,False
+1002,1368998.0,18210386.0,6430.0,64.0,18.0,False,NO993769681,"Financial service activities, except insurance and pension funding",True
+1003,1369279.0,5255330.0,7010.0,70.0,20.0,False,IT02011230501,Activities of head offices; management consultancy activities,False
+1004,1371906.0,53128981000.0,6500.0,65.0,22.0,False,FI01193430,"Insurance, reinsurance and pension funding, except compulsory social security",False
+1005,1372628.0,374580457.0,7010.0,70.0,14.0,False,AT9110326906,Activities of head offices; management consultancy activities,False
+1006,1373505.0,23789631.0,8299.0,70.0,5.0,False,GBSC366069,Activities of head offices; management consultancy activities,False
+1007,1374198.0,7910864000.0,6500.0,65.0,20.0,False,IT01947090237,"Insurance, reinsurance and pension funding, except compulsory social security",False
+1008,1376878.0,68378727.0,6810.0,68.0,18.0,False,NO988844322,Real estate activities,False
+1009,1376896.0,4553600000.0,6420.0,1.0,2.0,False,FR552073785,"Crop and animal production, hunting and related service activities",False
+1010,1379737.0,98794755.0,6420.0,64.0,5.0,False,GB09046553,"Financial service activities, except insurance and pension funding",True
+1011,1379957.0,38022299186.0,6419.0,64.0,20.0,False,IT00053810149,"Financial service activities, except insurance and pension funding",True
+1012,1380425.0,1680162400.0,8299.0,82.0,5.0,False,GB03755033,"Office administrative, office support and other business support activities",False
+1013,1381620.0,4508960.0,6499.0,64.0,5.0,False,GB02594987,"Financial service activities, except insurance and pension funding",True
+1014,1382072.0,105559052.0,6612.0,66.0,5.0,False,GB03942880,Activities auxiliary to financial services and insurance activities,False
+1015,1384669.0,22525384000.0,6500.0,65.0,2.0,False,FR722057460,"Insurance, reinsurance and pension funding, except compulsory social security",False
+1016,1384817.0,480466000.0,6420.0,64.0,0.0,False,NL34251540,"Financial service activities, except insurance and pension funding",True
+1017,1386211.0,3356493177.0,6430.0,64.0,5.0,False,GBSC001731,"Financial service activities, except insurance and pension funding",True
+1018,1388125.0,41070.0,7219.0,72.0,5.0,False,GB06704572,Scientific research and development ,False
+1019,1389697.0,3361674740.0,6500.0,65.0,21.0,False,ESA60917978,"Insurance, reinsurance and pension funding, except compulsory social security",False
+1020,1393595.0,2884000000.0,6420.0,64.0,0.0,False,NL33220369,"Financial service activities, except insurance and pension funding",True
+1021,1394803.0,157173191.0,6630.0,66.0,2.0,False,FR340902857,Activities auxiliary to financial services and insurance activities,False
+1022,1395658.0,15792202000.0,6500.0,65.0,19.0,False,DEFEI1001050,"Insurance, reinsurance and pension funding, except compulsory social security",False
+1023,1399862.0,9393729.0,9499.0,94.0,18.0,False,NO976472667,Activities of membership organisations,False
+1024,1402467.0,181026000.0,6419.0,64.0,2.0,False,FR388271298,"Financial service activities, except insurance and pension funding",True
+1025,1403285.0,1766866.0,6430.0,64.0,18.0,False,NO981072189,"Financial service activities, except insurance and pension funding",True
+1026,1405828.0,54089188.0,7021.0,73.0,20.0,False,IT08526500155,Advertising and market research,False
+1027,1409906.0,662721451.0,7010.0,64.0,14.0,False,AT9110122490,"Financial service activities, except insurance and pension funding",True
+1028,1410130.0,66808350.0,6499.0,64.0,5.0,False,GB00792030,"Financial service activities, except insurance and pension funding",True
+1029,1410738.0,7015666.0,6430.0,64.0,18.0,False,NO995204525,"Financial service activities, except insurance and pension funding",True
+1030,1411305.0,555619000000.0,6419.0,64.0,2.0,False,FR784608416,"Financial service activities, except insurance and pension funding",True
+1031,1412370.0,2748058612.0,6500.0,65.0,8.0,False,DK10430410,"Insurance, reinsurance and pension funding, except compulsory social security",False
+1032,1412857.0,241660029.0,7010.0,70.0,20.0,False,IT04122770151,Activities of head offices; management consultancy activities,False
+1033,1413153.0,1572225000.0,6619.0,66.0,5.0,False,GB01060802,Activities auxiliary to financial services and insurance activities,False
+1034,1414229.0,55507000000.0,2221.0,52.0,2.0,False,FR055804124,Warehousing and support activities for transportation,False
+1035,1415170.0,396336000.0,6500.0,65.0,20.0,False,IT00522430107,"Insurance, reinsurance and pension funding, except compulsory social security",False
+1036,1418980.0,1756303.0,6430.0,64.0,18.0,False,NO989145800,"Financial service activities, except insurance and pension funding",True
+1037,1424609.0,4769331602.0,6209.0,62.0,5.0,False,GB07788627,"Computer programming, consultancy and related activities",False
+1038,1426128.0,39617369435.0,7010.0,70.0,5.0,False,GB03584019,Activities of head offices; management consultancy activities,False
+1039,1427408.0,5842733000.0,6420.0,64.0,21.0,False,ESA60769247,"Financial service activities, except insurance and pension funding",True
+1040,1428852.0,704580000.0,6500.0,65.0,9.0,False,PT503454109,"Insurance, reinsurance and pension funding, except compulsory social security",False
+1041,1429971.0,565649142.0,6500.0,65.0,20.0,False,IT00625450374,"Insurance, reinsurance and pension funding, except compulsory social security",False
+1042,1430308.0,631730000.0,6400.0,64.0,20.0,False,IT07918170015,"Financial service activities, except insurance and pension funding",True
+1043,1430480.0,8833973000.0,6511.0,65.0,2.0,False,FR775699309,"Insurance, reinsurance and pension funding, except compulsory social security",False
+1044,1434776.0,111275394.0,6629.0,66.0,5.0,False,GB03140521,Activities auxiliary to financial services and insurance activities,False
+1045,1435097.0,41372451121.0,6419.0,64.0,3.0,False,IE132781,"Financial service activities, except insurance and pension funding",True
+1046,1436443.0,3742582348.0,6499.0,64.0,5.0,False,GB00951043,"Financial service activities, except insurance and pension funding",True
+1047,1438431.0,843284543.0,6612.0,66.0,5.0,False,GB02122142,Activities auxiliary to financial services and insurance activities,False
+1048,1438827.0,6974314929.0,6420.0,64.0,5.0,False,GB03536674,"Financial service activities, except insurance and pension funding",True
+1049,1439444.0,18255921.0,7211.0,72.0,5.0,True,GB09293168,Scientific research and development ,False
+1050,1439733.0,61130724000.0,6420.0,64.0,14.0,False,ATFEB46146,"Financial service activities, except insurance and pension funding",True
+1051,1440848.0,222596000000.0,6499.0,64.0,19.0,False,DEFEB47734,"Financial service activities, except insurance and pension funding",True
+1052,1442001.0,1164612000.0,6419.0,64.0,14.0,False,ATFEB44314,"Financial service activities, except insurance and pension funding",True
+1053,1442191.0,16028419000.0,6419.0,64.0,2.0,False,FR776983546,"Financial service activities, except insurance and pension funding",True
+1054,1442254.0,769919000.0,6419.0,64.0,14.0,False,ATFEB46784,"Financial service activities, except insurance and pension funding",True
+1055,1443773.0,3907085.0,6420.0,64.0,5.0,False,GB04583297,"Financial service activities, except insurance and pension funding",True
+1056,1444641.0,32168289188.0,6500.0,65.0,18.0,False,NO914782007,"Insurance, reinsurance and pension funding, except compulsory social security",False
+1057,1446735.0,622769.0,7211.0,72.0,5.0,True,GB04452808,Scientific research and development ,False
+1058,1448172.0,1647764.0,7211.0,72.0,5.0,True,GB05397155,Scientific research and development ,False
+1059,1452142.0,400240522.0,7219.0,72.0,5.0,False,GB02664412,Scientific research and development ,False
+1060,1452611.0,32941.0,7211.0,72.0,5.0,True,GB08361712,Scientific research and development ,False
+1061,1453244.0,23817081.0,6820.0,68.0,20.0,False,IT02544160357,Real estate activities,False
+1062,1453580.0,3926351000.0,7010.0,23.0,20.0,False,IT00433670585,Manufacture of other non-metallic mineral products,False
+1063,1454863.0,1851031.0,7211.0,72.0,5.0,True,GB07809201,Scientific research and development ,False
+1064,1455642.0,145906991.0,8299.0,82.0,5.0,False,GB01217474,"Office administrative, office support and other business support activities",False
+1065,1458083.0,603857830.0,6420.0,64.0,20.0,False,IT06057811009,"Financial service activities, except insurance and pension funding",True
+1066,1460463.0,134198034.0,7010.0,70.0,5.0,False,GBSC200801,Activities of head offices; management consultancy activities,False
+1067,1460715.0,1832779.0,7022.0,70.0,18.0,False,NO889988312,Activities of head offices; management consultancy activities,False
+1068,1463530.0,147445524.0,7490.0,74.0,21.0,False,ESB95031126,"Other professional, scientific and technical activities",False
+1069,1465304.0,13448549412.0,6499.0,64.0,8.0,False,DK24257630,"Financial service activities, except insurance and pension funding",True
+1070,1467205.0,1268375232.0,2410.0,24.0,20.0,False,IT01595620061,Manufacture of basic metals,False
+1071,1469804.0,4161889225.0,6430.0,64.0,2.0,False,FR682001904,"Financial service activities, except insurance and pension funding",True
+1072,1473486.0,99216596.0,6499.0,64.0,5.0,False,GB03062718,"Financial service activities, except insurance and pension funding",True
+1073,1474061.0,29862195.0,6630.0,64.0,16.0,False,SE5560700683,"Financial service activities, except insurance and pension funding",True
+1074,1475714.0,1032498823.0,6499.0,64.0,5.0,False,GB02290621,"Financial service activities, except insurance and pension funding",True
+1075,1476868.0,242455309.0,6499.0,64.0,20.0,False,IT03795250376,"Financial service activities, except insurance and pension funding",True
+1076,1477452.0,586363207.0,6499.0,64.0,5.0,False,GB02122340,"Financial service activities, except insurance and pension funding",True
+1077,1477717.0,367265268483.0,6499.0,64.0,20.0,False,IT80199230584,"Financial service activities, except insurance and pension funding",True
+1078,1477811.0,237632681.0,7010.0,70.0,5.0,False,GB02357558,Activities of head offices; management consultancy activities,False
+1079,1478056.0,36028495.0,6630.0,66.0,5.0,False,GBOC317647,Activities auxiliary to financial services and insurance activities,False
+1080,1480743.0,600688489.0,4110.0,41.0,20.0,False,IT01126060068,Construction of buildings,False
+1081,1482555.0,589140441.0,7010.0,70.0,3.0,False,IE475318,Activities of head offices; management consultancy activities,False
+1082,1483045.0,578140081.0,7010.0,70.0,5.0,False,GB00167236,Activities of head offices; management consultancy activities,False
+1083,1483645.0,566223714.0,6430.0,64.0,2.0,False,FR433957792,"Financial service activities, except insurance and pension funding",True
+1084,1484509.0,11910683852.0,7010.0,70.0,5.0,False,GBSC199547,Activities of head offices; management consultancy activities,False
+1085,1484728.0,9609040.0,6611.0,64.0,21.0,False,ESB39445127,"Financial service activities, except insurance and pension funding",True
+1086,1487212.0,19538336.0,7120.0,71.0,18.0,False,NO994344609,Architectural and engineering activities; technical testing and analysis,False
+1087,1489518.0,95769756.0,6920.0,69.0,21.0,False,ESB82720939,Legal and accounting activities,False
+1088,1489642.0,178946346.0,6810.0,64.0,20.0,False,IT04988260966,"Financial service activities, except insurance and pension funding",True
+1089,1490207.0,614231484.0,7010.0,70.0,14.0,False,AT9110357667,Activities of head offices; management consultancy activities,False
+1090,1490959.0,893403426.0,9499.0,94.0,18.0,False,NO939333037,Activities of membership organisations,False
+1091,1492667.0,169235802.0,6430.0,64.0,5.0,False,GBOC354068,"Financial service activities, except insurance and pension funding",True
+1092,1494372.0,401047256.0,6612.0,66.0,5.0,False,GB00906355,Activities auxiliary to financial services and insurance activities,False
+1093,1495288.0,110205719.0,7022.0,70.0,18.0,False,NO988753130,Activities of head offices; management consultancy activities,False
+1094,1496282.0,757311513.0,6630.0,66.0,5.0,False,GB01151805,Activities auxiliary to financial services and insurance activities,False
+1095,1496929.0,13134789000.0,6419.0,64.0,2.0,False,FR775718216,"Financial service activities, except insurance and pension funding",True
+1096,1497113.0,125065012.0,7022.0,70.0,7.0,False,BE0463953770,Activities of head offices; management consultancy activities,False
+1097,1499657.0,267403496.0,6420.0,64.0,20.0,False,IT08686511000,"Financial service activities, except insurance and pension funding",True
+1098,1499809.0,2970430000.0,6619.0,66.0,7.0,False,BE0423747369,Activities auxiliary to financial services and insurance activities,False
+1099,1500105.0,43953999.0,6420.0,64.0,14.0,False,AT9050076527,"Financial service activities, except insurance and pension funding",True
+1100,1501752.0,6156557.0,6430.0,85.0,18.0,False,NO994924729,Education,False
+1101,1502405.0,691564973.0,6619.0,66.0,5.0,False,GB01896481,Activities auxiliary to financial services and insurance activities,False
+1102,1502620.0,77914441.0,6400.0,64.0,20.0,False,IT01369640931,"Financial service activities, except insurance and pension funding",True
+1103,1503674.0,305262671000.0,6500.0,65.0,2.0,False,FR334028123,"Insurance, reinsurance and pension funding, except compulsory social security",False
+1104,1508369.0,40833288.0,6420.0,64.0,5.0,False,GB08732051,"Financial service activities, except insurance and pension funding",True
+1105,1508901.0,3006876.0,7211.0,72.0,5.0,True,GBSC393914,Scientific research and development ,False
+1106,1509333.0,321350799.0,6499.0,66.0,5.0,False,GB00048796,Activities auxiliary to financial services and insurance activities,False
+1107,1509456.0,509377436804.0,6419.0,64.0,20.0,False,IT00799960158,"Financial service activities, except insurance and pension funding",True
+1108,1510672.0,4502278.0,7211.0,72.0,5.0,True,GB04697300,Scientific research and development ,False
