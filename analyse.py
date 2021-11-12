@@ -385,7 +385,7 @@ _,_, hist = optimize_control(compute_sparse_loss, cl, g,
                             )
 # -
 
-print(hist["time"], g.number_of_nodes)
+print(hist["time"]/60, g.number_of_nodes)
 
 if source_mask is not None:
     print(torch.sum(g.compute_total_value(only_network_shares=True, include_root_shares=True)))

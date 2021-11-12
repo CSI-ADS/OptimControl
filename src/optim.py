@@ -135,7 +135,7 @@ def optimize_control(
 
     with torch.no_grad():
         print("computing hist info")
-        hist["time"] = end - start
+        hist["time"] = end - start  
         hist["final_iter"] = i_last
         hist["final_params"] = params.detach().cpu().numpy()
         hist["final_params_sm"] = torch.sigmoid(params).detach().cpu().numpy()

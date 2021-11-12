@@ -1,14 +1,19 @@
 name: control
 channels:
   - defaults
-  - anaconda
-  - conda-forge
-  - pytorch
 dependencies:
   - python=3
+  - anaconda
+  - graph-tool
+  - networkit
+  - line_profiler
+  - numba
+  - jax
+  - cairo
+  - torchvision
   - pytorch
   - jupytext
-  - torchvision
-  - anaconda
+  - control
+  - scipy
   - pydot
-  - pygraphviz
+prefix: /usr/local/anaconda3/envs/control
