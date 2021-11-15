@@ -13,6 +13,8 @@ To run the example in analyse.py
 
 ## Core
 
+Note: figures will be dumped into the figs/ folder.
+
 ### Networks
 
 The core object in the code is defined in network.py. It should be initialized as (schematically)
