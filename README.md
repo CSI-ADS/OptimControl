@@ -1,5 +1,9 @@
 # Network control by a constrained external agent as a continuous optimization problem
 
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+<!-- [![arXiv](https://img.shields.io/badge/arXiv-1234.56789-b31b1b.svg)](https://arxiv.org/abs/1234.56789) -->
+
 Code for the paper on "Network control by a constrained external agent as a continuous optimization problem", Nys et al. (2021)
 
 ## How to use
