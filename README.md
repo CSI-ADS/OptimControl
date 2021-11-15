@@ -1,4 +1,4 @@
-# Optim
+# Network control by a constrained external agent as a continuous optimization problem
 
 Code for the paper on "Network control by a constrained external agent as a continuous optimization problem", Nys et al. (2021)
 
