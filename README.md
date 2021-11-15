@@ -56,7 +56,7 @@ These functions have many adjustable parameters, such as
 * To store and return the history - return_hist
 * The learning rate - lr
 * Number of optimization steps - num_steps
-And many more.
+* And many more.
 
 ### Automatic differentiation
 
