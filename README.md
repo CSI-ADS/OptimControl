@@ -37,11 +37,6 @@ These can also be visualized using the kwargs `source_mask` and `source_mask` in
 
 Some example networks are implemented in `src.test_networks.py`.
 
-The produced plots should look like, for example (see SM):
-
-<!-- ![alt text](https://github.com/[username]/[reponame]/blob/[branch]/image.jpg?raw=true) -->
-![alt text](https://github.com/CSI-ADS/OptimControl/blob/online/figs/example_fig.png?raw=true)
-
 
 ### Optimization and loss function
 
@@ -65,6 +60,18 @@ These functions have many adjustable parameters, such as
 * The learning rate - lr
 * Number of optimization steps - num_steps
 * And many more.
+
+### Backbone algorithm
+
+We implement Vitali et al as a backbone algorithm (see paper for details and citation).
+One can compute the control with the vitali algorithm
+
+```python
+from src.vitali import compute_control
+
+c = compute_control(o, B)
+```
+where B is the adjusted ownership matrix for nodes reachable from node x. Here, c represents the control of x over all nodes in the network.
 
 ### Automatic differentiation
 
@@ -93,6 +100,18 @@ def update(loss_fn, optimizer, params, *args, **kwargs):
 ```
 Here, `cl` corresponds to `p_u` in our paper, and is converted into `o` through `compute_total_shares`.
 More generally, the argument `loss_fn` can be a custom loss function, as long as it is differentiable and written in PyTorch.
+
+### Plotting results
+
+Results can be visualized with the drawing functions in `src.network.py`.
+
+The produced plots should look like, for example (see SM):
+
+<!-- ![alt text](https://github.com/[username]/[reponame]/blob/[branch]/image.jpg?raw=true) -->
+![alt text](https://github.com/CSI-ADS/OptimControl/blob/online/figs/example_fig.png?raw=true)
+
+Furthermore, `src.plotting.py` also implements `plot_direct_control` and `plot_control_distr` based on the obtained graph and control vector `o`.
+
 
 ## Cite
 
