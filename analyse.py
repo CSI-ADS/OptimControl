@@ -90,7 +90,13 @@ COUNTRY_CODES = COUNTRY_CODES.set_index("country_index")
 COUNTRY_CODES = COUNTRY_CODES.to_dict()["countryisocode"]
 COUNTRY_CODES
 
+# # Load the data
+
 # +
+# note: the code below is a bit messy, but it loads our specific data and stores the right variables (see below)
+STUDY_CASE = 3 # choose a case with this integer variable to load the data
+
+
 NETWORK_NAME = [
     "PHARMA",
     "BIOTECH",
@@ -100,7 +106,7 @@ NETWORK_NAME = [
     "SIMPLE_CYCLE",
     "SIMPLE_CHAIN",
     "SIMPLE_STAR"
-][3]
+][STUDY_CASE]
 print(NETWORK_NAME)
 
 # set to false for most examples
@@ -204,6 +210,8 @@ assert len(values)>0, "?"
 assert len(edges)>0, "?"
 # -
 
+# At this point, we loaded the source node ids, the company values, and edge values (see below)
+
 V_source
 
 nodes
@@ -212,6 +220,7 @@ values
 
 edges
 
+# create a network with networkx
 G_tot = nx.DiGraph()
 for u in nodes:
     if u in values.keys():
@@ -222,31 +231,22 @@ for (u, v), p in edges.items():
 print(G_tot.number_of_nodes())
 
 # +
+# keep the largest connected component as an example
 print("components:", [len(x) for x in nx.connected_components(G_tot.to_undirected())])
 largest_cc = max(nx.connected_components(G_tot.to_undirected()), key=len)
 print(len(largest_cc))
-# nodes_to_remove = []
-# for component in nx.connected_components(G_tot.to_undirected()):
-#     if component == largest_cc:
-#         continue
-#     display(V.loc[V["company_id"].isin(component),:])
-
 
 G = G_tot.subgraph(largest_cc).copy()
-# largest_cc = list(G_tot.nodes())
-# print(largest_cc)
-# G = G_tot.subgraph(largest_cc).copy()
 if G_tot.number_of_nodes() != G.number_of_nodes():
     print("WARNING: keeping {} out of {} nodes".format(G.number_of_nodes(), G_tot.number_of_nodes()))
 
 G.number_of_nodes()
-
-# +
-#nx.draw(G, pos=nx.spring_layout(G), node_size=10)
 # -
 
 values
 
+# for simplifity later, we construct some useful dataframes containing network metrics
+# which we can use to plot our results against
 vals = pd.Series(pd.DataFrame(values).T["value"], name="val")
 centr = pd.Series(nx.degree_centrality(G), name="centr")
 in_centr = pd.Series(nx.in_degree_centrality(G), name="in_centr")
@@ -254,7 +254,6 @@ out_centr = pd.Series(nx.out_degree_centrality(G), name="out_centr")
 betw_centr = pd.Series(nx.betweenness_centrality(G), name="betw_centr")
 pr = pd.Series(nx.pagerank(G), name="pr")
 node_nx_props = pd.concat([vals, centr, in_centr, out_centr, betw_centr, pr], axis=1)
-#node_nx_props = node_nx_props.dropna()
 node_nx_props
 
 from numpy.polynomial.polynomial import polyfit
@@ -315,11 +314,13 @@ g.V
 
 g.node_list
 
+# # Targets/nodes
+
 # +
 source_mask=None
 target_mask=None
 
-
+# if we limit the control, we must construct a binary mask
 if LIMIT_CONTROL:
     print("limiting control")
     target_mask = make_mask_from_node_list(g, V_target.astype(int))
@@ -345,6 +346,8 @@ plt.show()
 with open("data_network_{}.pickle".format(NETWORK_NAME), 'wb') as f:
     pickle.dump((source_mask, target_mask, g, NETWORK_NAME), f)
 
+# # Optimize (unconstrained)
+
 # +
 from collections import defaultdict
 from src.optim import *
@@ -360,7 +363,7 @@ print(torch.min(cl_soft), torch.max(cl_soft))
 init_lr = 1#0.01
 decay = 0.1
 max_steps = 3000
-lambd = 1#1 #0#0.75#0.75#1.38949549e-02 #1.93069773e-01#0#1.00000000e+01#5.17947468e-02 #1e-3
+lambd = 1
 print("lambda = ",lambd)
 weight_control = False
 control_cutoff = None
@@ -393,19 +396,6 @@ Vtot = g.compute_total_value(only_network_shares=True, include_root_shares=True,
 print(torch.sum(Vtot))
 
 hist["final_control"]
-
-# +
-# import torch.autograd.profiler as profiler
-# with profiler.profile(record_shapes=True) as prof:
-#     with profiler.record_function("model_inference"):
-#         _,_, hist = optimize_control(compute_sparse_loss, cl, g, 
-#                                      lambd=1, return_hist=True, verbose=True, 
-#                                      save_loss_arr=True,
-#                                      num_steps=max_steps, lr=lr, scheduler=scheduler,
-#                                      device=device, desc_mask=None
-#                                     )
-
-# prof.export_chrome_trace("trace.json")
 
 # +
 import matplotlib.pyplot as plt
@@ -487,16 +477,7 @@ if num_params <= 15:
     plt.legend()
 my_savefig("figs/{}_{}_totshares_ifo_step.pdf".format(NETWORK_NAME, lambd))
 plt.show()
-# -
 
-
-hist
-
-hist["ol"][0].shape
-
-g.total_shares_in_network
-
-sum(source_mask)
 
 # +
 #print(source_mask, target_mask)
@@ -524,8 +505,6 @@ plot_control_distr(
         )
 # -
 
-g.V
-
 if num_params <= 1000:
     kwargs = {"show_edge_values":False, "show_node_names":False}
     figsize=(10,10)
@@ -549,17 +528,12 @@ if num_params <= 1000:
 #     g.draw(color_arr=final_cost, size_arr=final_control, vmin=0, vmax=1, figsize=figsize, filename="figs/{}_{}_size_control_color_cost.pdf".format(NETWORK_NAME, lambd),
 #       layout=LAYOUT, **kwargs)
 
-sum(hist["final_loss_control_arr"])
-
-sum(target_mask)
-
 print(
     "Fraction of control: ", float(hist["final_control"])
 )
 
 
 # +
-
 def make_groupby_network(g, V, ol, target_mask, column="country", show=True, ax=None):
     node_list = list(g.node_list.numpy())
     #print(node_list)
@@ -716,38 +690,9 @@ for i in range(len(lambd_range)):
 my_savefig("figs/{}_control_vs_cost_curve.pdf".format(NETWORK_NAME))
 
 plt.show()
-
-# +
-# node_nx_props.index = node_nx_props.index.astype(int)
-# nodes = [(n, i) for i, n in enumerate(g.nodes.detach().cpu().numpy().astype(int)) if n in node_nx_props.index]
-# nodes, node_idx = zip(*nodes)
-# node_idx = np.array(node_idx).flatten()
-# props = node_nx_props.loc[nodes,:]
-# for col in props.columns:
-#     props_col = props[col].sort_values()
-#     plt.figure(figsize=(10,5))
-#     for lambd, params in zip(lambd_range, param_result):
-#         plt.scatter(props[col].values, params[node_idx], label="{:.2f}".format(lambd), alpha=0.1)
-#     plt.xlabel(col)
-#     plt.ylabel("c")
-#     plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
-#     plt.show()    
-
-# +
-# plt.figure()
-# for lambd, params in zip(lambd_range, param_result):
-#     if lambd == 0: continue
-#     p = params[node_idx]
-#     #p = p[p < 0.25]
-#     plt.hist(p, label="{:.2f}".format(lambd), alpha=0.1, bins=100)
-# plt.ylabel("c")
-# plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
-# plt.show()
 # -
 
-# # Constraint
-
-source_mask
+# # Constrained optimization example
 
 g.draw(
     color_arr=g.value, 
@@ -775,8 +720,6 @@ from src.network import *
 
 print(NETWORK_NAME)
 print(g.number_of_nodes)
-#budget = 10000
-# budget = 100000
 number_of_sources = g.number_of_nodes if source_mask is None else sum(source_mask)    
 source_values = g.compute_total_value(only_network_shares=True, include_root_shares=True, sel_mask=source_mask)[source_mask]
 target_values = g.compute_total_value(only_network_shares=True, include_root_shares=True, sel_mask=target_mask)[target_mask]
@@ -790,7 +733,6 @@ source_value_ratio = budget/total_source_value
 print("need ratio:", source_value_ratio)
 guess = torch.clamp(source_value_ratio/source_values, min=1e-8, max=1-1e-8)
 guess = torch.log(guess/(1-guess))
-#print("guess:", guess)
 cl = get_cl_init(number_of_sources, device=device, loc=-10, vals=guess)
 print(number_of_sources)
 cl_soft = torch.sigmoid(cl)
@@ -806,21 +748,9 @@ lr = init_lr
 scheduler = None
 if use_schedule: # make new copy
     scheduler = lambda opt : torch.optim.lr_scheduler.MultiStepLR(opt, milestones=[2000], gamma=decay)
-
-#clip_value = 0.0001
-#cl.register_hook(lambda grad: torch.clamp(grad, -clip_value, clip_value))
-
     
 print(torch.sum(g.compute_total_value()))
     
-# _,_, hist = optimize_control(compute_sparse_loss, cl, g, 
-#                              lambd=1, return_hist=True, verbose=True, 
-#                              save_loss_arr=True,
-#                              num_steps=max_steps, lr=lr, scheduler=scheduler,
-#                              device=device, source_mask=None, target_mask=None,
-#                              weight_control=weight_control,
-#                              control_cutoff=control_cutoff
-#                             )
 
 param_est, loss_vals, constr_vals, hist_all = constraint_optimize_control(
         compute_sparse_loss, cl, g, budget,
@@ -834,9 +764,6 @@ param_est, loss_vals, constr_vals, hist_all = constraint_optimize_control(
         es_wait=10
         )
 print("DONE!")
-
-# +
-#sum(g.identify_uncontrollable())
 # -
 
 print("max control:", sum(target_mask), sum(g.total_shares_in_network*target_mask), sum(target_mask) - sum(g.total_shares_in_network*target_mask))
@@ -892,18 +819,6 @@ print(sum(final_cost))
 print(sum(final_control))
 
 # +
-#g.compute_total_value(only_network_shares=True, include_root_shares=True, sel_mask=target_mask)[target_mask]
-
-# +
-#g.node_list.detach().cpu().numpy()[target_mask]
-
-# +
-#plt.hist(g.value, bins=100)
-#plt.xlim(0,1000)
-#plt.show()
-
-#print(g.compute_total_value(only_network_shares=True, include_root_shares=True, sel_mask=target_mask))
-
 plt.bar(
     ["{}".format(x) for x in g.node_list.detach().cpu().numpy()[target_mask]], 
     g.compute_total_value(only_network_shares=True, include_root_shares=True, sel_mask=target_mask)[target_mask]
@@ -927,13 +842,6 @@ plt.bar(bins[:-1], hist_norm, widths)
 plt.xscale('log')
 plt.yscale('log')
 plt.show()
-# -
-
-#len(hist_all["final_ol"])
-#len(source_mask)
-pad_from_mask(hist_all["final_loss_control_arr"], target_mask)
-
-hist_all["final_ol"]
 
 # +
 plot_direct_control(
@@ -976,11 +884,3 @@ print(NETWORK_NAME)
 if "BIOTECH_SEC_sc" in NETWORK_NAME:
     print(sum(1-hist_all["final_loss_control_arr"]))
     make_groupby_network(g, V, hist_all["final_ol"], target_mask)     
-
-#
-
-
-
-
-
-
