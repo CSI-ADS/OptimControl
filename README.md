@@ -12,6 +12,8 @@ Do the following:
 
 ## Core
 
+### Networks
+
 The core object in the code is defined in network.py. It should be initialized as (schematically)
 ```python
 from src.network import Network
@@ -30,19 +32,32 @@ target_mask = make_mask_from_node_list(g, node_id_list)
 ```
 These can also be visualized using the kwargs `source_mask` and `source_mask` in `Network.draw`.
 
+Some example networks are implemented in `src.test_networks.py`.
+
+### Optimization and loss function
+
 The core of the optimization algorithms are implemented in `loss.py` and `optim.py`. The most important functions begin
 ```python
 from src.optim import optimize_control
 from src.loss import compute_sparse_loss
-optimize_control(compute_sparse_loss, pu, g, budget)
+params, loss, hist = optimize_control(compute_sparse_loss, pu, g, budget, return_hist=False)
 ```
 for uncontrolled optimization, and
 ```python
 from src.optim import constraint_optimize_control
 from src.loss import compute_sparse_loss
-constraint_optimize_control(compute_sparse_loss, pu, g, budget)
+params, loss, hist = constraint_optimize_control(compute_sparse_loss, pu, g, budget, return_hist=False)
 ```
 for controlled optimization. Here, `compute_sparse_loss` implements the loss functions in our paper.
+We capture a large amount of statistics during the optimization and store it in `hist`.
+These functions have many adjustable parameters, such as
+* Verbosity level (amount of print output) - verbose
+* To store and return the history - return_hist
+* The learning rate - lr
+* Number of optimization steps - num_steps
+And many more.
+
+### Automatic differentiation
 
 As long as you procede as above, we handle the automatic differentiation for you with the following functions in `optim.py`:
 
@@ -67,7 +82,7 @@ def update(loss_fn, optimizer, params, *args, **kwargs):
     optimizer.step()
     return params, cost
 ```
-Here, `cl` is
+Here, `cl` corresponds to `p_u` in our paper, and is converted into `o` through `compute_total_shares`.
 More generally, the argument `loss_fn` can be a custom loss function, as long as it is differentiable and written in PyTorch.
 
 ## Cite
