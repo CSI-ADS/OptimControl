@@ -134,7 +134,7 @@ To smoothly move the network to the GPU, we've made the following possible:
 ```
 g = g.to(device)
 ```
-where `g` is a `Network` defined earlier.
+where `g` is a `Network` defined earlier. Notice, however, that the current implementation uses dense matrices, since PyTorch's sparse matrices are still under active development. We are also expecting that `jax` will soon become a relevant tool for this.
 
 ## Cite
 
