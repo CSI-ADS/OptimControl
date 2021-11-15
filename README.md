@@ -37,6 +37,12 @@ These can also be visualized using the kwargs `source_mask` and `source_mask` in
 
 Some example networks are implemented in `src.test_networks.py`.
 
+The produced plots should look like, for example (see SM):
+
+<!-- ![alt text](https://github.com/[username]/[reponame]/blob/[branch]/image.jpg?raw=true) -->
+![alt text](https://github.com/CSI-ADS/OptimControl/blob/online/figs/example_fig.png?raw=true)
+
+
 ### Optimization and loss function
 
 The core of the optimization algorithms are implemented in `loss.py` and `optim.py`. The most important functions begin
