@@ -15,6 +15,7 @@ To run the example in analyse.py
 * analyse.py reproduces some of the figures in the paper
 * open analyse.py with jupyter notebook (install jupytext to open the .py files as jupyter notebooks)
 
+
 ## Core
 
 Note: figures will be dumped into the figs/ folder.
@@ -116,6 +117,24 @@ The produced plots should look like, for example (see SM):
 
 Furthermore, `src.plotting.py` also implements `plot_direct_control` and `plot_control_distr` based on the obtained graph and control vector `o`.
 
+## GPU
+
+This code runs smoothly on a GPU! Just put the network (see below) and initial tensors on the right device.
+You can use the following code to determine the devices that are available
+```python
+import torch
+device = 'cpu'
+if torch.cuda.is_available():
+    print("CUDA available")
+    device = 'cuda'
+print(device)
+```
+This defaults to a CPU device, and only switches to a GPU is one is available. Notice that the code speeds up significantly on a GPU.
+To smoothly move the network to the GPU, we've made the following possible:
+```
+g = g.to(device)
+```
+where `g` is a `Network` defined earlier.
 
 ## Cite
 
