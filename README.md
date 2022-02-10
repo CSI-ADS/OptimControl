@@ -142,7 +142,10 @@ where `g` is a `Network` defined earlier. Notice, however, that the current impl
 @article{nys2021network,
   title={Network control by a constrained external agent as a continuous optimization problem},
   author={Nys, Jannes and Heuvel, Milan van den and Schoors, Koen and Merlevede, Bruno},
-  journal={arXiv preprint arXiv:2108.10298},
-  year={2021}
+  journal={Scientific Reports},
+  volume={12},
+  number={2304},
+  year={2022},
+  doi={10.1038/s41598-022-06144-4}
 }
 ```
